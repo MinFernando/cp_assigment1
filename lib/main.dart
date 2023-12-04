@@ -16,10 +16,89 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Welcome to MovieMate!'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: 'Welcome to MovieMate!'),
+        '/second': (context) => appHomeScreen(),
+        '/third': (context) => cinemaListScreen(),
+        '/fourth': (context) => tvListScreen(),
+        '/fifth': (context) => myWatchlistScreen(),
+        '/sixth': (context) => visitProfileScreen(),
+      },
     );
   }
 }
+class AppHomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('App Home Screen'),
+      ),
+      body: const Center(
+        child: Text('Welcome back!'),
+      ),
+    );
+  }
+}
+
+class cinemaListScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('main page'),
+      ),
+      body: const Center(
+        child: Text('Now showing'),
+      ),
+    );
+  }
+}
+
+class tvListScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tv lists'),
+      ),
+      body: const Center(
+        child: Text('On TV Today'),
+      ),
+    );
+  }
+}
+
+class myWatchlistScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('to watch and watched'),
+      ),
+      body: const Center(
+        child: Text('watched and to watch'),
+      ),
+    );
+  }
+}
+
+
+class visitProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('profile'),
+      ),
+      body: const Center(
+        child: Text('profile details'),
+      ),
+    );
+  }
+}
+
 
 class MyHomePage extends StatelessWidget with ValidationMixin {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -30,67 +109,51 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
   Widget build(BuildContext context) {
     GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(300.0),
-        child: AppBar(
-          backgroundColor: Colors.black,
-          title: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Text(
-              title,
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-          flexibleSpace: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                height: 200.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.amber,
-                      width: 3.0,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "MovieMate combines cinema and TV schedules in one user-friendly app. Discover current movies in nearby theaters with showtimes, trailers, and reviews.\nStay on top of TV schedules for tonight's shows, ensuring you never miss a favorite program.\nPersonalized recommendations tailor content to your preferences, simplifying your entertainment choices.\nPlan effortlessly with bookmarking, reminders, and watchlists.\nReceive real-time updates on releases, showtimes, and TV schedules.\nMovieMate is your go-to for a seamless cinematic and television experience.",
-                      style: const TextStyle(fontSize: 16.0, color: Colors.white),
-                    ),
-                  ),
+     return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.height * 2.0,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp1.jpg'),
+                  fit: BoxFit.cover
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formGlobalKey,
-          child: Column(
-            children: <Widget>[
-              // Top Spacing
-              const SizedBox(height: 16.0),
-
-              // Sign In Section
-              Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                        title,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Form(
+              key: formGlobalKey,
+              child: Container(
                 padding: const EdgeInsets.all(16.0),
                 color: Colors.white,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
+                    const SizedBox(height: 16.0),
+                    const Text(
                       'Username',
-                      style: const TextStyle(fontSize: 20.0, color: Colors.black),
+                      style: TextStyle(fontSize: 20.0, color: Colors.black),
                     ),
                     TextFormField(
                       validator: (email) {
@@ -103,9 +166,9 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                       ),
                     ),
                     const SizedBox(height: 16.0),
-                    Text(
+                    const Text(
                       'Password',
-                      style: const TextStyle(fontSize: 20.0, color: Colors.black),
+                      style: TextStyle(fontSize: 20.0, color: Colors.black),
                     ),
                     TextFormField(
                       validator: (password) {
@@ -120,8 +183,6 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                       ),
                     ),
                     const SizedBox(height: 16.0),
-
-                    // Login Button and Forgot Password
                     Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -130,19 +191,14 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                             onPressed: () {
                               if (formGlobalKey.currentState!.validate()) {
                                 formGlobalKey.currentState!.save();
-                                Navigator.push(
-                                  MaterialPageRoute(
-                                    builder: (context) => CreateHomepageScreen(),
-                                ),
-                                )
-
+                                Navigator.pushNamed(context, '/second');
                               }
                             },
                             child: const Text('Login'),
                           ),
                           TextButton(
                             onPressed: () {
-                              // Add logic for forgot password here
+                              // Add forgot password logic
                             },
                             child: const Text('Forgot Password?'),
                           ),
@@ -163,14 +219,108 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+class appHomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('App Home Screen'),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('web/assets/cp2.jpg'), // background image path
+            fit: BoxFit.cover,
+          ),
+        ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => cinemaListScreen(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20), 
+            ),
+              child: const Text(
+                'Cinema listing',
+                 style: TextStyle(fontSize: 20), 
+                 ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => tvListScreen(),
+                  ),                  
+                );
+              },
+               style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20), 
+            ),
+              child: const Text(
+                'Whats On TV',
+                 style: TextStyle(fontSize: 20), 
+              ) 
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => myWatchlistScreen(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20), 
+            ),
+              child: const Text(
+                'MyWatchlist',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => visitProfileScreen(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20), 
+            ),
+              child: const Text(
+                'Visit Profile',
+                style: TextStyle(fontSize: 20),
+                ),
+            ),
+          ],
+        ),
+      ),
+     )
+    );
+  }
+}
 
+// create account screen
 class CreateAccountScreen extends StatelessWidget with ValidationMixin {
   @override
   Widget build(BuildContext context) {
@@ -186,9 +336,9 @@ class CreateAccountScreen extends StatelessWidget with ValidationMixin {
           child: Column(
             children: <Widget>[
               // Username
-              Text(
+              const Text(
                 'Username',
-                style: const TextStyle(fontSize: 20.0, color: Colors.black),
+                style: TextStyle(fontSize: 20.0, color: Colors.black),
               ),
               TextFormField(
                 validator: (email) {
@@ -203,9 +353,9 @@ class CreateAccountScreen extends StatelessWidget with ValidationMixin {
               const SizedBox(height: 16.0),
 
               // Password
-              Text(
+             const Text(
                 'Password',
-                style: const TextStyle(fontSize: 20.0, color: Colors.black),
+                style: TextStyle(fontSize: 20.0, color: Colors.black),
               ),
               TextFormField(
                 validator: (password) {
@@ -221,14 +371,29 @@ class CreateAccountScreen extends StatelessWidget with ValidationMixin {
               ),
               const SizedBox(height: 16.0),
 
-              // Other form fields for creating an account
-
               // Create Account Button
               ElevatedButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
-                    formKey.currentState!.save();
-                    // Perform account creation logic
+                    formKey.currentState!.save();                    
+                    // Show a popup alert
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Account Created'),
+                          content: const Text('Your account has been successfully created!'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); 
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   }
                 },
                 child: const Text('Create Account'),
