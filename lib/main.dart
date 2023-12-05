@@ -99,7 +99,6 @@ class visitProfileScreen extends StatelessWidget {
   }
 }
 
-
 class MyHomePage extends StatelessWidget with ValidationMixin {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -319,7 +318,6 @@ class appHomeScreen extends StatelessWidget {
     );
   }
 }
-
 // create account screen
 class CreateAccountScreen extends StatelessWidget with ValidationMixin {
   @override
