@@ -84,7 +84,6 @@ class myWatchlistScreen extends StatelessWidget {
   }
 }
 
-
 class visitProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -304,7 +303,7 @@ class appHomeScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20), 
+                padding: EdgeInsets.symmetric(horizontal: 61, vertical: 20), 
             ),
               child: const Text(
                 'Visit Profile',
