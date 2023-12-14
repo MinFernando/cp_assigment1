@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
         '/fourth': (context) => tvListScreen(),
         '/fifth': (context) => myWatchlistScreen(),
         '/sixth': (context) => visitProfileScreen(),
+        '/seventh': (context) => bestMoviesScreen(),
       },
     );
   }
@@ -98,6 +99,21 @@ class visitProfileScreen extends StatelessWidget {
   }
 }
 
+
+class bestMoviesScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('best movies'),
+      ),
+      body: const Center(
+        child: Text('best movies'),
+      ),
+    );
+  }
+}
+
 class MyHomePage extends StatelessWidget with ValidationMixin {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -155,9 +171,9 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                     ),
                     TextFormField(
                       validator: (email) {
-                        if (EmailValidator.validate(email!)) return null;
-                        else
-                          return 'Email address invalid';
+                        //if (EmailValidator.validate(email!)) return null;
+                        //else
+                         // return 'Email address invalid';
                       },
                       decoration: const InputDecoration(
                         hintText: 'Enter your username',
@@ -170,9 +186,9 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                     ),
                     TextFormField(
                       validator: (password) {
-                        if (isPasswordValid(password!)) return null;
-                        else
-                          return 'Invalid Password.';
+                        //if (isPasswordValid(password!)) return null;
+                       // else
+                        //  return 'Invalid Password.';
                       },
                       maxLength: 6,
                       obscureText: true,
@@ -243,7 +259,7 @@ class appHomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {
+              onPressed: () {                              
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -252,13 +268,14 @@ class appHomeScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20), 
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),                 
             ),
               child: const Text(
                 'Cinema listing',
-                 style: TextStyle(fontSize: 20), 
+                 style: TextStyle(fontSize: 25), 
                  ),
             ),
+             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -269,13 +286,14 @@ class appHomeScreen extends StatelessWidget {
                 );
               },
                style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20), 
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),                 
             ),
               child: const Text(
                 'Whats On TV',
-                 style: TextStyle(fontSize: 20), 
+                 style: TextStyle(fontSize: 25), 
               ) 
             ),
+             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -286,13 +304,14 @@ class appHomeScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20), 
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),                 
             ),
               child: const Text(
                 'MyWatchlist',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 25),
               ),
             ),
+             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -303,11 +322,29 @@ class appHomeScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 61, vertical: 20), 
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),                 
             ),
               child: const Text(
                 'Visit Profile',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 25),
+                ),
+            ),
+             const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => bestMoviesScreen(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),                 
+          ),
+              child: const Text(
+                'Best Rated movies',
+                style: TextStyle(fontSize: 25),
                 ),
             ),
           ],
