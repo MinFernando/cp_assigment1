@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class AppHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -114,6 +117,20 @@ class bestMoviesScreen extends StatelessWidget {
   }
 }
 
+class SearchBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Search'),
+      ),
+      body: Center(
+        child: Text('Search Bar Content'),
+      ),
+    );
+  }
+}
+
 class MyHomePage extends StatelessWidget with ValidationMixin {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -124,6 +141,22 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
     GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
 
      return Scaffold(
+      appBar: AppBar(
+        title: const Text('Welcome to MovieMate!'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -240,7 +273,11 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
     );
   }
 }
+
 class appHomeScreen extends StatelessWidget {
+  GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
+  TextEditingController usernameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -254,106 +291,162 @@ class appHomeScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {                              
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => cinemaListScreen(),
+        child: Center(
+          child: Form(
+            key: formGlobalKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white, // Set the background color to white
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    // Existing username input
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: usernameController,
+                            validator: (email) {
+                              // Your validation logic for the existing username
+                              // Example: if (EmailValidator.validate(email!)) return null;
+                              // else return 'Email address invalid';
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Actors, movies...',
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (formGlobalKey.currentState!.validate()) {
+                              formGlobalKey.currentState!.save();
+                              // Perform search logic with the username
+                              String username = usernameController.text;
+                              // Add your logic to handle the search with the username
+                              print('Search username: $username');
+                            }
+                          },
+                          icon: const Icon(Icons.search),
+                        ),
+                      ],
+                    ),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),                 
-            ),
-              child: const Text(
-                'Cinema listing',
-                 style: TextStyle(fontSize: 25), 
-                 ),
-            ),
-             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => tvListScreen(),
-                  ),                  
-                );
-              },
-               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),                 
-            ),
-              child: const Text(
-                'Whats On TV',
-                 style: TextStyle(fontSize: 25), 
-              ) 
-            ),
-             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => myWatchlistScreen(),
+                  const SizedBox(height: 60.0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => cinemaListScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                        ),
+                        child: const Text(
+                          'Cinema listing',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => tvListScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        ),
+                        child: const Text(
+                          'Whats On TV',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => myWatchlistScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        ),
+                        child: const Text(
+                          'MyWatchlist',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => visitProfileScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        ),
+                        child: const Text(
+                          'Visit Profile',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => bestMoviesScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        ),
+                        child: const Text(
+                          'Best Rated movies',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),                 
-            ),
-              child: const Text(
-                'MyWatchlist',
-                style: TextStyle(fontSize: 25),
+                ],
               ),
             ),
-             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => visitProfileScreen(),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),                 
-            ),
-              child: const Text(
-                'Visit Profile',
-                style: TextStyle(fontSize: 25),
-                ),
-            ),
-             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => bestMoviesScreen(),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),                 
           ),
-              child: const Text(
-                'Best Rated movies',
-                style: TextStyle(fontSize: 25),
-                ),
-            ),
-          ],
         ),
       ),
-     )
     );
   }
 }
+
 // create account screen
 class CreateAccountScreen extends StatelessWidget with ValidationMixin {
   @override
