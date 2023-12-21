@@ -27,6 +27,8 @@ class MyApp extends StatelessWidget {
         '/fifth': (context) => myWatchlistScreen(),
         '/sixth': (context) => visitProfileScreen(),
         '/seventh': (context) => bestMoviesScreen(),
+        '/eighth' : (context) => bestMoviesAllTime(),
+        '/ninth' : (context) => watchedListScreen(),
       },
     );
   }
@@ -45,49 +47,392 @@ class AppHomeScreen extends StatelessWidget {
     );
   }
 }
-
 class cinemaListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('main page'),
+        title: const Text('Cinema Listing'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: const Center(
-        child: Text('Now showing'),
+      body: SingleChildScrollView(
+        child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 1.5,
+              height: 600,
+              decoration: BoxDecoration(
+                color: Colors.black,                
+              ),                    
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'Now Showing in Cinemas:',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),                                        
+                    ),
+                  const SizedBox(height: 16.0),                  
+                  ListTile(                    
+                    title: const Text('Movie 1', style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),                                        
+                    subtitle: const Text('Action, Adventure',style: TextStyle(fontSize: 10.0, color: Colors.white),
+                    ),                    
+                  ),
+                  ListTile(
+                    title: const Text('Movie 2', style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),
+                    subtitle: const Text('Comedy, Drama', style: TextStyle(fontSize: 10.0, color: Colors.white),
+                    ),
+                  ),                  
+                ],
+              ),
+            ),
+            ),
+          ],        
+        ),
       ),
+      )
     );
   }
 }
-
+           
 class tvListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tv lists'),
+        title: const Text('Tv lists'), 
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: const Center(
-        child: Text('On TV Today'),
+      body: SingleChildScrollView(
+        child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 1.5,
+              height: 600,
+              decoration: BoxDecoration(
+                color: Colors.black,                
+              ),                    
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[      
+                  Container(
+              height: MediaQuery.of(context).size.height * 0.1,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 1.5,
+              height: 600,
+              decoration: BoxDecoration(
+                color: Colors.black,                
+              ),                    
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'On TV Tonight',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),                                        
+                  ),
+                  const SizedBox(height: 16.0),                  
+                  ListTile(                    
+                    title: const Text('series 1', style: TextStyle(fontSize: 20.0, color: Colors.white),
+                     ),                                        
+                    subtitle: const Text('Action, Adventure',style: TextStyle(fontSize: 10.0, color: Colors.white),
+                     ),                    
+                  ),
+                  ListTile(
+                    title: const Text('series 2', style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),
+                    subtitle: const Text('Comedy, Drama', style: TextStyle(fontSize: 10.0, color: Colors.white),
+                    ),
+                  ),                  
+                ],
+              ),
+            ),
+            ),
+          ],        
+        ),
       ),
+      )
+      ]
+        )
+        )
+        )
     );
   }
-}
-
+} 
+      
 class myWatchlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('to watch and watched'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: const Center(
-        child: Text('watched and to watch'),
-      ),
-    );
+      body: SingleChildScrollView(
+        child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 1.5,
+              height: 600,
+              decoration: BoxDecoration(
+                color: Colors.black,                
+              ),                                                   
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[                  
+                  const Text(                    
+                    'MyWatchlist',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),  
+                     textAlign: TextAlign.center,                                      
+                  ),                  
+                  const SizedBox(height: 16.0),                  
+                  ListTile(
+                    
+                    title: const Text('series 1', style: TextStyle(fontSize: 20.0, color: Colors.white),  
+                     textAlign: TextAlign.center,                                    
+                     ),                                        
+                    subtitle: const Text('Action, Adventure',style: TextStyle(fontSize: 10.0, color: Colors.white), 
+                     textAlign: TextAlign.center,                        
+                     ),                    
+                  ),
+                  ListTile(
+                    title: const Text('series 2', style: TextStyle(fontSize: 20.0, color: Colors.white),      
+                     textAlign: TextAlign.center,                       
+                     ),
+                    subtitle: const Text('Comedy, Drama', style: TextStyle(fontSize: 10.0, color: Colors.white), 
+                     textAlign: TextAlign.center,                                 
+                     ),
+                  ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => watchedListScreen(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            ),
+                            child: Text(
+                              'Watched list',
+                              style: TextStyle(fontSize: 16),
+                          ),
+                       ),
+                    ),
+                  ),
+                ]
+              ),
+            ),
+           ),
+          ],        
+        ),
+       ),
+      )
+    );     
   }
-}
-
+} 
+   
+class watchedListScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Watched list'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 1.5,
+              height: 600,
+              decoration: BoxDecoration(
+                color: Colors.black,                
+              ),                                                   
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Text(                    
+                    'My Watched List',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),  
+                     textAlign: TextAlign.center,                                      
+                  ),                  
+                  const SizedBox(height: 16.0),                  
+                  ListTile(                    
+                    title: const Text('movie 1', style: TextStyle(fontSize: 20.0, color: Colors.white),  
+                     textAlign: TextAlign.center,                                    
+                     ),                                        
+                    subtitle: const Text('Action, Adventure',style: TextStyle(fontSize: 10.0, color: Colors.white), 
+                     textAlign: TextAlign.center,                       
+                      ),                    
+                  ),
+                  ListTile(
+                    title: const Text('movie 2', style: TextStyle(fontSize: 20.0, color: Colors.white),      
+                     textAlign: TextAlign.center,                      
+                      ),
+                    subtitle: const Text('Comedy, Drama', style: TextStyle(fontSize: 10.0, color: Colors.white), 
+                     textAlign: TextAlign.center,                                
+                      ),
+                  ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => myWatchlistScreen(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            ),
+                            child: Text(
+                              'Watch List',
+                              style: TextStyle(fontSize: 16),
+                          ),
+                       ),
+                    ),
+                  ),
+                ]
+              ),
+            ),
+           ),
+          ],        
+        ),
+       ),
+      )
+    );     
+  }
+} 
+    
 class visitProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -101,22 +446,215 @@ class visitProfileScreen extends StatelessWidget {
     );
   }
 }
-
-
+    
+class bestMoviesAllTime extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Of All Time'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 1.5,
+              height: 600,
+              decoration: BoxDecoration(
+                color: Colors.black,                
+              ),                                                   
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Text(                    
+                    'highest Rated Of all time',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),  
+                     textAlign: TextAlign.center,                                      
+                  ),                  
+                  const SizedBox(height: 16.0),                  
+                  ListTile(                    
+                    title: const Text('movie 1', style: TextStyle(fontSize: 20.0, color: Colors.white),  
+                     textAlign: TextAlign.center,                                    
+                     ),                                        
+                    subtitle: const Text('Action, Adventure',style: TextStyle(fontSize: 10.0, color: Colors.white), 
+                     textAlign: TextAlign.center,                        
+                     ),                    
+                  ),
+                  ListTile(
+                    title: const Text('movie 2', style: TextStyle(fontSize: 20.0, color: Colors.white),      
+                     textAlign: TextAlign.center,                       
+                     ),
+                    subtitle: const Text('Comedy, Drama', style: TextStyle(fontSize: 10.0, color: Colors.white), 
+                     textAlign: TextAlign.center,                                
+                      ),
+                  ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => bestMoviesScreen(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            ),
+                            child: Text(
+                              'Highest Rated this Year',
+                              style: TextStyle(fontSize: 16),
+                          ),
+                       ),
+                    ),
+                  ),
+                ]
+              ),
+            ),
+           ),
+          ],        
+        ),
+       ),
+      )
+    );     
+  }
+} 
+    
 class bestMoviesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('best movies'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: const Center(
-        child: Text('best movies'),
-      ),
-    );
+      body: SingleChildScrollView(
+        child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 1.5,
+              height: 600,
+              decoration: BoxDecoration(
+                color: Colors.black,                
+              ),                                                   
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[  
+                  const Text(                    
+                    'Highest Rated Movies this Year',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),  
+                     textAlign: TextAlign.center,                                      
+                  ),                
+                  const SizedBox(height: 16.0),                  
+                  ListTile(                
+                    title: const Text('movie 1', style: TextStyle(fontSize: 20.0, color: Colors.white),  
+                     textAlign: TextAlign.center,                                   
+                      ),                                        
+                    subtitle: const Text('Action, Adventure',style: TextStyle(fontSize: 10.0, color: Colors.white), 
+                     textAlign: TextAlign.center,                        
+                     ),                    
+                  ),
+                  ListTile(
+                    title: const Text('movie 2', style: TextStyle(fontSize: 20.0, color: Colors.white),      
+                     textAlign: TextAlign.center,                       
+                     ),
+                    subtitle: const Text('Comedy, Drama', style: TextStyle(fontSize: 10.0, color: Colors.white), 
+                     textAlign: TextAlign.center,                                 
+                     ),
+                  ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => bestMoviesAllTime(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            ),
+                            child: Text(
+                              'Of All Time',
+                              style: TextStyle(fontSize: 16),
+                          ),
+                       ),
+                    ),
+                  ),
+                ]
+              ),
+            ),
+           ),
+          ],        
+        ),
+       ),
+      )
+    );     
   }
-}
-
+} 
+        
 class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -312,9 +850,7 @@ class appHomeScreen extends StatelessWidget {
                           child: TextFormField(
                             controller: usernameController,
                             validator: (email) {
-                              // Your validation logic for the existing username
-                              // Example: if (EmailValidator.validate(email!)) return null;
-                              // else return 'Email address invalid';
+                              // validation logic for the existing username                              
                             },
                             decoration: const InputDecoration(
                               hintText: 'Actors, movies...',
@@ -328,7 +864,7 @@ class appHomeScreen extends StatelessWidget {
                               formGlobalKey.currentState!.save();
                               // Perform search logic with the username
                               String username = usernameController.text;
-                              // Add your logic to handle the search with the username
+                              // Add logic to handle the search with the username
                               print('Search username: $username');
                             }
                           },
