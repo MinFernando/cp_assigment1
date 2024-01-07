@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
         '/fourth': (context) => tvListScreen(),
         '/fifth': (context) => myWatchlistScreen(),
         '/sixth': (context) => visitProfileScreen(),
-        '/seventh': (context) => bestMoviesScreen(),
+        '/seventh': (context) => bestMoviesThisYear(),
         '/eighth': (context) => bestMoviesAllTime(),
         '/ninth': (context) => watchedListScreen(),
         '/tenth': (context) => editProfileScreen(),
@@ -114,116 +116,230 @@ class changePassword extends StatelessWidget {
     );
   }
 }
+class TmdbService {
+  static String apiKey = '99df30052fbbba30be71c4f7eb9064a1';
+  static String url = 'https://api.themoviedb.org/3';
+
+
+Future<List<Movie>> getPopularMoviesThisYear({required int year}) async {
+    final response = await http.get(Uri.parse('$url/discover/movie?api_key=$apiKey&primary_release_year=$year&sort_by=popularity.desc'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['results'];
+      return data.map((json) => Movie(title: json['title'], releaseDate: json['release_date'])).toList();
+    } else {
+      throw Exception('Failed to load popular movies');
+    }
+  }
+
+Future<List<PopularMovie>> getPopularMoviesAllTime() async {    
+      final response = await http.get(Uri.parse('$url/movie/popular?api_key=$apiKey'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body)['results'];
+        return data.map((json) => PopularMovie(title: json['title'], releaseDate: json['release_date'])).toList();
+      } else {
+        throw Exception('Failed to load popular movies. Status code: ${response.statusCode}');   
+    }
+  }
+
+Future<List<nowShowing>> getNowPlayingMovies() async {
+    final response = await http.get(Uri.parse('$url/movie/now_playing?api_key=$apiKey'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['results'];
+      final List<nowShowing> movies = data.map((item) => nowShowing.fromJson(item)).toList();
+      return movies;
+    } else {
+      throw Exception('Failed to load now playing movies');
+    }
+  }
+
+  Future<List<TvShow>> getTVShowsAiringToday() async {
+    final response = await http.get(
+      Uri.parse('$url/tv/on_the_air?api_key=$apiKey'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['results'];
+      final List<TvShow> tvShows = data.map((item) => TvShow.fromJson(item)).toList();
+      return tvShows;
+    } else {
+      throw Exception('Failed to load TV shows airing today');
+    }
+  }
+}
+
+class Movie {
+  final String title;
+  final String releaseDate;
+
+  Movie({required this.title, required this.releaseDate});
+  factory Movie.fromJson(Map<String, dynamic> json) {
+    return Movie(
+      title: json['title'],
+      releaseDate: json['release_date'],
+    );
+  }  
+}
+
+class PopularMovie {
+  final String title;
+  final String releaseDate;
+
+  PopularMovie({required this.title, required this.releaseDate});
+  factory PopularMovie.fromJson(Map<String, dynamic> json) {
+    return PopularMovie(      
+      title: json['title'],
+      releaseDate: json['release_date'],
+    );
+  } 
+}
+
+class nowShowing {
+  final int id;
+  final String title;
+  final String releaseDate;
+
+  nowShowing({required this.id,required this.title, required this.releaseDate});  
+   factory nowShowing.fromJson(Map<String, dynamic> json) {
+    return nowShowing(
+      id: json['id'] ?? '',
+      title: json['title'] ?? '',
+      releaseDate: json['release_date'] ?? '',
+    );
+  }  
+}
+
+class TvShow {
+  final String title;  
+  final String releaseDate;
+
+
+  TvShow({required this.title, required this.releaseDate});
+  factory TvShow.fromJson(Map<String, dynamic> json) {
+    return TvShow(
+      title: json['title'] ?? '',
+      releaseDate: json['release_date'] ?? '',    
+    );
+  }
+}
 
 class cinemaListScreen extends StatelessWidget {
+  final TmdbService tmdbService = TmdbService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Cinema Listing'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SearchBar(),
+      appBar: AppBar(
+        title: const Text('Cinema Listing'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 400,
+              decoration: BoxDecoration(
+                color: Colors.black,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'Now Showing in Cinema',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),
                   ),
-                );
-              },
+                  const SizedBox(height: 16.0),
+                  Expanded(
+                    child: FutureBuilder(
+                      future: tmdbService.getNowPlayingMovies(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          );
+                        } else {
+                          List<nowShowing> movies = snapshot.data as List<nowShowing>;
+                          return ListView.builder(
+                            itemCount: movies.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  movies[index].title,
+                                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                                ),
+                                subtitle: Text(
+                                  movies[index].releaseDate,
+                                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  ),                  
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => appHomeScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                      ),
+                      child: Text(
+                        'back',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('web/assets/cp2.jpg'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 1.5,
-                  height: 600,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        const Text(
-                          'Now Showing in Cinemas:',
-                          style: TextStyle(fontSize: 20.0, color: Colors.white),
-                        ),
-                        const SizedBox(height: 16.0),
-                        ListTile(
-                          title: const Text(
-                            'Movie 1',
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
-                          ),
-                          subtitle: const Text(
-                            'Action, Adventure',
-                            style:
-                                TextStyle(fontSize: 10.0, color: Colors.white),
-                          ),
-                        ),
-                        ListTile(
-                          title: const Text(
-                            'Movie 2',
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
-                          ),
-                          subtitle: const Text(
-                            'Comedy, Drama',
-                            style:
-                                TextStyle(fontSize: 10.0, color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(height: 190.0),
-                        Align(
-                          alignment: Alignment.bottomLeft,
-                          child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => appHomeScreen(),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 50, vertical: 15),
-                              ),
-                              child: Text(
-                                'back',
-                                style: TextStyle(fontSize: 16),
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ));
+      ),
+    );
   }
 }
 
 class tvListScreen extends StatelessWidget {
+  TmdbService tmdbService = TmdbService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -243,9 +359,8 @@ class tvListScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-            child: Center(
-                child: Column(
+        body: SingleChildScrollView(            
+              child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,                                  
                     children: <Widget>[
@@ -260,12 +375,10 @@ class tvListScreen extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 1.5,
-                        height: 600,
+                        height: MediaQuery.of(context).size.height,
                         decoration: BoxDecoration(
                           color: Colors.black,
-                        ),
-                        child: SingleChildScrollView(
+                        ),                        
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -273,33 +386,44 @@ class tvListScreen extends StatelessWidget {
                               const Text(
                                 'On TV Tonight',
                                 style: TextStyle(
-                                    fontSize: 20.0, color: Colors.white),
-                              ),
-                              const SizedBox(height: 16.0),
-                              ListTile(
-                                title: const Text(
-                                  'series 1',
-                                  style: TextStyle(
-                                      fontSize: 20.0, color: Colors.white),
+                                    fontSize: 20.0, color: Colors.white
                                 ),
-                                subtitle: const Text(
-                                  'Action, Adventure',
-                                  style: TextStyle(
-                                      fontSize: 10.0, color: Colors.white),
+                              ),                              
+                              Expanded(
+                                child: FutureBuilder(
+                                  future: tmdbService.getTVShowsAiringToday(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Center(
+                                        child: Text(
+                                          'Error: ${snapshot.error}',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      );
+                                    } else {
+                                      List<TvShow> shows = snapshot.data as List<TvShow>;
+                                      return Container(
+                                        height: 300,
+                                        child: ListView.builder(
+                                          itemCount: shows.length,
+                                          itemBuilder: (context, index) {
+                                            return ListTile(
+                                              title: Text(
+                                                shows[index].title,
+                                                style: TextStyle(fontSize: 20.0, color: Colors.white),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
-                              ),
-                              ListTile(
-                                title: const Text(
-                                  'series 2',
-                                  style: TextStyle(
-                                      fontSize: 20.0, color: Colors.white),
-                                ),
-                                subtitle: const Text(
-                                  'Comedy, Drama',
-                                  style: TextStyle(
-                                      fontSize: 10.0, color: Colors.white),
-                                ),
-                              ),
+                              ),                                                                  
                               const SizedBox(height: 190.0),
                               Align(
                                 alignment: Alignment.bottomLeft,
@@ -319,20 +443,19 @@ class tvListScreen extends StatelessWidget {
                                     child: Text(
                                       'back',
                                       style: TextStyle(fontSize: 16),
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            );
-  }
-}
-
+                                    )
+                                    ),
+                                  )
+                                 ]
+                                )
+                              )
+                            ]
+                          )
+                        )
+                      );
+                     }
+                   }
+                               
 class myWatchlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -942,6 +1065,7 @@ class changeUsernameScreen extends StatelessWidget {
 }
 
 class bestMoviesAllTime extends StatelessWidget {
+  TmdbService tmdbService = TmdbService();  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -994,35 +1118,47 @@ class bestMoviesAllTime extends StatelessWidget {
                                 TextStyle(fontSize: 20.0, color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 16.0),
-                          ListTile(
-                            title: const Text(
-                              'movie 1',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white),
-                              textAlign: TextAlign.center,
+                          const SizedBox(height: 16.0),                        
+                    FutureBuilder(
+                      future: tmdbService.getPopularMoviesAllTime(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: TextStyle(color: Colors.white),
                             ),
-                            subtitle: const Text(
-                              'Action, Adventure',
-                              style: TextStyle(
-                                  fontSize: 10.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          ListTile(
-                            title: const Text(
-                              'movie 2',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: const Text(
-                              'Comedy, Drama',
-                              style: TextStyle(
-                                  fontSize: 10.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
+                          );
+                        } else {
+                          if (snapshot.data != null && snapshot.data is List<Movie>) {
+                           List<Movie> movies = snapshot.data as List<Movie>;
+                          return Container(
+                            height: 300,
+                          child: ListView.builder(
+                            itemCount: movies.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  movies[index].title,
+                                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                                ),
+                                subtitle: Text(
+                                  movies[index].releaseDate,
+                                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                                ),
+                              );
+                            },
+                          )
+                        );
+                       }                        
+                      };
+                      return Container();
+  }
+  ),                                            
                           Align(
                             alignment: Alignment.bottomRight,
                             child: Padding(
@@ -1032,7 +1168,7 @@ class bestMoviesAllTime extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => bestMoviesScreen(),
+                                      builder: (context) => bestMoviesThisYear(),
                                     ),
                                   );
                                 },
@@ -1057,7 +1193,8 @@ class bestMoviesAllTime extends StatelessWidget {
   }
 }
 
-class bestMoviesScreen extends StatelessWidget {
+class bestMoviesThisYear extends StatelessWidget {
+  TmdbService tmdbService = TmdbService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1077,95 +1214,97 @@ class bestMoviesScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('web/assets/cp2.jpg'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+        body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('web/assets/cp2.jpg'),
+                  fit: BoxFit.cover,
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 1.5,
-                  height: 600,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          const Text(
-                            'Highest Rated Movies this Year',
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
-                            textAlign: TextAlign.center,
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 400,
+              decoration: BoxDecoration(
+                color: Colors.black,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'Highest Rated this year',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),
+                  ),                  
+                  Expanded(
+                    child: FutureBuilder(
+                      future: tmdbService.getPopularMoviesThisYear(year: DateTime.now().year),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          );
+                        } else {
+                          List<Movie> movies = snapshot.data as List<Movie>;
+                          return ListView.builder(
+                            itemCount: movies.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  movies[index].title,
+                                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                                ),
+                                subtitle: Text(
+                                  movies[index].releaseDate,
+                                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  ),                  
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                                MaterialPageRoute(
+                                  builder: (context) => bestMoviesAllTime(),
+                                ),
+                              );
+                            },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 15),
                           ),
-                          const SizedBox(height: 16.0),
-                          ListTile(
-                            title: const Text(
-                              'movie 1',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: const Text(
-                              'Action, Adventure',
-                              style: TextStyle(
-                                  fontSize: 10.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
+                          child: Text(
+                            'Of All Time',
+                             style: TextStyle(fontSize: 16),
+                           ),
                           ),
-                          ListTile(
-                            title: const Text(
-                              'movie 2',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: const Text(
-                              'Comedy, Drama',
-                              style: TextStyle(
-                                  fontSize: 10.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
+                        ),
+                      ),                          
                           Align(
                             alignment: Alignment.bottomRight,
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => bestMoviesAllTime(),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                ),
-                                child: Text(
-                                  'Of All Time',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 190.0),
-                          Align(
-                            alignment: Alignment.bottomLeft,
                             child: ElevatedButton(
                                 onPressed: () {
                                   Navigator.push(
@@ -1182,15 +1321,16 @@ class bestMoviesScreen extends StatelessWidget {
                                 child: Text(
                                   'back',
                                   style: TextStyle(fontSize: 16),
-                                )),
-                          ),
-                        ]),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -1277,11 +1417,11 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                       'Username',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     ),
-                    TextFormField(
+                    TextFormField(                      
                       validator: (email) {
-                        //if (EmailValidator.validate(email!)) return null;
-                        //else
-                        // return 'Email address invalid';
+                        if (EmailValidator.validate(email!)) return null;
+                        else
+                         return 'Email address invalid';
                       },
                       decoration: const InputDecoration(
                         hintText: 'Enter your username',
@@ -1294,9 +1434,9 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                     ),
                     TextFormField(
                       validator: (password) {
-                        //if (isPasswordValid(password!)) return null;
-                        // else
-                        //  return 'Invalid Password.';
+                        if (isPasswordValid(password!)) return null;
+                         else
+                          return 'Invalid Password.';
                       },
                       maxLength: 6,
                       obscureText: true,
@@ -1500,7 +1640,7 @@ class appHomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => bestMoviesScreen(),
+                              builder: (context) => bestMoviesThisYear(),
                             ),
                           );
                         },
