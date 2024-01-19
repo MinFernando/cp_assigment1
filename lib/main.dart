@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MovieProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -21,25 +27,25 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(title: 'Welcome to MovieMate!'),
-        '/second': (context) => appHomeScreen(),
-        '/third': (context) => cinemaListScreen(),
-        '/fourth': (context) => tvListScreen(),
-        '/fifth': (context) => myWatchlistScreen(),
-        '/sixth': (context) => visitProfileScreen(),
-        '/seventh': (context) => bestMoviesThisYear(),
-        '/eighth': (context) => bestMoviesAllTime(),
-        '/ninth': (context) => watchedListScreen(),
-        '/tenth': (context) => editProfileScreen(),
-        '/eleventh': (context) => changePassword(),
-        '.twelveth': (context) => changeUsernameScreen(),
-        'thirteth': (context) => changeEmailScreen(),
-        'fouteenth': (context) => forgotPassword(),
+        '/second': (context) => AppHomeScreen(),
+        '/third': (context) => CinemaListScreen(),
+        '/fourth': (context) => TvListScreen(),
+        '/fifth': (context) => MyWatchlistScreen(),
+        '/sixth': (context) => VisitProfileScreen(),
+        '/seventh': (context) => BestMoviesThisYear(),
+        '/eighth': (context) => BestMoviesAllTime(),
+        '/ninth': (context) => MyWatchedlistScreen(),
+        '/tenth': (context) => EditProfileScreen(),
+        '/eleventh': (context) => ChangePassword(),
+        '.twelveth': (context) => ChangeUsernameScreen(),
+        'thirteth': (context) => ChangeEmailScreen(),
+        'fouteenth': (context) => ForgotPassword(),
       },
     );
   }
 }
 
-class changePassword extends StatelessWidget {
+class ChangePassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -113,9 +119,9 @@ class TmdbService {
       final List<dynamic> data = json.decode(response.body)['results'];
 
       List<Movie> movies = data.map((json) {
-        return Movie(
-          title: json['title'],
-          releaseDate: json['release_date'],
+        return Movie(          
+          title: json['title'],          
+          releaseDate: json['release_date'],          
           imagePath: '$imageUrl${json['poster_path']}',          
            rating: json['vote_average'].toString(),
         );
@@ -134,8 +140,8 @@ class TmdbService {
       final List<dynamic> data = json.decode(response.body)['results'];
 
       List<Movie> movies = data.map((json) {
-        return Movie(
-          title: json['title'],
+        return Movie(          
+          title: json['title'],          
           releaseDate: json['release_date'],
           imagePath: '$imageUrl${json['poster_path']}',          
           rating: json['vote_average'].toString(),
@@ -155,8 +161,8 @@ class TmdbService {
       final List<dynamic> data = json.decode(response.body)['results'];
 
       List<Movie> movies = data.map((json) {
-        return Movie(
-          title: json['title'],
+        return Movie(          
+          title: json['title'],          
           releaseDate: json['release_date'],
           imagePath: '$imageUrl${json['poster_path']}',          
           rating: json['vote_average'].toString(),
@@ -178,14 +184,14 @@ class TmdbService {
   if (response.statusCode == 200) {
     final List<dynamic> data = json.decode(response.body)['results'];
 
-    List<Movie> movies = data.map((json) {
-      String title = json['name'] ?? 'Unknown Title';
+    List<Movie> movies = data.map((json) {      
+      String title = json['name'] ?? 'Unknown Title';      
       String releaseDate = json['first_air_date'] ?? 'Unknown Release Date';
       String imagePath = json['poster_path'] != null ? '$imageUrl${json['poster_path']}' : 'No Image';
       String rating = json['vote_average']?.toString() ?? '0.0';
 
-      return Movie(
-        title: title,
+      return Movie(        
+        title: title,        
         releaseDate: releaseDate,
         imagePath: imagePath,
         rating: rating,
@@ -199,22 +205,23 @@ class TmdbService {
 }
 }
 
-class Movie {
-  final String title;
+class Movie {  
+  final String title;  
   final String releaseDate;
   final String imagePath;  
   final String rating;
 
-   Movie({
-    required this.title,
-    required this.releaseDate,
+   Movie({    
+    required this.title,    
+    required this.releaseDate,    
     required this.imagePath,
-    required this.rating,
-  });
+    required this.rating,    
+   });
+
 
   factory Movie.fromJson(Map<String, dynamic> json) {
-    return Movie(
-      title: json['title'],
+    return Movie(      
+      title: json['title'],      
       releaseDate: json['release_date'],
       imagePath: json['image_path'],
       rating: json['vote_average'].toString(),
@@ -222,7 +229,7 @@ class Movie {
   }
 }
   
-class cinemaListScreen extends StatelessWidget {
+class CinemaListScreen extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
 
   @override
@@ -323,7 +330,7 @@ class MovieListCinema extends StatelessWidget {
                    Navigator.push(
                    context,
                     MaterialPageRoute(
-                     builder: (context) => appHomeScreen(),
+                     builder: (context) => AppHomeScreen(),
                   ),
                 );                                
               },
@@ -339,7 +346,7 @@ class MovieListCinema extends StatelessWidget {
   }
 }
 
-class tvListScreen extends StatelessWidget {
+class TvListScreen extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
   String userCountryCode = 'US';
 
@@ -441,7 +448,7 @@ class MovieListSeries extends StatelessWidget {
                    Navigator.push(
                    context,
                     MaterialPageRoute(
-                     builder: (context) => appHomeScreen(),
+                     builder: (context) => AppHomeScreen(),
                   ),
                 );                                
               },
@@ -456,261 +463,285 @@ class MovieListSeries extends StatelessWidget {
     );
   }
 }
-                               
-class myWatchlistScreen extends StatelessWidget {
+
+class MovieProvider with ChangeNotifier {
+  List<Movie> _watchlist = [];
+  List<Movie> _watchedlist = [];
+
+  List<Movie> get watchlist => _watchlist;
+  List<Movie> get watchedlist => _watchedlist;
+  
+    void addToWatchlist(Movie movie) {
+      if (_watchlist.contains(movie)) {
+        _watchlist.remove(movie);
+      } else {
+        _watchlist.add(movie);
+      }
+      notifyListeners();
+  }
+
+  // checks if a movie is in the watchlist
+  bool isInWatchlist(Movie movie) {
+    return _watchlist.contains(movie);
+  }  
+
+  void addToWatchedlist(Movie movie) {
+      if (_watchedlist.contains(movie)) {
+        _watchedlist.remove(movie);
+      } else {
+        _watchedlist.add(movie);
+      }
+      notifyListeners();
+  }
+
+  // checks if a movie is in the watchedlist
+  bool isInWatchedlist(Movie movie) {
+    return _watchedlist.contains(movie);
+  }  
+}
+
+class MyWatchlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final movieProvider = Provider.of<MovieProvider>(context);
+    List<Movie> watchlist = movieProvider.watchlist;
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('to watch and watched'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
+      appBar: AppBar(
+        title: const Text('to watch and watched'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('web/assets/cp2.jpg'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 1.5,
+                    height: 600,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const Text(
+                          'MyWatchlist',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16.0),
+
+                        // Display Watchlist Movies
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: watchlist.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  watchlist[index].title,
+                                  style: TextStyle(
+                                      fontSize: 20.0, color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                                subtitle: Column(
+                                  children: [
+                                    Text(
+                                      'Rating: ${watchlist[index].rating}',
+                                      style: TextStyle(
+                                          fontSize: 10.0, color: Colors.white),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Image.network(
+                                      watchlist[index].imagePath,
+                                      fit: BoxFit.cover,
+                                      width: 100.0,
+                                      height: 100.0,
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Navigate to WatchedlistScreen Button
+          Positioned(
+            top: 150.0,
+            right: 8.0,
+            child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SearchBar(),
+                    builder: (context) => MyWatchedlistScreen(),
                   ),
                 );
               },
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('web/assets/cp2.jpg'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 1.5,
-                  height: 600,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          const Text(
-                            'MyWatchlist',
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16.0),
-                          ListTile(
-                            title: const Text(
-                              'series 1',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: const Text(
-                              'Action, Adventure',
-                              style: TextStyle(
-                                  fontSize: 10.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          ListTile(
-                            title: const Text(
-                              'series 2',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: const Text(
-                              'Comedy, Drama',
-                              style: TextStyle(
-                                  fontSize: 10.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => watchedListScreen(),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                ),
-                                child: Text(
-                                  'Watched list',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 190.0),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => appHomeScreen(),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 50, vertical: 15),
-                                ),
-                                child: Text(
-                                  'back',
-                                  style: TextStyle(fontSize: 16),
-                                )),
-                          ),
-                        ]),
-                  ),
-                ),
-              ],
+              child: const Text('Go to Watched list'),
             ),
           ),
-        ));
+        ],
+      ),
+    );
   }
 }
 
-class watchedListScreen extends StatelessWidget {
+class MyWatchedlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final movieProvider = Provider.of<MovieProvider>(context);
+    List<Movie> watchedlist = movieProvider.watchedlist;
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Watched list'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
+      appBar: AppBar(
+        title: const Text('watched'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchBar(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('web/assets/cp2.jpg'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 1.5,
+                    height: 600,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const Text(
+                          'MyWatchedlist',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16.0),
+
+                        // Display Watchlist Movies
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: watchedlist.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  watchedlist[index].title,
+                                  style: TextStyle(
+                                      fontSize: 20.0, color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                                subtitle: Column(
+                                  children: [
+                                    Text(
+                                      'Rating: ${watchedlist[index].rating}',
+                                      style: TextStyle(
+                                          fontSize: 10.0, color: Colors.white),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Image.network(
+                                      watchedlist[index].imagePath,
+                                      fit: BoxFit.cover,
+                                      width: 100.0,
+                                      height: 100.0,
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // Navigate to WatchedlistScreen Button
+          Positioned(
+            top: 150.0,
+            right: 8.0,
+            child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SearchBar(),
+                    builder: (context) => MyWatchlistScreen(),
                   ),
                 );
               },
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('web/assets/cp2.jpg'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 1.5,
-                  height: 600,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          const Text(
-                            'My Watched List',
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16.0),
-                          ListTile(
-                            title: const Text(
-                              'movie 1',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: const Text(
-                              'Action, Adventure',
-                              style: TextStyle(
-                                  fontSize: 10.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          ListTile(
-                            title: const Text(
-                              'movie 2',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: const Text(
-                              'Comedy, Drama',
-                              style: TextStyle(
-                                  fontSize: 10.0, color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => myWatchlistScreen(),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                ),
-                                child: Text(
-                                  'Watch List',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ]),
-                  ),
-                ),
-              ],
+              child: const Text('Go to Watchlist'),
             ),
           ),
-        ));
+        ],
+      ),
+    );
   }
 }
 
-class visitProfileScreen extends StatelessWidget {
+
+class VisitProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -753,7 +784,7 @@ class visitProfileScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            editProfileScreen(),
+                                            EditProfileScreen(),
                                       ),
                                     );
                                   },
@@ -774,7 +805,7 @@ class visitProfileScreen extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => changePassword(),
+                                        builder: (context) => ChangePassword(),
                                       ),
                                     );
                                   },
@@ -816,7 +847,7 @@ class visitProfileScreen extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => appHomeScreen(),
+                                        builder: (context) => AppHomeScreen(),
                                       ),
                                     );
                                   },
@@ -836,7 +867,7 @@ class visitProfileScreen extends StatelessWidget {
   }
 }
 
-class editProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -879,7 +910,7 @@ class editProfileScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            changeUsernameScreen(),
+                                            ChangeUsernameScreen(),
                                       ),
                                     );
                                   },
@@ -901,7 +932,7 @@ class editProfileScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            changeEmailScreen(),
+                                            ChangeEmailScreen(),
                                       ),
                                     );
                                   },
@@ -923,7 +954,7 @@ class editProfileScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            visitProfileScreen(),
+                                            VisitProfileScreen(),
                                       ),
                                     );
                                   },
@@ -943,7 +974,7 @@ class editProfileScreen extends StatelessWidget {
   }
 }
 
-class changeEmailScreen extends StatelessWidget {
+class ChangeEmailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -1004,7 +1035,7 @@ class changeEmailScreen extends StatelessWidget {
   }
 }
 
-class changeUsernameScreen extends StatelessWidget {
+class ChangeUsernameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -1066,7 +1097,7 @@ class changeUsernameScreen extends StatelessWidget {
 }
 
 
-class bestMoviesAllTime extends StatelessWidget {
+class BestMoviesAllTime extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
 
   @override
@@ -1163,11 +1194,11 @@ class MovieListAllTime extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to best movies of all time screen
+                    // Navigate to best movies of the year screen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => bestMoviesThisYear(),
+                        builder: (context) => BestMoviesThisYear(),
                       ),
                     );
                   },
@@ -1179,7 +1210,7 @@ class MovieListAllTime extends StatelessWidget {
                    Navigator.push(
                    context,
                     MaterialPageRoute(
-                     builder: (context) => bestMoviesThisYear(),
+                     builder: (context) => BestMoviesThisYear(),
                   ),
                 );                                
               },
@@ -1196,7 +1227,7 @@ class MovieListAllTime extends StatelessWidget {
 }
 
 
-class bestMoviesThisYear extends StatelessWidget {
+class BestMoviesThisYear extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
 
   @override
@@ -1297,7 +1328,7 @@ class MovieList extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => bestMoviesAllTime(),
+                        builder: (context) => BestMoviesAllTime(),
                       ),
                     );
                   },
@@ -1309,7 +1340,7 @@ class MovieList extends StatelessWidget {
                    Navigator.push(
                    context,
                     MaterialPageRoute(
-                     builder: (context) => appHomeScreen(),
+                     builder: (context) => AppHomeScreen(),
                   ),
                 );                                
               },
@@ -1332,6 +1363,8 @@ class MovieDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final movieProvider = Provider.of<MovieProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(movie.title),
@@ -1347,7 +1380,7 @@ class MovieDetailScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Movie Details
+          // Movie Details          
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1359,12 +1392,12 @@ class MovieDetailScreen extends StatelessWidget {
                   width: 200.0,
                   height: 200.0,
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 20.0),                
                 Text(
                   'Release Date: ${movie.releaseDate}',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 20.0),                
                 Text(
                   'title: ${movie.title}',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
@@ -1374,14 +1407,59 @@ class MovieDetailScreen extends StatelessWidget {
                   'Rating: ${movie.rating}',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
+                SizedBox(height: 20.0),
+
+                // Add to Watchlist Button
+                ElevatedButton(
+                  onPressed: () {
+                    if (!movieProvider.isInWatchlist(movie)) {
+                      movieProvider.addToWatchlist(movie);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${movie.title} added to watchlist.'),                          
+                        ),                        
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${movie.title} is already in watchlist.'),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text('Add to Watchlist'),
+                ),                
+                SizedBox(height: 20.0),
+                
+                ElevatedButton(
+                  onPressed: () {
+                    if (!movieProvider.isInWatchedlist(movie)) {
+                      movieProvider.addToWatchedlist(movie);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${movie.title} added to watchedlist.'),                          
+                        ),                        
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${movie.title} is already in watchedlist.'),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text('Add to MyWatchedlist'),
+                ),   
               ],
-            ),
-          ),
+            ),            
+          ),          
         ],
       ),
     );
   }
-}
+}              
 
 class SearchBar extends StatelessWidget {
   @override
@@ -1512,7 +1590,7 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => forgotPassword(),
+                                  builder: (context) => ForgotPassword(),
                                 ),
                               );
                             },
@@ -1543,7 +1621,7 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
   }
 }
 
-class appHomeScreen extends StatelessWidget {
+class AppHomeScreen extends StatelessWidget {
   GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
 
@@ -1613,7 +1691,7 @@ class appHomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => cinemaListScreen(),
+                              builder: (context) => CinemaListScreen(),
                             ),
                           );
                         },
@@ -1632,7 +1710,7 @@ class appHomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => tvListScreen(),
+                              builder: (context) => TvListScreen(),
                             ),
                           );
                         },
@@ -1651,7 +1729,7 @@ class appHomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => myWatchlistScreen(),
+                              builder: (context) => MyWatchlistScreen(),
                             ),
                           );
                         },
@@ -1670,7 +1748,7 @@ class appHomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => visitProfileScreen(),
+                              builder: (context) => VisitProfileScreen(),
                             ),
                           );
                         },
@@ -1689,7 +1767,7 @@ class appHomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => bestMoviesThisYear(),
+                              builder: (context) => BestMoviesThisYear(),
                             ),
                           );
                         },
@@ -1714,7 +1792,7 @@ class appHomeScreen extends StatelessWidget {
   }
 }
 
-class forgotPassword extends StatelessWidget with ValidationMixin {
+class ForgotPassword extends StatelessWidget with ValidationMixin {
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
