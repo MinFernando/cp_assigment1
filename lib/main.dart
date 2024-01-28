@@ -281,7 +281,28 @@ Future<List<Movie>> getActorTvSeries(String actorName) async {
     throw Exception("Something went wrong! $e");
   }
 }
-} 
+
+Future<List<Movie>> searchMoviesAndSeries(String searchTerm) async {
+    try {
+      // Search for both movies and TV series by name
+      var searchRes = await http.get(Uri.parse(
+          '$url/search/multi?query=$searchTerm&page=1&api_key=$apiKey'));
+
+      if (searchRes.statusCode == 200) {
+        var searchData = jsonDecode(searchRes.body)['results'] as List;
+        return searchData
+            .map((json) => Movie.fromJson(json))
+            .where((movie) => movie.title != null && movie.title.isNotEmpty) // Filter out entries without a title
+            .toList();
+      } else {
+        throw Exception("Failed to search for movies and TV series");
+      }
+    } catch (e) {
+      throw Exception("Something went wrong! $e");
+    }
+  }
+}
+ 
 
 class Movie {  
   final String title;  
@@ -1560,6 +1581,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   final TmdbService tmdbService = TmdbService();
   List<Movie> _moviesList = [];
   List<Movie> _tvSeriesList = [];
+  List<Movie> _searchResults = [];
 
   @override
   Widget build(BuildContext context) {
@@ -1575,6 +1597,19 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 image: AssetImage('web/assets/cp2.jpg'),
                 fit: BoxFit.cover,
               ),
+            ),
+          ),
+          Center(
+            child: Column(
+              children: [
+                // Display Search Results
+                if (_searchResults.isNotEmpty)
+                  Expanded(
+                    child: MoviesActorList(movies: _searchResults),
+                  )
+                else
+                  Text('No results'),
+              ],
             ),
           ),
           Center(
@@ -1608,6 +1643,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     super.initState();
     // Fetch movies and TV series when the screen is initialized
     _searchForActorData();
+    _searchForData();
   }
 
   Future<void> _searchForActorData() async {
@@ -1624,7 +1660,19 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       print("Error: $e");
     }
   }
+  Future<void> _searchForData() async {
+    try {
+      final results = await tmdbService.searchMoviesAndSeries(widget.actorName);
+      setState(() {
+        _searchResults = results;
+      });
+    } catch (e) {
+      // Handle the error
+      print("Error: $e");
+    }
+  }
 }
+
 
 class AppHomeScreen extends StatelessWidget {
   GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
