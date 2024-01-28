@@ -4,6 +4,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+
+
+//https://github.com/Ansh-Rathod/Flutter-Bloc-MovieDB-App/blob/master/lib/models/movie_model.dart
+
+
 void main() {
   runApp(
     ChangeNotifierProvider(
@@ -40,6 +45,7 @@ class MyApp extends StatelessWidget {
         '.twelveth': (context) => ChangeUsernameScreen(),
         'thirteth': (context) => ChangeEmailScreen(),
         'fouteenth': (context) => ForgotPassword(),
+        'fifteenth': (context) => SearchResultsScreen(actorName: '',)
       },
     );
   }
@@ -120,8 +126,8 @@ class TmdbService {
 
       List<Movie> movies = data.map((json) {
         return Movie(          
-          title: json['title'],          
-          releaseDate: json['release_date'],          
+          title: json['title'] ?? json['original_name'] ?? 'Unknown Title',
+          releaseDate: json['first_air_date'] ?? json['released date']?? 'Unknown Release Date',        
           imagePath: '$imageUrl${json['poster_path']}',          
            rating: json['vote_average'].toString(),
         );
@@ -141,8 +147,8 @@ class TmdbService {
 
       List<Movie> movies = data.map((json) {
         return Movie(          
-          title: json['title'],          
-          releaseDate: json['release_date'],
+          title: json['title'] ?? json['original_name'] ?? 'Unknown Title',
+          releaseDate: json['first_air_date'] ?? json['released date']?? 'Unknown Release Date',
           imagePath: '$imageUrl${json['poster_path']}',          
           rating: json['vote_average'].toString(),
         );
@@ -162,8 +168,8 @@ class TmdbService {
 
       List<Movie> movies = data.map((json) {
         return Movie(          
-          title: json['title'],          
-          releaseDate: json['release_date'],
+         title: json['title'] ?? json['original_name'] ?? 'Unknown Title',
+         releaseDate: json['first_air_date'] ?? json['released date']?? 'Unknown Release Date',
           imagePath: '$imageUrl${json['poster_path']}',          
           rating: json['vote_average'].toString(),
         );
@@ -203,7 +209,79 @@ class TmdbService {
     throw Exception('Failed to load TV shows airing tonight');
   }
 }
+
+Future<List<Movie>> getActorMovies(String actorName) async {
+  try {
+    // Step 1: Search for the actor
+    var actorSearchRes = await http.get(Uri.parse(TmdbService.url + '/search/person?query=$actorName&page=1&api_key=${TmdbService.apiKey}'));
+ 
+    if (actorSearchRes.statusCode == 200) {
+      var actorData = jsonDecode(actorSearchRes.body)['results'] as List;
+      if (actorData.isNotEmpty) {
+        var actorId = actorData[0]['id'];
+
+        if (actorId != null) {
+          // Step 2: Get movies by actor ID
+          var moviesRes = await http.get(Uri.parse(
+              TmdbService.url + '/person/$actorId/movie_credits?api_key=${TmdbService.apiKey}'));
+
+          if (moviesRes.statusCode == 200) {
+            return (jsonDecode(moviesRes.body)['cast'] as List)
+                .map((json) => Movie.fromJson(json))
+                .toList();
+          } else {
+            throw Exception("Failed to get actor's movies");
+          }
+        } else {
+          throw Exception("Actor ID is null");
+        }
+      } else {
+        throw Exception("Actor not found");
+      }
+    } else {
+      throw Exception("Failed to search for actor. Status Code: ${actorSearchRes.statusCode}");
+    }
+  } catch (e) {
+    throw Exception("Something went wrong! $e");
+  }
 }
+
+Future<List<Movie>> getActorTvSeries(String actorName) async {
+  try {
+    // Step 1: Search for the actor
+    var actorSearchRes = await http.get(Uri.parse(TmdbService.url + '/search/person?query=$actorName&page=1&api_key=${TmdbService.apiKey}'));
+
+    if (actorSearchRes.statusCode == 200) {
+      var actorData = jsonDecode(actorSearchRes.body)['results'] as List;
+      if (actorData.isNotEmpty) {
+        var actorId = actorData[0]['id'];
+
+        if (actorId != null) {
+          // Step 2: Get TV series by actor ID
+          var tvSeriesRes = await http.get(Uri.parse(
+              TmdbService.url + '/person/$actorId/tv_credits?api_key=${TmdbService.apiKey}'));
+
+          if (tvSeriesRes.statusCode == 200) {
+            var tvSeriesData = jsonDecode(tvSeriesRes.body)['cast'] as List;          
+
+            return tvSeriesData.map((json) => Movie.fromJson(json)).toList();
+          } else {
+            throw Exception("Failed to get actor's TV series");
+          }
+        } else {
+          throw Exception("Actor ID is null");
+        }
+      } else {
+        throw Exception("Actor not found");
+      }
+    } else {
+      throw Exception("Failed to search for actor. Status Code: ${actorSearchRes.statusCode}");
+    }
+  } catch (e) {
+    throw Exception("Something went wrong! $e");
+  }
+}
+} 
 
 class Movie {  
   final String title;  
@@ -218,14 +296,24 @@ class Movie {
     required this.rating,    
    });
 
-
   factory Movie.fromJson(Map<String, dynamic> json) {
-    return Movie(      
-      title: json['title'],      
-      releaseDate: json['release_date'],
-      imagePath: json['image_path'],
-      rating: json['vote_average'].toString(),
-    );
+    // Check if the entry is a TV series
+    if (json['original_name'] != null) {
+      return Movie(
+        title: json['original_name'] ?? 'Unknown Title',
+        releaseDate: json['first_air_date'] ?? 'Unknown Release Date',
+        imagePath: json['poster_path'] ?? '',
+        rating: json['vote_average']?.toString() ?? '0.0',
+      );
+    } else {
+      // Assume it's a movie
+      return Movie(
+        title: json['title'] ?? 'Unknown Title',
+        releaseDate: json['release_date'] ?? 'Unknown Release Date',
+        imagePath: json['poster_path'] ?? '',
+        rating: json['vote_average']?.toString() ?? '0.0',
+      );
+    }
   }
 }
   
@@ -740,7 +828,6 @@ class MyWatchedlistScreen extends StatelessWidget {
   }
 }
 
-
 class VisitProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -1096,7 +1183,6 @@ class ChangeUsernameScreen extends StatelessWidget {
   }
 }
 
-
 class BestMoviesAllTime extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
 
@@ -1386,8 +1472,8 @@ class MovieDetailScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Image.network(
-                  movie.imagePath,
+                Image.network(                  
+                   'https://image.tmdb.org/t/p/w500' + movie.imagePath,                                
                   fit: BoxFit.cover,
                   width: 200.0,
                   height: 200.0,
@@ -1460,170 +1546,89 @@ class MovieDetailScreen extends StatelessWidget {
     );
   }
 }              
+      
+class SearchResultsScreen extends StatefulWidget {
+  final String actorName;
 
-class SearchBar extends StatelessWidget {
+  const SearchResultsScreen({Key? key, required this.actorName}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Search'),
-      ),
-      body: Center(
-        child: Text('Search Bar Content'),
-      ),
-    );
-  }
+  _SearchResultsScreenState createState() => _SearchResultsScreenState();
 }
 
-class MyHomePage extends StatelessWidget with ValidationMixin {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+class _SearchResultsScreenState extends State<SearchResultsScreen> {
+  final TmdbService tmdbService = TmdbService();
+  List<Movie> _moviesList = [];
+  List<Movie> _tvSeriesList = [];
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to MovieMate!'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SearchBar(),
-                ),
-              );
-            },
+        title: const Text('Search Results'),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('web/assets/cp2.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Center(
+            child: Column(
+              children: [
+                // Movies List
+                if (_moviesList.isNotEmpty)
+                  Expanded(
+                    child: MoviesActorList(movies: _moviesList),
+                  )
+                else
+                  Container(),
+
+                // TV Series List
+                if (_tvSeriesList.isNotEmpty)
+                  Expanded(
+                    child: MoviesActorList(movies: _tvSeriesList),
+                  )
+                else
+                  Container(),
+              ],
+            ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.5,
-              width: MediaQuery.of(context).size.height * 2.0,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('web/assets/cp1.jpg'), fit: BoxFit.cover),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Text(
-                        title,
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Form(
-              key: formGlobalKey,
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const SizedBox(height: 16.0),
-                    const Text(
-                      'Username',
-                      style: TextStyle(fontSize: 20.0, color: Colors.black),
-                    ),
-                    TextFormField(                      
-                      validator: (email) {
-                        /*if (EmailValidator.validate(email!)) return null;
-                        else
-                         return 'Email address invalid';*/
-                      },
-                      decoration: const InputDecoration(
-                        hintText: 'Enter your username',
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    const Text(
-                      'Password',
-                      style: TextStyle(fontSize: 20.0, color: Colors.black),
-                    ),
-                    TextFormField(
-                      validator: (password) {
-                       /* if (isPasswordValid(password!)) return null;
-                         else
-                          return 'Invalid Password.';*/
-                      },
-                      maxLength: 6,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        hintText: 'Enter your password',
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if (formGlobalKey.currentState!.validate()) {
-                                formGlobalKey.currentState!.save();
-                                Navigator.pushNamed(context, '/second');
-                              }
-                            },
-                            child: const Text('Login'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ForgotPassword(),
-                                ),
-                              );
-                            },
-                            child: const Text('Forgot Password?'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CreateAccountScreen(),
-                                ),
-                              );
-                            },
-                            child: const Text('New User? Create account'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch movies and TV series when the screen is initialized
+    _searchForActorData();
+  }
+
+  Future<void> _searchForActorData() async {
+    try {
+      final movies = await tmdbService.getActorMovies(widget.actorName);
+      final tvSeries = await tmdbService.getActorTvSeries(widget.actorName);
+
+      setState(() {
+        _moviesList = movies;
+        _tvSeriesList = tvSeries;
+      });
+    } catch (e) {
+      // Handle the error
+      print("Error: $e");
+    }
   }
 }
 
 class AppHomeScreen extends StatelessWidget {
   GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -1634,7 +1639,7 @@ class AppHomeScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('web/assets/cp2.jpg'), // background image path
+            image: AssetImage('web/assets/cp2.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -1649,17 +1654,19 @@ class AppHomeScreen extends StatelessWidget {
                     width: MediaQuery.of(context).size.width * 0.8,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.white, // Set the background color to white
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    // Existing username input
                     child: Row(
                       children: [
                         Expanded(
                           child: TextFormField(
-                            controller: usernameController,
-                            validator: (email) {
-                              // validation logic for the existing username
+                            controller: _searchController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a search term';
+                              }
+                              return null;
                             },
                             decoration: const InputDecoration(
                               hintText: 'Actors, movies...',
@@ -1670,11 +1677,13 @@ class AppHomeScreen extends StatelessWidget {
                         IconButton(
                           onPressed: () {
                             if (formGlobalKey.currentState!.validate()) {
-                              formGlobalKey.currentState!.save();
-                              // Perform search logic with the username
-                              String username = usernameController.text;
-                              // Add logic to handle the search with the username
-                              print('Search username: $username');
+                              String searchTerm = _searchController.text.trim();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SearchResultsScreen(actorName: searchTerm),
+                                ),
+                              );
                             }
                           },
                           icon: const Icon(Icons.search),
@@ -1791,6 +1800,195 @@ class AppHomeScreen extends StatelessWidget {
     );
   }
 }
+
+class MoviesActorList extends StatelessWidget {
+  final List<Movie> movies;
+
+  MoviesActorList({required this.movies});
+
+  @override
+  Widget build(BuildContext context) {
+    if (movies.isEmpty) {
+      return Center(
+        child: Text('No results'),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: movies.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(
+              movies[index].title ?? '',
+              style: TextStyle(fontSize: 20.0, color: Colors.white),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Release Date: ${movies[index].releaseDate}',
+                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                ),
+                Text(
+                  'Rating: ${movies[index].rating}',
+                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                ),
+                Image.network(
+                  'https://image.tmdb.org/t/p/w500' + movies[index].imagePath,
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
+                ),
+              ],
+            ),
+            onTap: () {
+              // Navigate to a screen showing the actor's movie details
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MovieDetailScreen(movie: movies[index]),
+                ),
+              );
+            },
+          );
+        },
+      );
+    }
+  }
+}
+
+class MyHomePage extends StatelessWidget with ValidationMixin {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Welcome to MovieMate!'),                
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.height * 2.0,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('web/assets/cp1.jpg'), fit: BoxFit.cover),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                        title,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Form(
+              key: formGlobalKey,
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(height: 16.0),
+                    const Text(
+                      'Username',
+                      style: TextStyle(fontSize: 20.0, color: Colors.black),
+                    ),
+                    TextFormField(                      
+                      validator: (email) {
+                        /*if (EmailValidator.validate(email!)) return null;
+                        else
+                         return 'Email address invalid';*/
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Enter your username',
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    const Text(
+                      'Password',
+                      style: TextStyle(fontSize: 20.0, color: Colors.black),
+                    ),
+                    TextFormField(
+                      validator: (password) {
+                       /* if (isPasswordValid(password!)) return null;
+                         else
+                          return 'Invalid Password.';*/
+                      },
+                      maxLength: 6,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter your password',
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (formGlobalKey.currentState!.validate()) {
+                                formGlobalKey.currentState!.save();
+                                Navigator.pushNamed(context, '/second');
+                              }
+                            },
+                            child: const Text('Login'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ForgotPassword(),
+                                ),
+                              );
+                            },
+                            child: const Text('Forgot Password?'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CreateAccountScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text('New User? Create account'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 class ForgotPassword extends StatelessWidget with ValidationMixin {
   @override
