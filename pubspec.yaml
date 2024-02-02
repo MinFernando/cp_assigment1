@@ -61,6 +61,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+<<<<<<< HEAD
     - web/assets/cp1.jpg
     - web/assets/cp2.jpg
     - web/assets/cp3.jpg
@@ -68,6 +69,10 @@ flutter:
     - web/assets/cp5.jpg
     - web/assets/cp6.jpg
     - web/assets/cp7.jpg
+=======
+    - web/assets/cp2.jpg
+    - web/assets/cp1.jpg
+>>>>>>> 1ceaf5be1ce1a7d37cc71c96406d6921e1465e9c
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -97,4 +102,8 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
+<<<<<<< HEAD
   # see https://flutter.dev/custom-fonts/#from-packages
+=======
+  # see https://flutter.dev/custom-fonts/#from-packages
+>>>>>>> 1ceaf5be1ce1a7d37cc71c96406d6921e1465e9c

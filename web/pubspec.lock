@@ -91,25 +91,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-<<<<<<< HEAD
-  http:
-    dependency: "direct main"
-    description:
-      name: http
-      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.13.6"
-  http_parser:
-    dependency: transitive
-    description:
-      name: http_parser
-      sha256: "2aa08ce0341cc9b354a498388e30986515406668dbcc4f7c950c3e715496693b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.2"
-=======
->>>>>>> 1ceaf5be1ce1a7d37cc71c96406d6921e1465e9c
   intl:
     dependency: transitive
     description:
@@ -166,17 +147,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.0"
-<<<<<<< HEAD
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
-=======
->>>>>>> 1ceaf5be1ce1a7d37cc71c96406d6921e1465e9c
   path:
     dependency: transitive
     description:
@@ -185,17 +155,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
-<<<<<<< HEAD
-  provider:
-    dependency: "direct main"
-    description:
-      name: provider
-      sha256: "9a96a0a19b594dbc5bf0f1f27d2bc67d5f95957359b461cd9feb44ed6ae75096"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.1"
-=======
->>>>>>> 1ceaf5be1ce1a7d37cc71c96406d6921e1465e9c
   sky_engine:
     dependency: transitive
     description: flutter
@@ -290,9 +249,4 @@ packages:
     source: hosted
     version: "2.4.0"
 sdks:
-<<<<<<< HEAD
-  dart: ">=3.2.0-194.0.dev <4.0.0"
-  flutter: ">=1.16.0"
-=======
   dart: ">=3.3.0-91.0.dev <4.0.0"
->>>>>>> 1ceaf5be1ce1a7d37cc71c96406d6921e1465e9c

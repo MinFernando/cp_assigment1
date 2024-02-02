@@ -280,24 +280,26 @@ Future<List<TVSeries>> getActorTvSeries(String actorName) async {
 }
 
 Future<List<Content>> searchMoviesAndSeries(String searchTerm) async {
-    try {
-      // Search for both movies and TV series by name
-      var searchRes = await http.get(Uri.parse(
-          '$url/search/multi?query=$searchTerm&page=1&api_key=$apiKey'));
+  try {
+    // Search for both movies and TV series by name using the 'multi' endpoint
+    var searchRes = await http.get(Uri.parse(
+        '$url/search/multi?query=${Uri.encodeComponent(searchTerm)}&page=1&api_key=$apiKey'));
 
-      if (searchRes.statusCode == 200) {
-        var searchData = jsonDecode(searchRes.body)['results'] as List;
-        return searchData
-            .map((json) => Content.fromJson(json))
-            .where((content) => content.title != null && content.title.isNotEmpty) // Filter out entries without a title
-            .toList();
-      } else {
-        throw Exception("Failed to search for movies and TV series");
-      }
-    } catch (e) {
-      throw Exception("Something went wrong! $e");
+    if (searchRes.statusCode == 200) {
+      var searchData = jsonDecode(searchRes.body)['results'] as List;
+
+      return searchData
+          .map((json) => Content.fromJson(json))
+          .where((content) => content.title != null && content.title.isNotEmpty)
+          .toList();
+    } else {
+      throw Exception("Failed to search for movies and TV series. Status code: ${searchRes.statusCode}");
     }
+  } catch (e) {
+    throw Exception("Something went wrong! $e");
   }
+}
+
 }
 
 class Content {
@@ -2233,4 +2235,3 @@ class CreateAccountScreen extends StatelessWidget with ValidationMixin {
 mixin ValidationMixin {
   bool isPasswordValid(String inputpassword) => inputpassword.length == 6;
 }
-

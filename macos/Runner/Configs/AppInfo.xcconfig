@@ -11,4 +11,8 @@ PRODUCT_NAME = cp_assignment
 PRODUCT_BUNDLE_IDENTIFIER = com.example.cpAssignment
 
 // The copyright displayed in application information
+<<<<<<< HEAD
 PRODUCT_COPYRIGHT = Copyright © 2024 com.example. All rights reserved.
+=======
+PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.
+>>>>>>> 1ceaf5be1ce1a7d37cc71c96406d6921e1465e9c
