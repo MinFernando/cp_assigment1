@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 //https://github.com/Ansh-Rathod/Flutter-Bloc-MovieDB-App/blob/master/lib/models/movie_model.dart
 
 
-void main() {
+void main(){
   runApp(
     ChangeNotifierProvider(
       create: (context) => MovieProvider(),
