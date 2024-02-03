@@ -1666,202 +1666,74 @@ class AppHomeScreen extends StatelessWidget {
   GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
   TextEditingController _searchController = TextEditingController();
 
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
+  Color color1 = Color.fromARGB(255, 113, 52, 220);
+  Color color2 = Color.fromARGB(255, 147, 123, 164);
+  Color backgroundColor = Color.fromARGB(255, 67, 56, 75);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(      
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color1, color2],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Center(
-          child: Form(
-            key: formGlobalKey,
-            child: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [color1, color2],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: 50,
+                    width: MediaQuery.of(context).size.width * 0.8,                    
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _searchController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a search term';
-                              }
-                              return null;
-                            },
-                            decoration: const InputDecoration(
-                              hintText: 'Actors, movies...',
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            if (formGlobalKey.currentState!.validate()) {
-                              String searchTerm = _searchController.text.trim();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SearchResultsScreen(actorName: searchTerm, title: searchTerm,),
-                                ),
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.search),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 60.0),
-                  SingleChildScrollView(
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CinemaListScreen(),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              disabledBackgroundColor: Colors.grey,
-                              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
-                            ),
-                            icon: Image.network(
-                              'web/assets/cp3.jpg',
-                              height: 30,
-                            ),
-                            label: const Text(
-                              'Whats on Cinema?',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                        TextFormField(
+                          controller: _searchController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a search term';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Actors, movies series...',
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(color: Colors.grey),
                           ),
                         ),
-                        const SizedBox(height: 5.0),
-                        Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TvListScreen(),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              disabledBackgroundColor: Colors.grey,
-                              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                if (formGlobalKey.currentState!.validate()) {
+                                  String searchTerm =
+                                      _searchController.text.trim();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SearchResultsScreen(
+                                        actorName: searchTerm,
+                                        title: searchTerm,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              icon: const Icon(Icons.search, color: Colors.grey),
                             ),
-                            icon: Image.network(
-                              'web/assets/cp4.jpg',
-                              height: 30,
-                            ),
-                            label: const Text(
-                              'Whats on TV Tonight?',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5.0),
-                        Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MyWatchlistScreen(),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              disabledBackgroundColor: Colors.grey,
-                              padding: EdgeInsets.symmetric(horizontal: 90, vertical: 30),
-                            ),
-                            icon: Image.network(
-                              'web/assets/cp5.jpg',
-                              height: 30,
-                            ),
-                            label: const Text(
-                              '  My watchlist',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5.0),
-                        Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => VisitProfileScreen(),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              disabledBackgroundColor: Colors.grey,
-                              padding: EdgeInsets.symmetric(horizontal: 90, vertical: 30),
-                            ),
-                            icon: Image.network(
-                              'web/assets/cp6.jpg',
-                              height: 30,
-                            ),
-                            label: const Text(
-                              'Visit profile',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5.0),
-                        Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BestMoviesThisYear(),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              disabledBackgroundColor: Colors.grey,
-                              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                            ),
-                            icon: Image.network(
-                              'web/assets/cp7.jpg',
-                              height: 30,
-                            ),
-                            label: const Text(
-                              'Best rated movies',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -1869,12 +1741,159 @@ class AppHomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              color: backgroundColor,
+              child: Center(
+                child: Form(
+                  key: formGlobalKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 60.0),
+                      buildStyledButtonWithImage(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CinemaListScreen(),
+                            ),
+                          );
+                        },
+                        label: 'Whats on Cinema?',
+                        imagePath: 'web/assets/cp3.jpg',
+                      ),
+                      const SizedBox(height: 10),
+                      buildStyledButtonWithImage(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TvListScreen(),
+                            ),
+                          );
+                        },
+                        label: 'Whats on TV Tonight?',
+                        imagePath: 'web/assets/cp4.jpg',
+                      ),
+                      const SizedBox(height: 10),
+                      buildStyledButtonWithImage(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyWatchlistScreen(),
+                            ),
+                          );
+                        },
+                        label: 'My watchlist',
+                        imagePath: 'web/assets/cp5.jpg',
+                      ),
+                      const SizedBox(height: 10),
+                      buildStyledButtonWithImage(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VisitProfileScreen(),
+                            ),
+                          );
+                        },
+                        label: 'Visit profile',
+                        imagePath: 'web/assets/cp6.jpg',
+                      ),
+                      const SizedBox(height: 10),
+                      buildStyledButtonWithImage(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BestMoviesThisYear(),
+                            ),
+                          );
+                        },
+                        label: 'Best rated movies',
+                        imagePath: 'web/assets/cp7.jpg',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+
+ 
+  Widget buildStyledButton({
+    required VoidCallback onPressed,
+    required String label,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color.fromARGB(255, 201, 200, 186),
+        onPrimary: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 80, vertical: 35),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 16),
+      ),
+    );
+  }
+  
+  Widget buildStyledButtonWithImage({
+  required VoidCallback onPressed,
+  required String label,
+  required String imagePath,
+}) {
+  return Column(
+    children: [
+      Container(
+        height: 120, // Set a fixed height for the row
+        width: 450, // Set a fixed width for the row
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 168, 167, 155), // Background color for the image
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              imagePath,
+              height: 75, // Adjust the height as needed
+              width: 80, // Adjust the width as needed
+            ),
+            const SizedBox(width: 10), // Adjust the spacing between image and button
+            buildStyledButton(
+              onPressed: onPressed,
+              label: label,
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 10),
+    ],
+  );
 }
+
+
+
+
+
+
+}
+
+
+
+
 
 class MoviesActorList extends StatelessWidget {
   final List<Content> content;
