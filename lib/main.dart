@@ -1666,9 +1666,7 @@ class AppHomeScreen extends StatelessWidget {
   GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
   TextEditingController _searchController = TextEditingController();
 
-  Color color1 = Color.fromARGB(255, 113, 52, 220);
-  Color color2 = Color.fromARGB(255, 147, 123, 164);
-  Color backgroundColor = Color.fromARGB(255, 67, 56, 75);
+  Color backgroundColor = Color.fromARGB(255, 236, 233, 241);
 
   @override
   Widget build(BuildContext context) {
@@ -1676,16 +1674,15 @@ class AppHomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.3,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [color1, color2],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
+             Container(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('web/assets/cp2.jpg'),
+                        fit: BoxFit.cover,
+                      ),                    
+                  ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -1752,6 +1749,7 @@ class AppHomeScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 60.0),
                       buildStyledButtonWithImage(
+                        context: context, 
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -1760,11 +1758,19 @@ class AppHomeScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        label: 'Whats on Cinema?',
+                        label: const Row(
+                          children: [
+                            Text(
+                              'Whats On Cinema?',
+                              style: TextStyle(fontSize: 16),
+                            ),                                                       
+                          ],
+                        ),
                         imagePath: 'web/assets/cp3.jpg',
                       ),
                       const SizedBox(height: 10),
                       buildStyledButtonWithImage(
+                        context: context, 
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -1773,11 +1779,19 @@ class AppHomeScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        label: 'Whats on TV Tonight?',
+                        label: const Row(
+                          children: [
+                            Text(
+                              'Whats on TV Tonight?',
+                              style: TextStyle(fontSize: 16),
+                            ),                                                        
+                          ],
+                        ),
                         imagePath: 'web/assets/cp4.jpg',
                       ),
                       const SizedBox(height: 10),
                       buildStyledButtonWithImage(
+                        context: context, 
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -1786,11 +1800,19 @@ class AppHomeScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        label: 'My watchlist',
+                         label: const Row(
+                          children: [
+                            Text(
+                              'My Watchlist',
+                              style: TextStyle(fontSize: 16),
+                            ),                                                       
+                          ],
+                        ),
                         imagePath: 'web/assets/cp5.jpg',
                       ),
                       const SizedBox(height: 10),
                       buildStyledButtonWithImage(
+                        context: context, 
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -1799,11 +1821,19 @@ class AppHomeScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        label: 'Visit profile',
+                        label: const Row(
+                          children: [
+                            Text(
+                              'Visit Profile',
+                              style: TextStyle(fontSize: 16),
+                            ),                                                       
+                          ],
+                        ),
                         imagePath: 'web/assets/cp6.jpg',
                       ),
                       const SizedBox(height: 10),
                       buildStyledButtonWithImage(
+                        context: context, 
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -1812,7 +1842,14 @@ class AppHomeScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        label: 'Best rated movies',
+                        label: const Row(
+                          children: [
+                            Text(
+                              'Best Rated Movies',
+                              style: TextStyle(fontSize: 16),
+                            ),                                                       
+                          ],
+                        ),
                         imagePath: 'web/assets/cp7.jpg',
                       ),
                     ],
@@ -1825,75 +1862,66 @@ class AppHomeScreen extends StatelessWidget {
       ),
     );
   }
-
- 
-  Widget buildStyledButton({
-    required VoidCallback onPressed,
-    required String label,
-  }) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 201, 200, 186),
-        onPrimary: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 80, vertical: 35),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(fontSize: 16),
-      ),
-    );
-  }
-  
-  Widget buildStyledButtonWithImage({
+   
+ Widget buildStyledButton({
+  required BuildContext context,
   required VoidCallback onPressed,
-  required String label,
-  required String imagePath,
+  required Widget label,
 }) {
-  return Column(
-    children: [
-      Container(
-        height: 120, // Set a fixed height for the row
-        width: 450, // Set a fixed width for the row
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 168, 167, 155), // Background color for the image
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              imagePath,
-              height: 75, // Adjust the height as needed
-              width: 80, // Adjust the width as needed
-            ),
-            const SizedBox(width: 10), // Adjust the spacing between image and button
-            buildStyledButton(
-              onPressed: onPressed,
-              label: label,
-            ),
-          ],
-        ),
+  double containerWidth = MediaQuery.of(context).size.width * 0.3; // sets percentage for size so its responsive in different platforms
+
+  return ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Color.fromARGB(255, 175, 47, 47), 
+      padding: EdgeInsets.symmetric(horizontal: containerWidth * 0.2, vertical: containerWidth * 0.15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
       ),
-      const SizedBox(height: 10),
-    ],
+    ),
+     child: DefaultTextStyle(
+      style: TextStyle(
+        color: Colors.white, // Set text color to white
+      ),
+    child: label,
+     )
   );
 }
 
+ Widget buildStyledButtonWithImage({
+  required BuildContext context,
+  required VoidCallback onPressed,
+  required Widget label,
+  required String imagePath,
+}) {
+  double containerWidth = MediaQuery.of(context).size.width * 0.8; // sets percentage for size so its responsive in different platforms
+  double imageWidth = containerWidth * 0.2;
 
-
-
-
-
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Container(
+      width: containerWidth, 
+      padding: EdgeInsets.all(8),
+       decoration: BoxDecoration(
+        color: Color.fromARGB(255, 175, 47, 47),  
+        borderRadius: BorderRadius.circular(10),
+          ),
+      child: Row(                      
+        children: [
+          Image.asset(imagePath, width: imageWidth),
+          Flexible(
+            child: buildStyledButton(
+              context: context,
+              onPressed: onPressed,
+              label: label,
+            ),
+          ),
+        ]          
+      ),
+    ),    
+  );
 }
-
-
-
-
+}
 
 class MoviesActorList extends StatelessWidget {
   final List<Content> content;
