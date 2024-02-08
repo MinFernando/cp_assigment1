@@ -355,12 +355,13 @@ class TVSeries extends Content {
     required String releaseDate,
     required String imagePath,
     required String rating,
-  }) : super(
-          title: title,
-          releaseDate: releaseDate,
-          imagePath: imagePath,
-          rating: rating,
-        );
+  }) : super
+      (
+        title: title,
+        releaseDate: releaseDate,
+        imagePath: imagePath,
+        rating: rating,
+      );
 
   factory TVSeries.fromJson(Map<String, dynamic> json) {
     return TVSeries(
@@ -371,13 +372,11 @@ class TVSeries extends Content {
     );
   }
 }
-
   
 class CinemaListScreen extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
 
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
+  Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
 
   @override
   Widget build(BuildContext context) {
@@ -386,13 +385,7 @@ class CinemaListScreen extends StatelessWidget {
         children: [
           // Background Image
           Container(
-            decoration: BoxDecoration(
-            gradient: LinearGradient(
-            colors: [color1, color2],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+            color: backgroundColor,
           ),
           // Movie List
           Center(
@@ -424,8 +417,6 @@ class CinemaListScreen extends StatelessWidget {
 
 class MovieListCinema extends StatelessWidget {  
   final List<Movie> movies;
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
 
   MovieListCinema({required this. movies});
 
@@ -497,8 +488,7 @@ class TvListScreen extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
   String userCountryCode = 'US';
 
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
+  Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
 
   @override
   Widget build(BuildContext context) {
@@ -507,13 +497,7 @@ class TvListScreen extends StatelessWidget {
         children: [
           // Background Image
           Container(
-                decoration: BoxDecoration(
-                gradient: LinearGradient(
-                colors: [color1, color2],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
+            color: backgroundColor,
           ),
           // Movie List
           Center(
@@ -735,8 +719,8 @@ class MyWatchlistScreen extends StatelessWidget {
           ),
           // Navigate to WatchedlistScreen Button
           Positioned(
-            top: 150.0,
-            right: 8.0,
+            top: 700.0,
+            right: 10.0,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -746,8 +730,24 @@ class MyWatchlistScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: const Text('Go to Watched list'),
+              child: const Text('Go to Watched list'),              
             ),
+          ),
+          Positioned(
+            top: 700.0,
+            right: 250.0,
+            child: ElevatedButton.icon(
+                  onPressed: () {                   
+                   Navigator.push(
+                   context,
+                    MaterialPageRoute(
+                     builder: (context) => AppHomeScreen(),
+                  ),
+                );                                
+              },
+                  icon: Icon(Icons.arrow_back),
+                  label: Text('Back'),
+                ),
           ),
         ],
       ),
@@ -760,6 +760,7 @@ class MyWatchedlistScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final movieProvider = Provider.of<MovieProvider>(context);
     List<Content> watchedlist = movieProvider.watchedlist;
+
     Color color1 = Color.fromARGB(255, 27, 188, 182);
     Color color2 = Colors.black;
 
@@ -799,7 +800,6 @@ class MyWatchedlistScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16.0),
-
                         // Display Watchlist Movies
                         Expanded(
                           child: ListView.builder(
@@ -842,8 +842,8 @@ class MyWatchedlistScreen extends StatelessWidget {
           ),
           // Navigate to WatchedlistScreen Button
           Positioned(
-            top: 150.0,
-            right: 8.0,
+            top: 700.0,
+            right: 10.0,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -856,6 +856,22 @@ class MyWatchedlistScreen extends StatelessWidget {
               child: const Text('Go to Watchlist'),
             ),
           ),
+          Positioned(
+            top: 700.0,
+            right: 250.0,
+            child: ElevatedButton.icon(
+                  onPressed: () {                   
+                   Navigator.push(
+                   context,
+                    MaterialPageRoute(
+                     builder: (context) => MyWatchlistScreen(),
+                  ),
+                );                                
+              },
+                  icon: Icon(Icons.arrow_back),
+                  label: Text('Back'),
+                ),
+          ),
         ],
       ),
     );
@@ -863,8 +879,7 @@ class MyWatchedlistScreen extends StatelessWidget {
 }
 
 class VisitProfileScreen extends StatelessWidget {
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(        
@@ -873,18 +888,17 @@ class VisitProfileScreen extends StatelessWidget {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                    colors: [color1, color2],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                ),
+              children: <Widget>[             
+                 Container(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('web/assets/cp6.jpg'),
+                        fit: BoxFit.cover,
+                      ),                    
+                    ),
+                 ),   
                 Container(
                     width: MediaQuery.of(context).size.width * 1.5,
                     height: 600,
@@ -910,8 +924,7 @@ class VisitProfileScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 50, vertical: 15),
+                                    padding: EdgeInsets.all(8),
                                   ),
                                   child: Text(
                                     'Edit profile',
@@ -931,15 +944,14 @@ class VisitProfileScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 30, vertical: 15),
+                                    padding: EdgeInsets.all(8),
                                   ),
                                   child: Text(
                                     'Change password',
                                     style: TextStyle(fontSize: 16),
                                   )),
                             ),
-                            const SizedBox(height: 190.0),
+                            const SizedBox(height: 140.0),
                             Align(
                               alignment: Alignment.bottomCenter,
                               child: ElevatedButton(
@@ -953,8 +965,8 @@ class VisitProfileScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 50, vertical: 15),
+                                    padding: EdgeInsets.symmetric(horizontal: containeWidth * 0.2, vertical: containerWidth * 0.15),
+                                    shape: RoundedRectangleBorder,
                                   ),
                                   child: Text(
                                     'Log Out',
@@ -963,35 +975,34 @@ class VisitProfileScreen extends StatelessWidget {
                             ),
                             Align(
                               alignment: Alignment.topLeft,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AppHomeScreen(),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 50, vertical: 15),
-                                  ),
-                                  child: Text(
-                                    'back',
-                                    style: TextStyle(fontSize: 16),
-                                  )),
-                            ),
-                          ]),
-                    ))
-              ]),
-        )));
-  }
-}
+                              child: ElevatedButton.icon(
+                                onPressed: () {                   
+                                Navigator.push(
+                                context,
+                                  MaterialPageRoute(
+                                  builder: (context) => AppHomeScreen(),
+                                ),
+                              );                                
+                            },
+                                  icon: Icon(Icons.arrow_back),
+                                  label: Text('Back'),
+                                ),
+                              ),
+                            ]
+                          ),
+                        )
+                      )
+                    ]
+                  ),
+                )
+              )
+            );
+          }
+        }
 
 class EditProfileScreen extends StatelessWidget {
 
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
+  Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
 
   @override
   Widget build(BuildContext context) {
@@ -1003,15 +1014,7 @@ class EditProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                    colors: [color1, color2],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
+                  color: backgroundColor,
               ),
                 Container(
                     width: MediaQuery.of(context).size.width * 5.0,
@@ -1216,9 +1219,7 @@ class ChangeUsernameScreen extends StatelessWidget {
 class BestMoviesAllTime extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
 
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
-
+  Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
   @override
   Widget build(BuildContext context) {
     return Scaffold(      
@@ -1226,13 +1227,7 @@ class BestMoviesAllTime extends StatelessWidget {
         children: [
           // Background Image
           Container(
-            decoration: BoxDecoration(
-            gradient: LinearGradient(
-            colors: [color1, color2],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+           color: backgroundColor,
           ),
           // Movie List
           Center(
@@ -1346,8 +1341,7 @@ class MovieListAllTime extends StatelessWidget {
 class BestMoviesThisYear extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
 
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
+  Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
 
   @override
   Widget build(BuildContext context) {
@@ -1356,13 +1350,7 @@ class BestMoviesThisYear extends StatelessWidget {
         children: [
           // Background Image
           Container(
-            decoration: BoxDecoration(
-            gradient: LinearGradient(
-            colors: [color1, color2],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+            color: backgroundColor,
           ),
           // Movie List
           Center(
@@ -1482,21 +1470,15 @@ class ContentDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final movieProvider = Provider.of<MovieProvider>(context, listen: false);
 
-    Color color1 = Color.fromARGB(255, 27, 188, 182);
-    Color color2 = Colors.black;
+    Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
 
+    
     return Scaffold(      
       body: Stack(
         children: [
           // Background 
           Container(
-            decoration: BoxDecoration(
-            gradient: LinearGradient(
-            colors: [color1, color2],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+            color: backgroundColor,
           ),
           // Movie Details          
           Center(
@@ -1666,7 +1648,7 @@ class AppHomeScreen extends StatelessWidget {
   GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
   TextEditingController _searchController = TextEditingController();
 
-  Color backgroundColor = Color.fromARGB(255, 236, 233, 241);
+  Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
 
   @override
   Widget build(BuildContext context) {
