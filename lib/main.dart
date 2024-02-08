@@ -51,64 +51,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ChangePassword extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-    return Scaffold(      
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: <Widget>[
-              const Text(
-                'Change Password',
-                style: TextStyle(fontSize: 20.0, color: Colors.black),
-              ),
-              TextFormField(
-                validator: (password) {
-                  if (password != null && password.isNotEmpty) {
-                    return null;
-                  } else
-                    return 'Please enter a valid password';
-                },
-                decoration: const InputDecoration(
-                  hintText: 'Enter new password',
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('password changed'),
-                        content: const Text(
-                            'Your password has been successfully changed!'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: const Text('Enter'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class TmdbService {
   static String apiKey = '99df30052fbbba30be71c4f7eb9064a1';
   static String url = 'https://api.themoviedb.org/3';
@@ -719,7 +661,7 @@ class MyWatchlistScreen extends StatelessWidget {
           ),
           // Navigate to WatchedlistScreen Button
           Positioned(
-            top: 700.0,
+            top: 650.0,
             right: 10.0,
             child: ElevatedButton(
               onPressed: () {
@@ -734,8 +676,8 @@ class MyWatchlistScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 700.0,
-            right: 250.0,
+            top: 10.0,
+            left: 10.0,
             child: ElevatedButton.icon(
                   onPressed: () {                   
                    Navigator.push(
@@ -855,23 +797,7 @@ class MyWatchedlistScreen extends StatelessWidget {
               },
               child: const Text('Go to Watchlist'),
             ),
-          ),
-          Positioned(
-            top: 700.0,
-            right: 250.0,
-            child: ElevatedButton.icon(
-                  onPressed: () {                   
-                   Navigator.push(
-                   context,
-                    MaterialPageRoute(
-                     builder: (context) => MyWatchlistScreen(),
-                  ),
-                );                                
-              },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('Back'),
-                ),
-          ),
+          ),                      
         ],
       ),
     );
@@ -882,9 +808,12 @@ class VisitProfileScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    double buttonWidth = 300.0; 
+    double buttonHeight = 50.0; 
+
     return Scaffold(        
         body: SingleChildScrollView(
-            child: Center(
+          child: Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -897,8 +826,23 @@ class VisitProfileScreen extends StatelessWidget {
                         image: AssetImage('web/assets/cp6.jpg'),
                         fit: BoxFit.cover,
                       ),                    
-                    ),
-                 ),   
+                    ),                      
+                       child: Align(
+                        alignment: Alignment.topLeft,                              
+                        child: ElevatedButton.icon(
+                          onPressed: () {                   
+                            Navigator.push(
+                              context,
+                                MaterialPageRoute(
+                                builder: (context) => AppHomeScreen(),
+                              ),
+                            );                                
+                          },
+                            icon: Icon(Icons.arrow_back),
+                            label: Text('Back'),
+                          ),
+                        ),      
+                       ),   
                 Container(
                     width: MediaQuery.of(context).size.width * 1.5,
                     height: 600,
@@ -913,6 +857,9 @@ class VisitProfileScreen extends StatelessWidget {
                             const SizedBox(height: 100.0),
                             Align(
                               alignment: Alignment.bottomCenter,
+                              child: SizedBox(
+                                width: buttonWidth,
+                                height: buttonHeight,                                
                               child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -924,16 +871,23 @@ class VisitProfileScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(8),
-                                  ),
+                                    shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
                                   child: Text(
                                     'Edit profile',
                                     style: TextStyle(fontSize: 16),
-                                  )),
+                                  ),
+                                ),
+                              ),
                             ),
                             const SizedBox(height: 50.0),
                             Align(
                               alignment: Alignment.center,
+                              child: SizedBox(
+                                width: buttonWidth,
+                                height: buttonHeight,
                               child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -944,16 +898,21 @@ class VisitProfileScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(8),
-                                  ),
+                                    shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
                                   child: Text(
                                     'Change password',
                                     style: TextStyle(fontSize: 16),
-                                  )),
+                                  )),)
                             ),
-                            const SizedBox(height: 140.0),
+                            const SizedBox(height: 90.0),
                             Align(
                               alignment: Alignment.bottomCenter,
+                              child: SizedBox(
+                                width: 200,
+                                height: 50,
                               child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -965,29 +924,15 @@ class VisitProfileScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(horizontal: containeWidth * 0.2, vertical: containerWidth * 0.15),
-                                    shape: RoundedRectangleBorder,
-                                  ),
+                                    shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
                                   child: Text(
                                     'Log Out',
                                     style: TextStyle(fontSize: 16),
-                                  )),
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: ElevatedButton.icon(
-                                onPressed: () {                   
-                                Navigator.push(
-                                context,
-                                  MaterialPageRoute(
-                                  builder: (context) => AppHomeScreen(),
-                                ),
-                              );                                
-                            },
-                                  icon: Icon(Icons.arrow_back),
-                                  label: Text('Back'),
-                                ),
-                              ),
+                                  )),)
+                            ),                                                                              
                             ]
                           ),
                         )
@@ -1006,6 +951,9 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double buttonWidth = 300.0; 
+    double buttonHeight = 50.0; 
+
     return Scaffold(        
         body: SingleChildScrollView(
           child: Center(
@@ -1014,7 +962,29 @@ class EditProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  color: backgroundColor,
+                   height: MediaQuery.of(context).size.height * 0.4,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('web/assets/cp6.jpg'),
+                        fit: BoxFit.cover,
+                      ),                    
+                    ), 
+                    child: Align(
+                        alignment: Alignment.topLeft,                              
+                        child: ElevatedButton.icon(
+                          onPressed: () {                   
+                            Navigator.push(
+                              context,
+                                MaterialPageRoute(
+                                builder: (context) => VisitProfileScreen(),
+                              ),
+                            );                                
+                          },
+                            icon: Icon(Icons.arrow_back),
+                            label: Text('Back'),
+                          ),
+                        ),    
               ),
                 Container(
                     width: MediaQuery.of(context).size.width * 5.0,
@@ -1030,6 +1000,9 @@ class EditProfileScreen extends StatelessWidget {
                             const SizedBox(height: 100.0),
                             Align(
                               alignment: Alignment.bottomCenter,
+                              child: SizedBox(
+                                width: buttonWidth,
+                                height: buttonHeight,
                               child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -1041,17 +1014,21 @@ class EditProfileScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 50, vertical: 15),
-                                  ),
+                                    shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
                                   child: Text(
                                     'Change username',
                                     style: TextStyle(fontSize: 16),
-                                  )),
+                                  )),)
                             ),
                             const SizedBox(height: 50.0),
                             Align(
                               alignment: Alignment.center,
+                              child: SizedBox(
+                                width: buttonWidth,
+                                height: buttonHeight,
                               child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -1063,42 +1040,26 @@ class EditProfileScreen extends StatelessWidget {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 30, vertical: 15),
-                                  ),
+                                    shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
                                   child: Text(
                                     'Change Email',
                                     style: TextStyle(fontSize: 16),
-                                  )),
-                            ),
-                            const SizedBox(height: 190.0),
-                            Align(
-                              alignment: Alignment.bottomLeft,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            VisitProfileScreen(),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 50, vertical: 15),
-                                  ),
-                                  child: Text(
-                                    'back',
-                                    style: TextStyle(fontSize: 16),
-                                  )),
-                            ),
-                          ]),
-                    ))
-              ]),
-        )));
-  }
-}
+                                  )),)
+                            ),                                                   
+                          ]
+                        ),
+                      )
+                    )
+                   ]
+                  ),
+                )
+              )
+             );
+           }
+          }
 
 class ChangeEmailScreen extends StatelessWidget {
   @override
@@ -1139,7 +1100,11 @@ class ChangeEmailScreen extends StatelessWidget {
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfileScreen(),
+                                ),
+                              );
                             },
                             child: const Text('OK'),
                           ),
@@ -1150,6 +1115,22 @@ class ChangeEmailScreen extends StatelessWidget {
                 },
                 child: const Text('Enter'),
               ),
+              const SizedBox(height: 550.0),
+              Align(
+                alignment: Alignment.topRight,                                                    
+                child: ElevatedButton.icon(
+                  onPressed: () {                   
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(),
+                      ),
+                    );                                
+                  },
+                    icon: Icon(Icons.arrow_back),
+                    label: Text('Back'),
+                  ),
+                ),     
             ],
           ),
         ),
@@ -1177,8 +1158,9 @@ class ChangeUsernameScreen extends StatelessWidget {
                 validator: (username) {
                   if (username != null && username.isNotEmpty) {
                     return null;
-                  } else
+                  } else {
                     return 'Please enter a valid username';
+                  }
                 },
                 decoration: const InputDecoration(
                   hintText: 'Enter new username',
@@ -1191,13 +1173,17 @@ class ChangeUsernameScreen extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: const Text('username changed'),
+                        title: const Text('Username Changed'),
                         content: const Text(
                             'Your username has been successfully changed!'),
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfileScreen(),
+                                ),
+                              );
                             },
                             child: const Text('OK'),
                           ),
@@ -1208,6 +1194,100 @@ class ChangeUsernameScreen extends StatelessWidget {
                 },
                 child: const Text('Enter'),
               ),
+              const SizedBox(height: 550.0),
+              Align(
+                alignment: Alignment.topRight,                              
+                child: ElevatedButton.icon(
+                  onPressed: () {                   
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(),
+                      ),
+                    );                                
+                  },
+                    icon: Icon(Icons.arrow_back),
+                    label: Text('Back'),
+                  ),
+                ), 
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ChangePassword extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    return Scaffold(      
+      body: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: <Widget>[
+              const Text(
+                'Change Password',
+                style: TextStyle(fontSize: 20.0, color: Colors.black),
+              ),
+              TextFormField(
+                validator: (password) {
+                  if (password != null && password.isNotEmpty) {
+                    return null;
+                  } else
+                    return 'Please enter a valid password';
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter new password',
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Password changed'),
+                        content: const Text(
+                            'Your password has been successfully changed!'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => VisitProfileScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: const Text('Enter'),
+              ),                            
+              const SizedBox(height: 550.0),
+              Align(
+                alignment: Alignment.topRight,                                                   
+                child: ElevatedButton.icon(
+                  onPressed: () {                   
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VisitProfileScreen(),
+                      ),
+                    );                                
+                  },
+                    icon: Icon(Icons.arrow_back),
+                    label: Text('Back'),
+                  ),
+                ), 
             ],
           ),
         ),
@@ -1315,20 +1395,7 @@ class MovieListAllTime extends StatelessWidget {
                     );
                   },
                   child: Text('This Year'),
-                ),
-                SizedBox(width: 16.0), 
-                ElevatedButton.icon(
-                  onPressed: () {                   
-                   Navigator.push(
-                   context,
-                    MaterialPageRoute(
-                     builder: (context) => BestMoviesThisYear(),
-                  ),
-                );                                
-              },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('Back'),
-                ),
+                ),                
               ],
             ),
           ),
@@ -1554,14 +1621,25 @@ class ContentDetailScreen extends StatelessWidget {
                 ),   
               ],
             ),            
-          ),          
-        ],
-      ),
-    );
-  }
-}              
+          ),   
+            ElevatedButton.icon(
+                    onPressed: () {                   
+                    Navigator.push(
+                    context,
+                      MaterialPageRoute(
+                      builder: (context) => CinemaListScreen(),
+                    ),
+                  );                                
+                },
+                    icon: Icon(Icons.arrow_back),
+                    label: Text('Back'),
+                  ),       
+                ],                
+              ),      
+            );
+          }
+        }              
       
-
 class SearchResultsScreen extends StatefulWidget {
   final String actorName;
   final String title;
@@ -1832,12 +1910,13 @@ class AppHomeScreen extends StatelessWidget {
                             ),                                                       
                           ],
                         ),
-                        imagePath: 'web/assets/cp7.jpg',
-                      ),
+                        imagePath: 'web/assets/cp7.jpg',                        
+                      ),      
+                      const SizedBox(height: 90.0),                                    
                     ],
                   ),
                 ),
-              ),
+              ),              
             ),
           ],
         ),
@@ -1845,30 +1924,29 @@ class AppHomeScreen extends StatelessWidget {
     );
   }
    
- Widget buildStyledButton({
-  required BuildContext context,
-  required VoidCallback onPressed,
-  required Widget label,
-}) {
-  double containerWidth = MediaQuery.of(context).size.width * 0.3; // sets percentage for size so its responsive in different platforms
-
-  return ElevatedButton(
-    onPressed: onPressed,
-    style: ElevatedButton.styleFrom(
-      backgroundColor: Color.fromARGB(255, 175, 47, 47), 
-      padding: EdgeInsets.symmetric(horizontal: containerWidth * 0.2, vertical: containerWidth * 0.15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+  Widget buildStyledButton({
+    required BuildContext context,
+    required VoidCallback onPressed,
+    required Widget label,
+  }) {
+    double containerWidth = MediaQuery.of(context).size.width * 0.3; // sets percentage for size so its responsive in different platforms
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color.fromARGB(255, 175, 47, 47), 
+        padding: EdgeInsets.symmetric(horizontal: containerWidth * 0.2, vertical: containerWidth * 0.15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
       ),
-    ),
-     child: DefaultTextStyle(
-      style: TextStyle(
-        color: Colors.white, // Set text color to white
-      ),
-    child: label,
-     )
-  );
-}
+      child: DefaultTextStyle(
+        style: TextStyle(
+          color: Colors.white, // Set text color to white
+        ),
+      child: label,
+      )
+    );
+  }
 
  Widget buildStyledButtonWithImage({
   required BuildContext context,
@@ -2092,7 +2170,6 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
   }
 }
 
-
 class ForgotPassword extends StatelessWidget with ValidationMixin {
   @override
   Widget build(BuildContext context) {
@@ -2156,8 +2233,13 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                                 Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyHomePage(title: 'Welcome to MovieMate!'),
+                              ),
+                            );
+                          },
                               child: const Text('OK'),
                             ),
                           ],
@@ -2241,8 +2323,13 @@ class CreateAccountScreen extends StatelessWidget with ValidationMixin {
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyHomePage(title: 'Welcome to MovieMate!'),
+                              ),
+                            );
+                          },
                               child: const Text('OK'),
                             ),
                           ],
