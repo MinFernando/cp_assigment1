@@ -5,10 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 
-
-//https://github.com/Ansh-Rathod/Flutter-Bloc-MovieDB-App/blob/master/lib/models/movie_model.dart
-
-
 void main(){
   runApp(
     ChangeNotifierProvider(
@@ -61,14 +57,15 @@ class TmdbService {
     final response = await http.get(Uri.parse('$url/discover/movie?api_key=$apiKey&primary_release_year=2023&sort_by=popularity.desc'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body)['results'];
+      final List<dynamic> data = json.decode(response.body)['results'];      
 
       List<Movie> movies = data.map((json) {
         return Movie(          
-          title: json['title'] ?? json['original_name'] ?? 'Unknown Title',
-          releaseDate: json['released date']?? 'Unknown Release Date',        
+          title: json['title'] ?? 'Unknown Title',
+          releaseDate: json['release_date']?? 'Unknown Release Date',        
           imagePath: '$imageUrl${json['poster_path']}',          
            rating: json['vote_average'].toString(),
+           overview: json['overview'] ?? 'Not Available',
         );
       }).toList();
 
@@ -86,10 +83,11 @@ class TmdbService {
 
       List<Movie> movies = data.map((json) {
         return Movie(          
-          title: json['title'] ?? json['original_name'] ?? 'Unknown Title',
-          releaseDate: json['released date']?? 'Unknown Release Date',
+          title: json['title'] ?? 'Unknown Title',
+          releaseDate: json['release_date']?? 'Unknown Release Date',
           imagePath: '$imageUrl${json['poster_path']}',          
           rating: json['vote_average'].toString(),
+          overview: json['overview'] ?? 'Not Available',
         );
       }).toList();
 
@@ -107,10 +105,11 @@ class TmdbService {
 
       List<Movie> movies = data.map((json) {
         return Movie(          
-         title: json['title'] ?? json['original_name'] ?? 'Unknown Title',
-         releaseDate: json['released date']?? 'Unknown Release Date',
+         title: json['title'] ?? 'Unknown Title',
+         releaseDate: json['release_date']?? 'Unknown Release Date',
           imagePath: '$imageUrl${json['poster_path']}',          
           rating: json['vote_average'].toString(),
+          overview: json['overview'] ?? 'Not Available',
         );
       }).toList();
 
@@ -130,16 +129,18 @@ class TmdbService {
     final List<dynamic> data = json.decode(response.body)['results'];
 
     List<TVSeries> series = data.map((json) {      
-      String title = json['name'] ?? 'Unknown Title';      
+      String title = json['original_name'] ?? 'Unknown Title';      
       String releaseDate = json['first_air_date'] ?? 'Unknown Release Date';
       String imagePath = json['poster_path'] != null ? '$imageUrl${json['poster_path']}' : 'No Image';
       String rating = json['vote_average']?.toString() ?? '0.0';
+      String overview = json['overview'] ?? 'Not Available';
 
       return TVSeries(        
         title: title,        
         releaseDate: releaseDate,
         imagePath: imagePath,
         rating: rating,
+        overview: overview,
       );
     }).toList();
 
@@ -249,12 +250,14 @@ class Content {
   final String releaseDate;
   final String imagePath;
   final String rating;
+  final String overview;
 
   Content({
     required this.title,
     required this.releaseDate,
     required this.imagePath,
     required this.rating,
+    required this.overview,
   });
 
   factory Content.fromJson(Map<String, dynamic> json) {
@@ -274,11 +277,13 @@ class Movie extends Content {
     required String releaseDate,
     required String imagePath,
     required String rating,
+    required String overview,
   }) : super(
           title: title,
           releaseDate: releaseDate,
           imagePath: imagePath,
           rating: rating,
+          overview: overview,
         );
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -287,6 +292,7 @@ class Movie extends Content {
       releaseDate: json['release_date'] ?? 'Unknown Release Date',
       imagePath: json['poster_path'] ?? '',
       rating: json['vote_average']?.toString() ?? '0.0',
+      overview: json['overview'] ?? 'Not Available',
     );
   }
 }
@@ -297,20 +303,23 @@ class TVSeries extends Content {
     required String releaseDate,
     required String imagePath,
     required String rating,
+    required String overview,
   }) : super
       (
         title: title,
         releaseDate: releaseDate,
         imagePath: imagePath,
         rating: rating,
+        overview: overview,
       );
 
   factory TVSeries.fromJson(Map<String, dynamic> json) {
     return TVSeries(
       title: json['original_name'] ?? 'Unknown Title',
       releaseDate: json['first_air_date'] ?? 'Unknown Release Date',
-      imagePath: json['poster_path'] ?? '',
+      imagePath: json['poster_path'] ?? 'No Image Available',
       rating: json['vote_average']?.toString() ?? '0.0',
+      overview: json['overview'] ?? 'Not Available',
     );
   }
 }
@@ -357,10 +366,10 @@ class CinemaListScreen extends StatelessWidget {
   }
 }
 
-class MovieListCinema extends StatelessWidget {  
+class MovieListCinema extends StatelessWidget {
   final List<Movie> movies;
 
-  MovieListCinema({required this. movies});
+  MovieListCinema({required this.movies});
 
   @override
   Widget build(BuildContext context) {
@@ -378,53 +387,85 @@ class MovieListCinema extends StatelessWidget {
                   ),
                 );
               },
-              child: ListTile(
-                title: Text(
-                  movies[index].title,
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 255, 255, 255), 
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                subtitle: Text(
-                  movies[index].releaseDate,
-                  style: TextStyle(fontSize: 16.0, color: Colors.white),
-                ),
-                leading: Image.network(
-                  movies[index].imagePath,
-                  fit: BoxFit.cover,
-                  width: 100.0,
-                  height: 100.0,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Movie Image
+                    Container(
+                      width: 100.0,
+                      height: 150.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: NetworkImage(movies[index].imagePath),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.0), 
+                    // Movie Details Column
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title
+                          Text(
+                            movies[index].title,
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8.0),
+                          // Release Date
+                          Text(
+                            movies[index].releaseDate,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                          ),
+                          SizedBox(height: 8.0),
+                          // Overview
+                          Text(
+                            movies[index].overview,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                            maxLines: 2, // Limiting to 2 lines for overview
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           },
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [                
-                SizedBox(width: 16.0), 
-                ElevatedButton.icon(
-                  onPressed: () {                   
-                   Navigator.push(
-                   context,
-                    MaterialPageRoute(
-                     builder: (context) => AppHomeScreen(),
-                  ),
-                );                                
-              },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('Back'),
+        // Back Button
+        Positioned(
+          bottom: 20.0,
+          right: 20.0,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AppHomeScreen(),
                 ),
-              ],
-            ),
+              );
+            },
+            icon: Icon(Icons.arrow_back),
+            label: Text('Back'),
           ),
         ),
       ],
     );
   }
 }
+
+
 
 class TvListScreen extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
@@ -490,47 +531,77 @@ class ListSeries extends StatelessWidget {
                   ),
                 );
               },
-              child: ListTile(
-                title: Text(
-                  series[index].title,
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 255, 255, 255), 
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                subtitle: Text(
-                  series[index].releaseDate,
-                  style: TextStyle(fontSize: 16.0, color: Colors.white),
-                ),
-                leading: Image.network(
-                  series[index].imagePath,
-                  fit: BoxFit.cover,
-                  width: 100.0,
-                  height: 100.0,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // TV Series Image
+                    Container(
+                      width: 100.0,
+                      height: 150.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: NetworkImage(series[index].imagePath),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.0), 
+                    // TV Series Details Column
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title
+                          Text(
+                            series[index].title,
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8.0),
+                          // Release Date
+                          Text(
+                            series[index].releaseDate,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                          ),
+                          SizedBox(height: 8.0),
+                          // Overview
+                          Text(
+                            series[index].overview,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                            maxLines: 2, // Limiting to 2 lines for overview
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           },
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [                
-                SizedBox(width: 16.0), 
-                ElevatedButton.icon(
-                  onPressed: () {                   
-                   Navigator.push(
-                   context,
-                    MaterialPageRoute(
-                     builder: (context) => AppHomeScreen(),
-                  ),
-                );                                
-              },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('Back'),
+        // Back Button
+        Positioned(
+          bottom: 20.0,
+          right: 20.0,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AppHomeScreen(),
                 ),
-              ],
-            ),
+              );
+            },
+            icon: Icon(Icons.arrow_back),
+            label: Text('Back'),
           ),
         ),
       ],
@@ -1358,45 +1429,77 @@ class MovieListAllTime extends StatelessWidget {
                   ),
                 );
               },
-              child: ListTile(
-                title: Text(
-                  movies[index].title,
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 255, 255, 255), 
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                subtitle: Text(
-                  movies[index].releaseDate,
-                  style: TextStyle(fontSize: 16.0, color: Colors.white),
-                ),
-                leading: Image.network(
-                  movies[index].imagePath,
-                  fit: BoxFit.cover,
-                  width: 100.0,
-                  height: 100.0,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Movie Image
+                    Container(
+                      width: 100.0,
+                      height: 150.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: NetworkImage(movies[index].imagePath),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.0), 
+                    // Movie Details Column
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title
+                          Text(
+                            movies[index].title,
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8.0),
+                          // Release Date
+                          Text(
+                            movies[index].releaseDate,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                          ),
+                          SizedBox(height: 8.0),
+                          // Overview
+                          Text(
+                            movies[index].overview,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                            maxLines: 2, // Limiting to 2 lines for overview
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           },
         ),
+        // Navigate to best movies of the year screen
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to best movies of the year screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BestMoviesThisYear(),
-                      ),
-                    );
-                  },
-                  child: Text('This Year'),
-                ),                
-              ],
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BestMoviesThisYear(),
+                  ),
+                );
+              },
+              child: Text('This Year'),
             ),
           ),
         ),
@@ -1468,20 +1571,40 @@ class MovieList extends StatelessWidget {
                   ),
                 );
               },
-              child: ListTile(
-                title: Text(
-                  movies[index].title,
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 255, 255, 255), 
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                subtitle: Text(
-                  movies[index].releaseDate,
-                  style: TextStyle(fontSize: 16.0, color: Colors.white),
-                ),
-                leading: Image.network(
-                  movies[index].imagePath,
-                  fit: BoxFit.cover,
-                  width: 100.0,
-                  height: 100.0,
+                child: ListTile(
+                  title: Text(
+                    movies[index].title,
+                    style: TextStyle(fontSize: 20.0, color: Colors.grey),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        movies[index].releaseDate,
+                        style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                      ),
+                      SizedBox(height: 8.0),
+                      Text(
+                        movies[index].overview,
+                        style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                        maxLines: 2, // Limiting to 2 lines for overview
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                  leading: Image.network(
+                    movies[index].imagePath,
+                    fit: BoxFit.cover,
+                    width: 100.0,
+                    height: 100.0,
+                  ),
                 ),
               ),
             );
@@ -1534,112 +1657,75 @@ class ContentDetailScreen extends StatelessWidget {
   ContentDetailScreen({required this.content});
 
   @override
-  Widget build(BuildContext context) {
-    final movieProvider = Provider.of<MovieProvider>(context, listen: false);
+Widget build(BuildContext context) {
+  final movieProvider = Provider.of<MovieProvider>(context, listen: false);
 
-    Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
-
-    
-    return Scaffold(      
-      body: Stack(
-        children: [
-          // Background 
-          Container(
-            color: backgroundColor,
-          ),
-          // Movie Details          
-          Center(
+  return Scaffold(
+    body: Stack(
+      children: [
+        // Image
+        Image.network(
+          'https://image.tmdb.org/t/p/w500' + content.imagePath,
+          fit: BoxFit.cover,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 1.0, 
+        ),        
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            padding: EdgeInsets.all(20.0),
+            color: Colors.white,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Image.network(                  
-                   'https://image.tmdb.org/t/p/w500' + content.imagePath,                                
-                  fit: BoxFit.cover,
-                  width: 200.0,
-                  height: 200.0,
+                // Title
+                Text(
+                  content.title,
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 20.0),                
+                SizedBox(height: 10.0),
+                // Release Date
                 Text(
                   'Release Date: ${content.releaseDate}',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                  style: TextStyle(fontSize: 18.0),
                 ),
-                SizedBox(height: 20.0),                
-                Text(
-                  'title: ${content.title}',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
-                ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 10.0),               
+                // Rating
                 Text(
                   'Rating: ${content.rating}',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                  style: TextStyle(fontSize: 18.0),
                 ),
                 SizedBox(height: 20.0),
-
-                // Add to Watchlist Button
-                ElevatedButton(
-                  onPressed: () {
-                    if (!movieProvider.isInWatchlist(content)) {
-                      movieProvider.addToWatchlist(content);
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${content.title} added to watchlist.'),                          
-                        ),                        
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${content.title} is already in watchlist.'),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text('Add to Watchlist'),
-                ),                
-                SizedBox(height: 20.0),
-                
-                ElevatedButton(
-                  onPressed: () {
-                    if (!movieProvider.isInWatchedlist(content)) {
-                      movieProvider.addToWatchedlist(content);
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${content.title} added to watchedlist.'),                          
-                        ),                        
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${content.title} is already in watchedlist.'),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text('Add to MyWatchedlist'),
-                ),   
-              ],
-            ),            
-          ),   
-            ElevatedButton.icon(
-                    onPressed: () {                   
-                    Navigator.push(
-                    context,
-                      MaterialPageRoute(
-                      builder: (context) => CinemaListScreen(),
-                    ),
-                  );                                
-                },
+                 // overview
+                Text(
+                  'overview: ${content.overview}',
+                  style: TextStyle(fontSize: 18.0),
+                ),
+                SizedBox(height: 10.0),
+                // Back Button
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     icon: Icon(Icons.arrow_back),
                     label: Text('Back'),
-                  ),       
-                ],                
-              ),      
-            );
-          }
-        }              
-      
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+}
+
+
 class SearchResultsScreen extends StatefulWidget {
   final String actorName;
   final String title;
@@ -1676,7 +1762,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 // Display Search Results
                 if (_searchResults.isNotEmpty)
                   Expanded(
-                    child: MoviesActorList(content: _searchResults),
+                    child: MoviesActorList(movies: _moviesList),
                   )
                 else
                   Text('No results'),
@@ -1983,178 +2069,79 @@ class AppHomeScreen extends StatelessWidget {
 }
 }
 
-class MoviesActorList extends StatelessWidget {
-  final List<Content> content;
+class MoviesActorList extends StatelessWidget {  
+  final TmdbService tmdbService = TmdbService();
+  final List<Movie> movies;
 
-  MoviesActorList({required this.content});
+  MoviesActorList({required this.movies});
 
   @override
   Widget build(BuildContext context) {
-    if (content.isEmpty) {
+    if (movies.isEmpty) {
       return Center(
         child: Text('No results'),
       );
     } else {
-      return ListView.builder(
-        itemCount: content.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(
-              content[index].title ?? '',
-              style: TextStyle(fontSize: 20.0, color: Colors.white),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Release Date: ${content[index].releaseDate}',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
-                ),
-                Text(
-                  'Rating: ${content[index].rating}',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
-                ),
-                Image.network(
-                  'https://image.tmdb.org/t/p/w500' + content[index].imagePath,
-                  height: 100,
-                  width: 100,
-                  fit: BoxFit.cover,
-                ),
-              ],
-            ),
-            onTap: () {
-              // Navigate to a screen showing the actor's movie details
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ContentDetailScreen(content: content[index]),
-                ),
-              );
-            },
-          );
-        },
-      );
-    }
-  }
-}
-
-class MyHomePage extends StatelessWidget with ValidationMixin {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
-
-    return Scaffold(      
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.5,
-              width: MediaQuery.of(context).size.height * 2.0,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('web/assets/cp1.jpg'), 
-                    fit: BoxFit.cover
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Text(
-                        title,
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ),
+      return Stack(
+      children: [
+        ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContentDetailScreen(content: movies[index]),
                   ),
-                ],
-              ),
-            ),
-            Form(
-              key: formGlobalKey,
+                );
+              },
               child: Container(
-                padding: const EdgeInsets.all(16.0),
-                color: Colors.white,
-                child: Column(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 255, 255, 255), 
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const SizedBox(height: 16.0),
-                    const Text(
-                      'Username',
-                      style: TextStyle(fontSize: 20.0, color: Colors.black),
-                    ),
-                    TextFormField(                      
-                      validator: (email){
-                        /*if (EmailValidator.validate(email!)) return null;
-                        else
-                         return 'Email address invalid';*/
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Enter your username',
+                  children: [
+                    // Movie Image
+                    Container(
+                      width: 100.0,
+                      height: 150.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: NetworkImage(movies[index].imagePath),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 16.0),
-                    const Text(
-                      'Password',
-                      style: TextStyle(fontSize: 20.0, color: Colors.black),
-                    ),
-                    TextFormField(
-                      validator: (password){
-                       /* if (isPasswordValid(password!)) return null;
-                         else
-                          return 'Invalid Password.';*/
-                      },
-                      maxLength: 6,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        hintText: 'Enter your password',
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Center(
+                    SizedBox(width: 12.0), 
+                    // Movie Details Column
+                    Expanded(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if (formGlobalKey.currentState!.validate()) {
-                                formGlobalKey.currentState!.save();
-                                Navigator.pushNamed(context, '/second');
-                              }
-                            },
-                            child: const Text('Login'),
+                          // Title
+                          Text(
+                            movies[index].title,
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ForgotPassword(),
-                                ),
-                              );
-                            },
-                            child: const Text('Forgot Password?'),
+                          SizedBox(height: 8.0),
+                          // Release Date
+                          Text(
+                            movies[index].releaseDate,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CreateAccountScreen(),
-                                ),
-                              );
-                            },
-                            child: const Text('New User? Create account'),
+                          SizedBox(height: 8.0),
+                          // Overview
+                          Text(
+                            movies[index].overview,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                            maxLines: 2, // Limiting to 2 lines for overview
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
@@ -2162,8 +2149,165 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                   ],
                 ),
               ),
-            ),
-          ],
+            );
+          },
+        ),
+        // Back Button
+        Positioned(
+          bottom: 20.0,
+          right: 20.0,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AppHomeScreen(),
+                ),
+              );
+            },
+            icon: Icon(Icons.arrow_back),
+            label: Text('Back'),
+          ),
+        ),
+      ],
+    );
+    }
+  }
+}
+
+class MyHomePage extends StatelessWidget with ValidationMixin {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+  final GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        // Dismiss the keyboard when tapping outside of text fields
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.5,
+                width: MediaQuery.of(context).size.height * 2.0,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('web/assets/cp1.jpg'), 
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Text(
+                          title,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Form(
+                key: formGlobalKey,
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  color: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const SizedBox(height: 16.0),
+                      const Text(
+                        'Username',
+                        style: TextStyle(fontSize: 20.0, color: Colors.black),
+                      ),
+                      TextFormField(
+                        validator: (email){
+                          /*if (EmailValidator.validate(email!)) return null;
+                          else
+                            return 'Email address invalid';*/
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Enter your username',
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      const Text(
+                        'Password',
+                        style: TextStyle(fontSize: 20.0, color: Colors.black),
+                      ),
+                      TextFormField(
+                        validator: (password){
+                          /* if (isPasswordValid(password!)) return null;
+                            else
+                              return 'Invalid Password.';*/
+                        },
+                        maxLength: 6,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your password',
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if (formGlobalKey.currentState!.validate()) {
+                                  formGlobalKey.currentState!.save();
+                                  Navigator.pushNamed(context, '/second');
+                                }
+                              },
+                              child: const Text('Login'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ForgotPassword(),
+                                  ),
+                                );
+                              },
+                              child: const Text('Forgot Password?'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CreateAccountScreen(),
+                                  ),
+                                );
+                              },
+                              child: const Text('New User? Create account'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -2198,7 +2342,6 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
                 ),
               ),
               const SizedBox(height: 16.0),
-
               // Password
               const Text(
                 'Password',
