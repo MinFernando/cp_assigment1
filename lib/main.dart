@@ -2328,7 +2328,7 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
               // Username
               const Text(
                 'Username',
-                style: TextStyle(fontSize: 20.0, color: Colors.black),
+                style: TextStyle(fontSize: 25.0, color: Colors.black),
               ),
               TextFormField(
                 validator: (email) {
@@ -2345,7 +2345,7 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
               // Password
               const Text(
                 'Password',
-                style: TextStyle(fontSize: 20.0, color: Colors.black),
+                style: TextStyle(fontSize: 25.0, color: Colors.black),
               ),
               TextFormField(
                 validator: (password) {
