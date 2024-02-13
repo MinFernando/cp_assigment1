@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-
 void main(){
   runApp(
     ChangeNotifierProvider(
@@ -366,24 +365,41 @@ class CinemaListScreen extends StatelessWidget {
   }
 }
 
-class MovieListCinema extends StatelessWidget {
+class MovieListCinema extends StatefulWidget {
   final List<Movie> movies;
 
   MovieListCinema({required this.movies});
 
   @override
+  _MovieListCinemaState createState() => _MovieListCinemaState();
+}
+
+class _MovieListCinemaState extends State<MovieListCinema> {
+  bool sortByDate = false;
+  bool sortByTitle = false;
+
+  @override
   Widget build(BuildContext context) {
+    List<Movie> displayedMovies = List.from(widget.movies);
+
+    // Sorting logic
+    if (sortByDate) {
+      displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+    } else if (sortByTitle) {
+      displayedMovies.sort((a, b) => a.title.compareTo(b.title));
+    }
+
     return Stack(
       children: [
         ListView.builder(
-          itemCount: movies.length,
+          itemCount: displayedMovies.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ContentDetailScreen(content: movies[index]),
+                    builder: (context) => ContentDetailScreen(content: displayedMovies[index]),
                   ),
                 );
               },
@@ -391,7 +407,7 @@ class MovieListCinema extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255), 
+                  color: Color.fromARGB(255, 255, 255, 255),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Row(
@@ -404,12 +420,12 @@ class MovieListCinema extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         image: DecorationImage(
-                          image: NetworkImage(movies[index].imagePath),
+                          image: NetworkImage(displayedMovies[index].imagePath),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.0), 
+                    SizedBox(width: 12.0),
                     // Movie Details Column
                     Expanded(
                       child: Column(
@@ -417,19 +433,19 @@ class MovieListCinema extends StatelessWidget {
                         children: [
                           // Title
                           Text(
-                            movies[index].title,
+                            displayedMovies[index].title,
                             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8.0),
                           // Release Date
                           Text(
-                            movies[index].releaseDate,
+                            displayedMovies[index].releaseDate,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                           ),
                           SizedBox(height: 8.0),
                           // Overview
                           Text(
-                            movies[index].overview,
+                            displayedMovies[index].overview,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                             maxLines: 2, // Limiting to 2 lines for overview
                             overflow: TextOverflow.ellipsis,
@@ -443,29 +459,65 @@ class MovieListCinema extends StatelessWidget {
             );
           },
         ),
-        // Back Button
         Positioned(
-          bottom: 20.0,
-          right: 20.0,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AppHomeScreen(),
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.05, // 5% of screen height
+            color: Color.fromARGB(255, 0, 0, 0), 
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                  onPressed: () {
+                    // Toggle sorting by date
+                    setState(() {
+                      sortByDate = !sortByDate;
+                      sortByTitle = false;
+                    });
+                  },
+                  child: Text('Sort by Date'),
                 ),
-              );
-            },
-            icon: Icon(Icons.arrow_back),
-            label: Text('Back'),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                  onPressed: () {
+                    // Toggle sorting by title
+                    setState(() {
+                      sortByTitle = !sortByTitle;
+                      sortByDate = false;
+                    });
+                  },
+                  child: Text('Sort by Title'),
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppHomeScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.arrow_back),
+                  label: Text('Back'),
+                ),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 }
-
-
 
 class TvListScreen extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
@@ -510,24 +562,41 @@ class TvListScreen extends StatelessWidget {
   }
 }
 
-class ListSeries extends StatelessWidget {
+class ListSeries extends StatefulWidget {
   final List<TVSeries> series;
 
   ListSeries({required this.series});
 
   @override
+  _ListSeriesState createState() => _ListSeriesState();
+}
+
+class _ListSeriesState extends State<ListSeries> {
+  bool sortByDate = false;
+  bool sortByTitle = false;
+
+  @override
   Widget build(BuildContext context) {
+    List<TVSeries> displayedSeries = List.from(widget.series);
+
+    // Sorting logic
+    if (sortByDate) {
+      displayedSeries.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+    } else if (sortByTitle) {
+      displayedSeries.sort((a, b) => a.title.compareTo(b.title));
+    }
+
     return Stack(
       children: [
         ListView.builder(
-          itemCount: series.length,
+          itemCount: displayedSeries.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ContentDetailScreen(content: series[index]),
+                    builder: (context) => ContentDetailScreen(content: displayedSeries[index]),
                   ),
                 );
               },
@@ -535,7 +604,7 @@ class ListSeries extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255), 
+                  color: Color.fromARGB(255, 255, 255, 255),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Row(
@@ -548,12 +617,12 @@ class ListSeries extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         image: DecorationImage(
-                          image: NetworkImage(series[index].imagePath),
+                          image: NetworkImage(displayedSeries[index].imagePath),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.0), 
+                    SizedBox(width: 12.0),
                     // TV Series Details Column
                     Expanded(
                       child: Column(
@@ -561,19 +630,19 @@ class ListSeries extends StatelessWidget {
                         children: [
                           // Title
                           Text(
-                            series[index].title,
+                            displayedSeries[index].title,
                             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8.0),
                           // Release Date
                           Text(
-                            series[index].releaseDate,
+                            displayedSeries[index].releaseDate,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                           ),
                           SizedBox(height: 8.0),
                           // Overview
                           Text(
-                            series[index].overview,
+                            displayedSeries[index].overview,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                             maxLines: 2, // Limiting to 2 lines for overview
                             overflow: TextOverflow.ellipsis,
@@ -589,19 +658,58 @@ class ListSeries extends StatelessWidget {
         ),
         // Back Button
         Positioned(
-          bottom: 20.0,
-          right: 20.0,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AppHomeScreen(),
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.05, // 5% of screen height
+            color: Color.fromARGB(255, 0, 0, 0), 
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                  onPressed: () {
+                    // Toggle sorting by date
+                    setState(() {
+                      sortByDate = !sortByDate;
+                      sortByTitle = false;
+                    });
+                  },
+                  child: Text('Sort by Date'),
                 ),
-              );
-            },
-            icon: Icon(Icons.arrow_back),
-            label: Text('Back'),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                  onPressed: () {
+                    // Toggle sorting by title
+                    setState(() {
+                      sortByTitle = !sortByTitle;
+                      sortByDate = false;
+                    });
+                  },
+                  child: Text('Sort by Title'),
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppHomeScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.arrow_back),
+                  label: Text('Back'),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -853,7 +961,7 @@ class MyWatchedlistScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Navigate to WatchedlistScreen Button
+          // Navigate to WatchlistScreen Button
           Positioned(
             top: 700.0,
             right: 10.0,
@@ -1367,65 +1475,42 @@ class ChangePassword extends StatelessWidget {
   }
 }
 
-class BestMoviesAllTime extends StatelessWidget {
-  final TmdbService tmdbService = TmdbService();
 
-  Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(      
-      body: Stack(
-        children: [
-          // Background Image
-          Container(
-           color: backgroundColor,
-          ),
-          // Movie List
-          Center(
-            child: FutureBuilder(
-              future: tmdbService.getPopularMoviesOfAllTime(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      'Error: ${snapshot.error}',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                } else {
-                  List<Movie> movies = snapshot.data as List<Movie>;
-                  return MovieListAllTime(movies: movies);
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-      
-    );
-  }
-}
-
-class MovieListAllTime extends StatelessWidget {
+class MovieListYear extends StatefulWidget {
   final List<Movie> movies;
 
-  MovieListAllTime({required this.movies});
+  MovieListYear({required this.movies});
+
+  @override
+  _MovieListAllTimeState createState() => _MovieListAllTimeState();
+}
+
+class _MovieListAllTimeState extends State<MovieListYear> {
+  bool sortByDate = false;
+  bool sortByTitle = false;
 
   @override
   Widget build(BuildContext context) {
+    List<Movie> displayedMovies = List.from(widget.movies);
+
+    // Sorting logic
+    if (sortByDate) {
+      displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+    } else if (sortByTitle) {
+      displayedMovies.sort((a, b) => a.title.compareTo(b.title));
+    }
+
     return Stack(
       children: [
         ListView.builder(
-          itemCount: movies.length,
+          itemCount: displayedMovies.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ContentDetailScreen(content: movies[index]),
+                    builder: (context) => ContentDetailScreen(content: displayedMovies[index]),
                   ),
                 );
               },
@@ -1433,7 +1518,7 @@ class MovieListAllTime extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255), 
+                  color: Color.fromARGB(255, 255, 255, 255),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Row(
@@ -1446,12 +1531,12 @@ class MovieListAllTime extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         image: DecorationImage(
-                          image: NetworkImage(movies[index].imagePath),
+                          image: NetworkImage(displayedMovies[index].imagePath),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.0), 
+                    SizedBox(width: 12.0),
                     // Movie Details Column
                     Expanded(
                       child: Column(
@@ -1459,19 +1544,19 @@ class MovieListAllTime extends StatelessWidget {
                         children: [
                           // Title
                           Text(
-                            movies[index].title,
+                            displayedMovies[index].title,
                             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8.0),
                           // Release Date
                           Text(
-                            movies[index].releaseDate,
+                            displayedMovies[index].releaseDate,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                           ),
                           SizedBox(height: 8.0),
                           // Overview
                           Text(
-                            movies[index].overview,
+                            displayedMovies[index].overview,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                             maxLines: 2, // Limiting to 2 lines for overview
                             overflow: TextOverflow.ellipsis,
@@ -1486,20 +1571,57 @@ class MovieListAllTime extends StatelessWidget {
           },
         ),
         // Navigate to best movies of the year screen
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BestMoviesThisYear(),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.05, // 5% of screen height
+            color: Color.fromARGB(255, 0, 0, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
                   ),
-                );
-              },
-              child: Text('This Year'),
+                  onPressed: () {
+                    // Toggle sorting by date
+                    setState(() {
+                      sortByDate = !sortByDate;
+                      sortByTitle = false;
+                    });
+                  },
+                  child: Text('Sort by Date'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                  onPressed: () {
+                    // Toggle sorting by title
+                    setState(() {
+                      sortByTitle = !sortByTitle;
+                      sortByDate = false;
+                    });
+                  },
+                  child: Text('Sort by Title'),
+                ),                
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BestMoviesThisYear(),
+                      ),
+                    );
+                  },
+                  child: Text('This year'),
+                ),
+              ],
             ),
           ),
         ),
@@ -1544,30 +1666,47 @@ class BestMoviesThisYear extends StatelessWidget {
             ),
           ),
         ],
-      ),
-      
+      ),      
     );
   }
 }
 
-class MovieList extends StatelessWidget {
+
+class MovieList extends StatefulWidget {
   final List<Movie> movies;
 
   MovieList({required this.movies});
 
   @override
+  _MovieListState createState() => _MovieListState();
+}
+
+class _MovieListState extends State<MovieList> {
+  bool sortByDate = false;
+  bool sortByTitle = false;
+
+  @override
   Widget build(BuildContext context) {
+    List<Movie> displayedMovies = List.from(widget.movies);
+
+    // Sorting logic
+    if (sortByDate) {
+      displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+    } else if (sortByTitle) {
+      displayedMovies.sort((a, b) => a.title.compareTo(b.title));
+    }
+
     return Stack(
       children: [
         ListView.builder(
-          itemCount: movies.length,
+          itemCount: displayedMovies.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ContentDetailScreen(content: movies[index]),
+                    builder: (context) => ContentDetailScreen(content: displayedMovies[index]),
                   ),
                 );
               },
@@ -1575,32 +1714,32 @@ class MovieList extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255), 
+                  color: Color.fromARGB(255, 255, 255, 255),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: ListTile(
                   title: Text(
-                    movies[index].title,
+                    displayedMovies[index].title,
                     style: TextStyle(fontSize: 20.0, color: Colors.grey),
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        movies[index].releaseDate,
+                        displayedMovies[index].releaseDate,
                         style: TextStyle(fontSize: 16.0, color: Colors.grey),
                       ),
                       SizedBox(height: 8.0),
                       Text(
-                        movies[index].overview,
+                        displayedMovies[index].overview,
                         style: TextStyle(fontSize: 16.0, color: Colors.grey),
-                        maxLines: 2, // Limiting to 2 lines for overview
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                   leading: Image.network(
-                    movies[index].imagePath,
+                    displayedMovies[index].imagePath,
                     fit: BoxFit.cover,
                     width: 100.0,
                     height: 100.0,
@@ -1610,16 +1749,67 @@ class MovieList extends StatelessWidget {
             );
           },
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+         Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.05, // 5% of screen height
+            color: Color.fromARGB(255, 0, 0, 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                              ),
                   onPressed: () {
-                    // Navigate to best movies of all time screen
+                    // Toggle sorting by date
+                    setState(() {
+                      sortByDate = !sortByDate;
+                      sortByTitle = false;
+                    });
+                  },
+                  child: Text('Sort by Date'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                              ),
+                  onPressed: () {
+                    // Toggle sorting by title
+                    setState(() {
+                      sortByTitle = !sortByTitle;
+                      sortByDate = false;
+                    });
+                  },
+                  child: Text('Sort by Title'),
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 0, 0, 0), 
+                              ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppHomeScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.arrow_back),
+                  label: Text('Back'),
+                ),                
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child:
+          ElevatedButton(            
+                  onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -1627,29 +1817,55 @@ class MovieList extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text('Of all time!'),
+                  child: Text('of all time'),
                 ),
-                SizedBox(width: 16.0), 
-                ElevatedButton.icon(
-                  onPressed: () {                   
-                   Navigator.push(
-                   context,
-                    MaterialPageRoute(
-                     builder: (context) => AppHomeScreen(),
-                  ),
-                );                                
-              },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('Back'),
-                ),
-              ],
-            ),
-          ),
-        ),
+        )
       ],
     );
   }
 }
+
+class BestMoviesAllTime extends StatelessWidget {
+  final TmdbService tmdbService = TmdbService();
+
+  Color backgroundColor = Color.fromARGB(255, 48, 8, 8);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(      
+      body: Stack(
+        children: [
+          // Background Image
+          Container(
+           color: backgroundColor,
+          ),
+          // Movie List
+          Center(
+            child: FutureBuilder(
+              future: tmdbService.getPopularMoviesOfAllTime(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      'Error: ${snapshot.error}',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                } else {
+                  List<Movie> movies = snapshot.data as List<Movie>;
+                  return MovieList(movies: movies);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+      
+    );
+  }
+}
+
 
 class ContentDetailScreen extends StatelessWidget {
   final Content content;
@@ -1657,104 +1873,177 @@ class ContentDetailScreen extends StatelessWidget {
   ContentDetailScreen({required this.content});
 
   @override
-Widget build(BuildContext context) {
-  final movieProvider = Provider.of<MovieProvider>(context, listen: false);
+  Widget build(BuildContext context) {
+    final movieProvider = Provider.of<MovieProvider>(context, listen: false);
 
-  return Scaffold(
-    body: Stack(
-      children: [
-        // Image
-        Image.network(
-          'https://image.tmdb.org/t/p/w500' + content.imagePath,
-          fit: BoxFit.cover,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 1.0, 
-        ),        
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            padding: EdgeInsets.all(20.0),
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // Title
-                Text(
-                  content.title,
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10.0),
-                // Release Date
-                Text(
-                  'Release Date: ${content.releaseDate}',
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                SizedBox(height: 10.0),               
-                // Rating
-                Text(
-                  'Rating: ${content.rating}',
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                SizedBox(height: 20.0),
-                 // overview
-                Text(
-                  'overview: ${content.overview}',
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                SizedBox(height: 10.0),
-                // Back Button
-                Align(
-                  alignment: Alignment.center,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.arrow_back),
-                    label: Text('Back'),
+    return Scaffold(
+      body: Stack(
+        children: [
+          // Image
+          Image.network(
+            'https://image.tmdb.org/t/p/w500' + content.imagePath,
+            fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 1.0, 
+          ),        
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.all(20.0),
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  // Title
+                  Text(
+                    content.title,
+                    style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                  SizedBox(height: 10.0),
+                  // Release Date
+                  Text(
+                    'Release Date: ${content.releaseDate}',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(height: 10.0),               
+                  // Rating
+                  Text(
+                    'Rating: ${content.rating}',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(height: 20.0),
+                   // Overview
+                  Text(
+                    'Overview: ${content.overview}',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                    SizedBox(height: 20.0),
+                  // Add to Watchlist Button
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Add to Watchlist Button
+                            ElevatedButton(                              
+                              onPressed: () {
+                                if (!movieProvider.isInWatchlist(content)) {
+                                  movieProvider.addToWatchlist(content);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('${content.title} added to watchlist.'),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('${content.title} is already in watchlist.'),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Text('Add to Watchlist'),
+                            ),
+                            SizedBox(width: 10.0),
+                            // Add to MyWatchedlist Button
+                            ElevatedButton(                              
+                              onPressed: () {
+                                if (!movieProvider.isInWatchedlist(content)) {
+                                  movieProvider.addToWatchedlist(content);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('${content.title} added to watchedlist.'),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('${content.title} is already in watchedlist.'),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Text('Add to MyWatchedlist'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  // Back Button
+                  Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton.icon(                    
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.arrow_back),
+                      label: Text('Back'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
-}
-
 
 class SearchResultsScreen extends StatefulWidget {
   final String actorName;
   final String title;
-  const SearchResultsScreen({Key? key, required this.actorName,  required this.title}) : super(key: key);
+
+  const SearchResultsScreen({Key? key, required this.actorName, required this.title}) : super(key: key);
+  
   @override
-  _SearchResultsScreenState createState() => _SearchResultsScreenState();
+  _SearchResultsScreenState createState() => _SearchResultsScreenState();   
 }
+
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
   final TmdbService tmdbService = TmdbService();
-  List<Movie> _moviesList = [];
-  List<TVSeries> _tvSeriesList = [];
-  List<Content> _searchResults = [];
+  List<Content> _searchResults = []; 
+  List<TVSeries> _tvSeriesList = []; 
+  List<Movie> _moviesList= []; 
 
-  Color color1 = Color.fromARGB(255, 27, 188, 182);
-  Color color2 = Colors.black;
+  Color color1 = Color.fromARGB(255, 48, 8, 8);
+  Color color2 = Color.fromARGB(255, 0, 0, 0); 
+
+  bool sortByDate = false;
+  bool sortByTitle = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(      
+    List<Content> displayedMovies = List.from(_searchResults.isNotEmpty ? _searchResults : _moviesList);
+  
+    // Sorting logic
+    if (sortByDate) {
+      displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+    } else if (sortByTitle) {
+      displayedMovies.sort((a, b) => a.title.compareTo(b.title));
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
       body: Stack(
         children: [
           Container(
             decoration: BoxDecoration(
-            gradient: LinearGradient(
-            colors: [color1, color2],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+              gradient: LinearGradient(
+                colors: [color1, color2],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
           ),
           Center(
             child: Column(
@@ -1762,18 +2051,117 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 // Display Search Results
                 if (_searchResults.isNotEmpty)
                   Expanded(
-                    child: MoviesActorList(movies: _moviesList),
+                    child: ListView.builder(
+                      itemCount: _searchResults.length,
+                      itemBuilder: (context, index) {
+                        final content = _searchResults[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContentDetailScreen(content: content),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                            padding: EdgeInsets.all(12.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                               if (content is Movie && content.imagePath != null && content.imagePath.isNotEmpty)
+                                Image.network(
+                                  'https://image.tmdb.org/t/p/w500' + content.imagePath,
+                                  fit: BoxFit.cover,
+                                  width: 100.0,
+                                  height: 150.0,
+                                ),
+                              if (content is TVSeries && content.imagePath != null && content.imagePath.isNotEmpty)
+                                Image.network(
+                                  'https://image.tmdb.org/t/p/w500' + content.imagePath,
+                                  fit: BoxFit.cover,
+                                  width: 100.0,
+                                  height: 150.0,
+                                ),
+                                SizedBox(width: 16.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        content.title,
+                                        style: TextStyle(fontSize: 20.0, color: Colors.grey),
+                                      ),
+                                      Text(
+                                        content.releaseDate,
+                                        style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                                      ),
+                                      Text(
+                                        content.overview,
+                                        style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
                   )
                 else
                   Text('No results'),
               ],
             ),
+          ),  
+          // Sorting buttons
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 50, 
+              color: Colors.black,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        sortByDate = true;
+                        sortByTitle = false;
+                      });
+                    },
+                    child: Text('Sort by Date'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        sortByDate = false;
+                        sortByTitle = true;
+                      });
+                    },
+                    child: Text('Sort by Title'),
+                  ),
+                ],
+              ),
+            ),
           ),
-          
         ],
       ),
     );
   }
+     
+        
   @override
   void initState() {
     super.initState();
@@ -1789,6 +2177,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       setState(() {
         _moviesList = movies;
         _tvSeriesList = tvSeries;
+        // Concatenate both movie and TV series lists into search results
+        _searchResults.addAll(movies);
+        _searchResults.addAll(tvSeries);
       });
     } catch (e) {
       // Handle the error
@@ -1797,7 +2188,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   }
   Future<void> _searchForData() async {
     try {
-      final results = await tmdbService.searchMoviesAndSeries(widget.actorName);
+      final results = await tmdbService.searchMoviesAndSeries(widget.actorName);      
       setState(() {
         _searchResults = results;
       });
@@ -2069,111 +2460,124 @@ class AppHomeScreen extends StatelessWidget {
 }
 }
 
-class MoviesActorList extends StatelessWidget {  
-  final TmdbService tmdbService = TmdbService();
+class MoviesActorList extends StatefulWidget {
   final List<Movie> movies;
 
   MoviesActorList({required this.movies});
 
   @override
+  _MoviesActorListState createState() => _MoviesActorListState();
+}
+
+class _MoviesActorListState extends State<MoviesActorList> {
+  bool sortByYear = false;
+
+  @override
   Widget build(BuildContext context) {
-    if (movies.isEmpty) {
-      return Center(
-        child: Text('No results'),
-      );
+    List<Movie> sortedMovies = List.from(widget.movies);
+
+    // Sorting logic
+    if (!sortByYear) {
+      sortedMovies.sort((a, b) => a.title.compareTo(b.title));
     } else {
-      return Stack(
-      children: [
-        ListView.builder(
-          itemCount: movies.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ContentDetailScreen(content: movies[index]),
+      sortedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Movies List'),
+      ),
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    sortByYear = true;
+                  });
+                },
+                child: Text('Sort by Year'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    sortByYear = false;
+                  });
+                },
+                child: Text('Sort Alphabetically'),
+              ),
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: sortedMovies.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ContentDetailScreen(content: sortedMovies[index]),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: EdgeInsets.all(12.0),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.network(
+                          'https://image.tmdb.org/t/p/w500' + sortedMovies[index].imagePath,
+                          fit: BoxFit.cover,
+                          width: 100.0,
+                          height: 150.0,
+                        ),
+                        SizedBox(width: 12.0),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                sortedMovies[index].title,
+                                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8.0),
+                              Text(
+                                sortedMovies[index].releaseDate,
+                                style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                              ),
+                              SizedBox(height: 8.0),
+                              Text(
+                                sortedMovies[index].overview,
+                                style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                padding: EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255), 
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Movie Image
-                    Container(
-                      width: 100.0,
-                      height: 150.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        image: DecorationImage(
-                          image: NetworkImage(movies[index].imagePath),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 12.0), 
-                    // Movie Details Column
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Title
-                          Text(
-                            movies[index].title,
-                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 8.0),
-                          // Release Date
-                          Text(
-                            movies[index].releaseDate,
-                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
-                          ),
-                          SizedBox(height: 8.0),
-                          // Overview
-                          Text(
-                            movies[index].overview,
-                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
-                            maxLines: 2, // Limiting to 2 lines for overview
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-        // Back Button
-        Positioned(
-          bottom: 20.0,
-          right: 20.0,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AppHomeScreen(),
-                ),
-              );
-            },
-            icon: Icon(Icons.arrow_back),
-            label: Text('Back'),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
-    }
   }
 }
+
+
 
 class MyHomePage extends StatelessWidget with ValidationMixin {
   MyHomePage({Key? key, required this.title}) : super(key: key);
