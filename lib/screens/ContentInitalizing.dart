@@ -1,4 +1,3 @@
-import 'package:cp_assignment/main.dart';
 
 class Content {
   final String title;

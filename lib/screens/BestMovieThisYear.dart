@@ -1,7 +1,5 @@
-import 'package:cp_assignment/main.dart';
 import 'package:flutter/material.dart';
-
-import '../HighestGrossingAllTime.dart';
+import 'HighestGrossingAllTime.dart';
 import 'ContentDetailsScreen.dart';
 import 'ContentInitalizing.dart';
 import 'constructors.dart';
@@ -17,7 +15,7 @@ class BestMoviesThisYear extends StatelessWidget {
           // Movie List
           Center(
             child: FutureBuilder(
-              future: tmdbService.getPopularMovies2023(),
+              future: tmdbService.getPopularMovies2024(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
@@ -40,7 +38,6 @@ class BestMoviesThisYear extends StatelessWidget {
     );
   }
 }
-
 
 class MovieThisYear extends StatefulWidget {
   final List<Movie> movies;
@@ -182,7 +179,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BestMovieAllTime(movies: [],),
+                        builder: (context) => BestMoviesAllTime(movies: displayedMovies),
                       ),
                     );
                   },

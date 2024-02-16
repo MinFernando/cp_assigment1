@@ -1,7 +1,5 @@
-import 'package:cp_assignment/main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'ContentInitalizing.dart';
 import 'MyWatchlistScreen.dart';
 

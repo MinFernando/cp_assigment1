@@ -1,13 +1,10 @@
-import 'package:cp_assignment/main.dart';
 import 'package:flutter/material.dart';
+import 'BestMovieThisYear.dart';
+import 'ContentDetailsScreen.dart';
+import 'ContentInitalizing.dart';
+import 'constructors.dart';
 
-import 'screens/AppHomeScreen.dart';
-import 'screens/BestMovieThisYear.dart';
-import 'screens/ContentDetailsScreen.dart';
-import 'screens/ContentInitalizing.dart';
-import 'screens/constructors.dart';
-
-class BestMoviesAllTime extends StatelessWidget {  
+class BestMovieAllTime extends StatelessWidget {  
   final TmdbService tmdbService = TmdbService();  
   
   @override
@@ -17,8 +14,8 @@ class BestMoviesAllTime extends StatelessWidget {
         children: [         
           // Movie List
           Center(
-            child: FutureBuilder(
-              future: tmdbService.getPopularMoviesOfAllTime(),
+            child: FutureBuilder(              
+              future: tmdbService.getHighestGrossingOfAllTime(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
@@ -31,34 +28,43 @@ class BestMoviesAllTime extends StatelessWidget {
                   );
                 } else {
                   List<Movie> movies = snapshot.data as List<Movie>;
-                  return BestMoviesAllTime();
+                  return BestMoviesAllTime(movies: movies);
                 }
               },
             ),
           ),
         ],
-      ),
-      
+      ),      
     );
   }
 }
 
-class BestMovieAllTime extends StatefulWidget {
+class BestMoviesAllTime extends StatefulWidget {
   final List<Movie> movies;
-
-  BestMovieAllTime({required this.movies});
+  
+  BestMoviesAllTime({required this.movies});
 
   @override
   _BestMovieAllTimeState createState() => _BestMovieAllTimeState();
 }
 
-class _BestMovieAllTimeState extends State<BestMovieAllTime> {
+class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
   bool sortByDate = false;
   bool sortByTitle = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     List<Movie> displayedMovies = List.from(widget.movies);
+
+    // Check if displayedMovies is empty
+    if (displayedMovies.isEmpty) {
+      return const Center(
+        child: Text(
+          'No movies available',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
 
     // Sorting logic
     if (sortByDate) {
@@ -67,8 +73,9 @@ class _BestMovieAllTimeState extends State<BestMovieAllTime> {
       displayedMovies.sort((a, b) => a.title.compareTo(b.title));
     }
 
-    return Stack(
-      children: [
+    return Material(
+      child: Stack(
+      children: [        
         ListView.builder(
           itemCount: displayedMovies.length,
           itemBuilder: (context, index) {
@@ -164,34 +171,19 @@ class _BestMovieAllTimeState extends State<BestMovieAllTime> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AppHomeScreen(),
-                      ),
-                    );
-                  },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('Back'),
-                ),                
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          top: 0,
-          right: 0,
-          child:
-          ElevatedButton(            
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
                         builder: (context) => BestMoviesThisYear(),
                       ),
                     );
                   },
-                  child: Text('The Year'),
-                ),
-        )
+                  icon: Icon(Icons.arrow_back),
+                  label: Text('This Year'),
+                ),                
+              ],
+            ),
+          ),
+        ),        
       ],
+      ),
     );
   }
 }

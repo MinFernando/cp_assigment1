@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:cp_assignment/main.dart';
-
 import 'ContentInitalizing.dart';
 
 class TmdbService {
@@ -10,8 +8,8 @@ class TmdbService {
   final String imageUrl = 'https://image.tmdb.org/t/p/w500';
 
 
-  Future<List<Movie>> getPopularMovies2023() async {
-    final response = await http.get(Uri.parse('$url/discover/movie?api_key=$apiKey&primary_release_year=2023&sort_by=popularity.desc'));
+  Future<List<Movie>> getPopularMovies2024() async {
+    final response = await http.get(Uri.parse('$url/discover/movie?api_key=$apiKey&primary_release_year=2024&sort_by=popularity.desc'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['results'];      
@@ -25,18 +23,19 @@ class TmdbService {
            overview: json['overview'] ?? 'Not Available',
         );
       }).toList();
-
       return movies;
     } else {
       throw Exception('Failed to load popular movies for this year');
     }
   }
 
-  Future<List<Movie>> getPopularMoviesOfAllTime() async {
-    final response = await http.get(Uri.parse('$url/movie/top_rated?api_key=$apiKey'));
+  Future<List<Movie>> getHighestGrossingOfAllTime() async {
+    final String url = 'https://api.themoviedb.org/3/discover/movie?api_key=$apiKey&sort_by=revenue.desc';
+    
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body)['results'];
+      final List<dynamic> data = json.decode(response.body)['results'];            
 
       List<Movie> movies = data.map((json) {
         return Movie(          
@@ -47,10 +46,9 @@ class TmdbService {
           overview: json['overview'] ?? 'Not Available',
         );
       }).toList();
-
       return movies;
     } else {
-      throw Exception('Failed to load popular movies of all time');
+      throw Exception('Failed to load highest grossing movies of all time');
     }
   }
 
