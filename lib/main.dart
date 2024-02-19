@@ -1,17 +1,16 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/HighestGrossingAllTime.dart';
+
 import 'screens/AppHomeScreen.dart';
 import 'screens/BestMovieThisYear.dart';
 import 'screens/ChangeEmailScreen.dart';
 import 'screens/ChangePasswordScreen.dart';
 import 'screens/ChangeUsernameScreen.dart';
 import 'screens/CinemaDisplay.dart';
-import 'screens/ContentInitalizing.dart';
 import 'screens/EditProfileScreen.dart';
 import 'screens/ForgotPassword.dart';
+import 'screens/HighestGrossingAllTime.dart';
 import 'screens/HomePage.dart';
 import 'screens/MyWatchlistScreen.dart';
 import 'screens/SearchResultsScreen.dart';
@@ -19,21 +18,7 @@ import 'screens/SeriesDisplay.dart';
 import 'screens/VisitProfileScreen.dart';
 import 'screens/watchedListScreen.dart';
 
-List<Movie> displayedMovies = [];
-
-Future main() async{
-
-  WidgetsFlutterBinding.ensureInitialized();
-  if(kIsWeb){
-    Firebase.initializeApp(options: 
-    FirebaseOptions(apiKey: "AIzaSyCz5J7_27Ig6hYbMekAUQlDxqZFlKa6uXM", 
-    appId: "1:361652579453:web:9dcf1cbaef1f81f0045514", 
-    messagingSenderId: "361652579453", 
-    projectId: "cross-platform-assignmen-f09aa"));
-  }
-
-  await Firebase.initializeApp();
-  
+void main(){
   runApp(
     ChangeNotifierProvider(
       create: (context) => MovieProvider(),
@@ -61,8 +46,8 @@ class MyApp extends StatelessWidget {
         '/fourth': (context) => TvListScreen(),
         '/fifth': (context) => MyWatchlistScreen(),
         '/sixth': (context) => VisitProfileScreen(),
-        '/seventh': (context) => MovieThisYear(movies: displayedMovies),
-        '/eighth': (context) => BestMoviesAllTime(movies: displayedMovies),
+        '/seventh': (context) => BestMoviesThisYear(),
+        '/eighth': (context) => BestMovieAllTime(),
         '/ninth': (context) => MyWatchedlistScreen(),
         '/tenth': (context) => EditProfileScreen(),
         '/eleventh': (context) => ChangePassword(),

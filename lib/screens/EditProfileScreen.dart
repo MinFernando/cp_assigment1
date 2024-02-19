@@ -1,4 +1,3 @@
-import 'package:cp_assignment/main.dart';
 import 'package:flutter/material.dart';
 import 'ChangeEmailScreen.dart';
 import 'ChangeUsernameScreen.dart';

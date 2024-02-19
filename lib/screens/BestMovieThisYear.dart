@@ -1,3 +1,4 @@
+import 'package:cp_assignment/screens/AppHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'HighestGrossingAllTime.dart';
 import 'ContentDetailsScreen.dart';
@@ -179,16 +180,36 @@ class _MovieThisYearState extends State<MovieThisYear> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BestMoviesAllTime(movies: displayedMovies),
+                        builder: (context) => AppHomeScreen(),
                       ),
                     );
                   },
-                  child: Text('Of All Time'),
+                  child: Text('back'),
                 ),
               ],
             ),
           ),
         ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 255, 255, 255), 
+              minimumSize: Size(100, 30),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BestMoviesAllTime(movies: displayedMovies),
+                ),
+              );
+            },
+            child: Text('Highest Grossing'),
+          ),
+        )
       ],
     );
   }

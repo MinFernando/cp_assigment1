@@ -1,6 +1,4 @@
-import 'package:cp_assignment/main.dart';
 import 'package:flutter/material.dart';
-
 import 'BestMovieThisYear.dart';
 import 'CinemaDisplay.dart';
 import 'MyWatchlistScreen.dart';

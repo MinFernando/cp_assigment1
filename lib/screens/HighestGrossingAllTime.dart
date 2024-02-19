@@ -163,7 +163,7 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                   },
                   child: Text('Sort by Title'),
                 ),
-                ElevatedButton.icon(
+                ElevatedButton(
                   style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 255, 255, 255), 
                               ),
@@ -174,9 +174,8 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                         builder: (context) => BestMoviesThisYear(),
                       ),
                     );
-                  },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('This Year'),
+                  },                  
+                  child: Text('Yearly'),
                 ),                
               ],
             ),

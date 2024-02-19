@@ -1,7 +1,6 @@
-import 'package:cp_assignment/main.dart';
+// create account screen
 import 'package:cp_assignment/screens/HomePage.dart';
 import 'package:flutter/material.dart';
-import 'package:email_validator/email_validator.dart';
 
 class CreateAccountScreen extends StatelessWidget with ValidationMixin {
   @override
@@ -21,10 +20,10 @@ class CreateAccountScreen extends StatelessWidget with ValidationMixin {
               ),
               TextFormField(
                 validator: (email) {
-                  if (EmailValidator.validate(email!))
-                    return null;
-                  else
-                    return 'Email address invalid';
+                  // if (EmailValidator.validate(email!))
+                  //   return null;
+                  // else
+                  //   return 'Email address invalid';
                 },
                 decoration: const InputDecoration(
                   hintText: 'Enter your username',
@@ -93,5 +92,5 @@ class CreateAccountScreen extends StatelessWidget with ValidationMixin {
 }
 
 mixin ValidationMixin {
-  bool isPasswordValid(String inputpassword) => inputpassword.length == 10;
+  bool isPasswordValid(String inputpassword) => inputpassword.length == 6;
 }
