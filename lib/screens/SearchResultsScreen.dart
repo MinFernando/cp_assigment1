@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'AppHomeScreen.dart';
 import 'ContentDetailsScreen.dart';
 import 'ContentInitalizing.dart';
 import 'constructors.dart';
@@ -17,39 +18,37 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   final TmdbService tmdbService = TmdbService();
   List<Content> _searchResults = []; 
   List<TVSeries> _tvSeriesList = []; 
-  List<Movie> _moviesList= []; 
-
-  Color color1 = Color.fromARGB(255, 48, 8, 8);
-  Color color2 = Color.fromARGB(255, 0, 0, 0); 
+  List<Movie> _moviesList= [];  
 
   bool sortByDate = false;
   bool sortByTitle = false;
 
   @override
   Widget build(BuildContext context) {
+    // Apply sorting logic to the displayed movies list
     List<Content> displayedMovies = List.from(_searchResults.isNotEmpty ? _searchResults : _moviesList);
-  
+
     // Sorting logic
     if (sortByDate) {
       displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
     } else if (sortByTitle) {
       displayedMovies.sort((a, b) => a.title.compareTo(b.title));
     }
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [color1, color2],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-          ),
+           Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+           ),
           Center(
             child: Column(
               children: [
@@ -57,9 +56,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 if (_searchResults.isNotEmpty)
                   Expanded(
                     child: ListView.builder(
-                      itemCount: _searchResults.length,
+                      itemCount: displayedMovies.length,
                       itemBuilder: (context, index) {
-                        final content = _searchResults[index];
+                        final content = displayedMovies[index];
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -79,21 +78,21 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                               if (content is Movie && content.imagePath != null && content.imagePath.isNotEmpty)
-                                Image.network(
-                                  'https://image.tmdb.org/t/p/w500' + content.imagePath,
-                                  fit: BoxFit.cover,
-                                  width: 100.0,
-                                  height: 150.0,
-                                ),
-                              if (content is TVSeries && content.imagePath != null && content.imagePath.isNotEmpty)
-                                Image.network(
-                                  'https://image.tmdb.org/t/p/w500' + content.imagePath,
-                                  fit: BoxFit.cover,
-                                  filterQuality: FilterQuality.high,
-                                  width: 100.0,
-                                  height: 150.0,
-                                ),
+                                if (content is Movie && content.imagePath != null && content.imagePath.isNotEmpty)
+                                  Image.network(
+                                    'https://image.tmdb.org/t/p/w500' + content.imagePath,
+                                    fit: BoxFit.cover,
+                                    width: 100.0,
+                                    height: 150.0,
+                                  ),
+                                if (content is TVSeries && content.imagePath != null && content.imagePath.isNotEmpty)
+                                  Image.network(
+                                    'https://image.tmdb.org/t/p/w500' + content.imagePath,
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.high,
+                                    width: 100.0,
+                                    height: 150.0,
+                                  ),
                                 SizedBox(width: 16.0),
                                 Expanded(
                                   child: Column(
@@ -136,7 +135,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             right: 0,
             child: Container(
               height: 50, 
-              color: Colors.black,
+              color: const Color.fromARGB(255, 255, 255, 255),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -157,6 +156,17 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                       });
                     },
                     child: Text('Sort by Title'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppHomeScreen(),
+                      ),
+                    );
+                    },
+                    child: Text('back'),
                   ),
                 ],
               ),

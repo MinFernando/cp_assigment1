@@ -64,6 +64,7 @@ class MyWatchedlistScreen extends StatelessWidget {
                                     image: NetworkImage(
                                         watchedlist[index].imagePath),
                                     fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.high,
                                   ),
                                 ),
                               ),

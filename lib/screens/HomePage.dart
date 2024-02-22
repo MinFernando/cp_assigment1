@@ -21,7 +21,8 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
               decoration: const BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage('web/assets/cp1.jpg'), 
-                    fit: BoxFit.cover
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
                 ),
               ),
               child: Column(

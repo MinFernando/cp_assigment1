@@ -97,6 +97,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
                         image: DecorationImage(
                           image: NetworkImage(displayedMovies[index].imagePath),
                           fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),
@@ -148,7 +149,6 @@ class _MovieThisYearState extends State<MovieThisYear> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 255, 255, 255), 
-
                   ),
                   onPressed: () {
                     // Toggle sorting by date

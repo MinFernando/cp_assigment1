@@ -30,9 +30,8 @@ class TmdbService {
   }
 
   Future<List<Movie>> getHighestGrossingOfAllTime() async {
-    final String url = 'https://api.themoviedb.org/3/discover/movie?api_key=$apiKey&sort_by=revenue.desc';
-    
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse('$url/discover/movie?api_key=$apiKey&primary_release_year=2015&sort_by=popularity.desc'));
+  
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['results'];            

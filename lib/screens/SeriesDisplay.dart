@@ -98,6 +98,7 @@ class _ListSeriesState extends State<ListSeries> {
                         image: DecorationImage(
                           image: NetworkImage(displayedSeries[index].imagePath),
                           fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),

@@ -79,6 +79,7 @@ class _ActosMoviesState extends State<ActosMovies> {
                         Image.network(
                           'https://image.tmdb.org/t/p/w500' + sortedMovies[index].imagePath,
                           fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
                           width: 100.0,
                           height: 150.0,
                         ),

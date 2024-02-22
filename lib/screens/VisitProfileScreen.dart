@@ -25,6 +25,7 @@ class VisitProfileScreen extends StatelessWidget {
                       image: DecorationImage(
                         image: AssetImage('web/assets/cp6.jpg'),
                         fit: BoxFit.cover,
+                        filterQuality: FilterQuality.high,
                       ),                    
                     ),                      
                        child: Align(

@@ -103,6 +103,7 @@ class _MovieListCinemaState extends State<MovieListCinema> {
                         image: DecorationImage(
                           image: NetworkImage(displayedMovies[index].imagePath),
                           fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),

@@ -111,7 +111,7 @@ class AppHomeScreen extends StatelessWidget {
                             ),                                                       
                           ],
                         ),
-                        imagePath: 'web/assets/cp3.jpg',
+                        imagePath: 'web/assets/cp3.jpg',                        
                       ),
                       const SizedBox(height: 10),
                       buildStyledButtonWithImage(
