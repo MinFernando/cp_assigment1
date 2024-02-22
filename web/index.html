@@ -14,6 +14,25 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
+  <!-- Firebase JavaScript SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js"></script>
+
+  <script>
+    // Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyCz5J7_27Ig6hYbMekAUQlDxqZFlKa6uXM",
+      authDomain: "cross-platform-assignmen-f09aa.firebaseapp.com",
+      projectId: "cross-platform-assignmen-f09aa",
+      storageBucket: "cross-platform-assignmen-f09aa.appspot.com",
+      messagingSenderId: "361652579453",
+      appId: "1:361652579453:web:9dcf1cbaef1f81f0045514"
+    };
+
+  // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
@@ -23,13 +42,13 @@
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="cp_assignment">
+  <meta name="apple-mobile-web-app-title" content="crossplatformssignment">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>cp_assignment</title>
+  <title>crossplatformssignment</title>
   <link rel="manifest" href="manifest.json">
 
   <script>
