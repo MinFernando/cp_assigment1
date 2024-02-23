@@ -1,3 +1,4 @@
+import 'package:cp_assignment/screens/VisitProfileScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'ContentInitalizing.dart';
@@ -9,6 +10,9 @@ class MyWatchedlistScreen extends StatelessWidget {
     final movieProvider = Provider.of<MovieProvider>(context);
     List<Content> watchedlist = movieProvider.watchedlist;
 
+  if (watchedlist == null) {
+      throw new Exception("watchedlist is empty");
+    }
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
       body: Stack(
@@ -124,11 +128,11 @@ class MyWatchedlistScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyWatchlistScreen(),
+                      builder: (context) => VisitProfileScreen(),
                     ),
                   );
                 },
-                child: Text('Go to Watchlist'),
+                child: Text('back'),
               ),
             ),
           ),

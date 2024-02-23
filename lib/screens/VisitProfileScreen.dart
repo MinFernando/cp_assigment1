@@ -1,3 +1,5 @@
+import 'package:cp_assignment/screens/MyWatchlistScreen.dart';
+import 'package:cp_assignment/screens/watchedListScreen.dart';
 import 'package:flutter/material.dart';
 import 'AppHomeScreen.dart';
 import 'ChangePasswordScreen.dart';
@@ -66,8 +68,7 @@ class VisitProfileScreen extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            EditProfileScreen(),
+                                        builder: (context) => EditProfileScreen(),
                                       ),
                                     );
                                   },
@@ -83,7 +84,7 @@ class VisitProfileScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 50.0),
+                            const SizedBox(height: 20.0),
                             Align(
                               alignment: Alignment.center,
                               child: SizedBox(
@@ -104,7 +105,57 @@ class VisitProfileScreen extends StatelessWidget {
                               ),
                             ),
                                   child: Text(
-                                    'Change password',
+                                    'Change Password',
+                                    style: TextStyle(fontSize: 16),
+                                  )),)
+                            ),
+                            const SizedBox(height: 20.0),
+                            Align(
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                width: buttonWidth,
+                                height: buttonHeight,
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MyWatchedlistScreen(),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                                  child: Text(
+                                    'My Watchedlist',
+                                    style: TextStyle(fontSize: 16),
+                                  )),)
+                            ),
+                            const SizedBox(height: 20.0),
+                            Align(
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                width: buttonWidth,
+                                height: buttonHeight,
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MyWatchlistScreen(),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                                  child: Text(
+                                    'My Watchlist',
                                     style: TextStyle(fontSize: 16),
                                   )),)
                             ),

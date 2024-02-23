@@ -1,3 +1,4 @@
+import 'package:cp_assignment/screens/VisitProfileScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'AppHomeScreen.dart';
@@ -39,12 +40,16 @@ class MovieProvider with ChangeNotifier {
     return _watchedlist.contains(content);
   }  
 }
-
+  
 class MyWatchlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final movieProvider = Provider.of<MovieProvider>(context);
     List<Content> watchlist = movieProvider.watchlist;   
+
+    if (watchlist == null) {
+      throw new Exception("watchlist is empty");
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -143,7 +148,7 @@ class MyWatchlistScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AppHomeScreen(),
+                          builder: (context) => VisitProfileScreen(),
                         ),
                       );
                     },
@@ -152,22 +157,7 @@ class MyWatchlistScreen extends StatelessWidget {
                       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                       disabledBackgroundColor: Colors.white,
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyWatchedlistScreen(),
-                        ),
-                      );
-                    },
-                    child: Text('Go to Watched list'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      disabledBackgroundColor: Colors.white,
-                    ),
-                  ),
+                  ),                 
                 ],
               ),
             ),

@@ -189,27 +189,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
               ],
             ),
           ),
-        ),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 255, 255, 255), 
-              minimumSize: Size(100, 30),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BestMoviesAllTime(movies: displayedMovies),
-                ),
-              );
-            },
-            child: Text('Highest Grossing'),
-          ),
-        )
+        ),        
       ],
     );
   }
