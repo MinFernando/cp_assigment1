@@ -14,7 +14,7 @@ import 'constructors.dart';
 
   TextEditingController _searchController = TextEditingController();
 
-  Color backgroundColor = Color.fromARGB(255, 2, 2, 15);
+  Color backgroundColor = Color.fromARGB(255, 0, 0, 0);
 
   TmdbService tmdbService = TmdbService();
 
@@ -183,7 +183,7 @@ Widget buildMovieCarouselWidget({
                       builder: (context) => BestMoviesThisYear(),
                     ),
                   );
-                } else if (title == 'Highest Grossing'){                  
+                } else if (title == 'Highest Grossing') {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -215,18 +215,22 @@ Widget buildMovieCarouselWidget({
               options: CarouselOptions(
                 height: 200,
                 aspectRatio: 20 / 8,
-                viewportFraction: 0.8,
+                viewportFraction: 0.3, //ensures all three images are seen
                 enlargeCenterPage: true,
                 autoPlay: true,
                 autoPlayInterval: Duration(seconds: 3),              
               ),
               items: movieImages.map((imageUrl) {
-                return Container(
+                return Container(                  
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.0),
-                    image: DecorationImage(
-                      image: NetworkImage(imageUrl),
-                      fit: BoxFit.cover,
+                    border: Border.all(color: Colors.amber, width: 2.0), // Added a gold border
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.contain,
                     ),
                   ),
                 );
@@ -238,6 +242,7 @@ Widget buildMovieCarouselWidget({
     ],
   );
 }
+
 
 
   Widget buildTVSeriesCarouselWidget({
@@ -293,9 +298,9 @@ Widget buildMovieCarouselWidget({
             List<String> tvSeriesImages = snapshot.data!.map((tvSeries) => tvSeries.imagePath).toList();
             return CarouselSlider(
               options: CarouselOptions(
-                height: 200,
+                height: 200,               
                 aspectRatio: 20 / 8,
-                viewportFraction: 0.8,
+                viewportFraction: 0.3, //ensures all three images are seen
                 enlargeCenterPage: true,
                 autoPlay: true,
                 autoPlayInterval: Duration(seconds: 3),
@@ -304,12 +309,16 @@ Widget buildMovieCarouselWidget({
                 return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.0),
-                    image: DecorationImage(
-                      image: NetworkImage(imageUrl),
-                      fit: BoxFit.cover,                
+                    border: Border.all(color: Colors.amber, width: 2.0), // Added a gold border
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                );
+                );                                    
               }).toList(),
             );
           }

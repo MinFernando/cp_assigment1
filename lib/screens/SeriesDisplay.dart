@@ -35,8 +35,7 @@ class TvListScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-      
+      ),      
     );
   }
 }
@@ -83,8 +82,16 @@ class _ListSeriesState extends State<ListSeries> {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255),
+                  color: Colors.white, // Updated background color
                   borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,14 +149,15 @@ class _ListSeriesState extends State<ListSeries> {
           left: 0,
           right: 0,
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.05, // 5% of screen height
-            color: Color.fromARGB(255, 255, 255, 255), 
+            height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
+            color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 255, 255, 255), 
+                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                    textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)), 
                   ),
                   onPressed: () {
                     // Toggle sorting by date
@@ -162,7 +170,8 @@ class _ListSeriesState extends State<ListSeries> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 255, 255, 255), 
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
+                    textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)), 
                   ),
                   onPressed: () {
                     // Toggle sorting by title
@@ -175,7 +184,8 @@ class _ListSeriesState extends State<ListSeries> {
                 ),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 255, 255, 255), 
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
+                    textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)), 
                   ),
                   onPressed: () {
                     Navigator.push(
