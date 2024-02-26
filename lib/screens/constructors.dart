@@ -85,7 +85,7 @@ class TmdbService {
     List<TVSeries> series = data.map((json) {      
       String title = json['original_name'] ?? 'Unknown Title';      
       String releaseDate = json['first_air_date'] ?? 'Unknown Release Date';
-      String imagePath = json['poster_path'] != null ? '$imageUrl${json['poster_path']}' : 'No Image';
+      String imagePath = json['poster_path'] != null ? '$imageUrl${json['poster_path']}' : 'Not available';
       String rating = json['vote_average']?.toString() ?? '0.0';
       String overview = json['overview'] ?? 'Not Available';
 
