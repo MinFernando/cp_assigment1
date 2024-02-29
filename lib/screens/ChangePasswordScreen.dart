@@ -1,76 +1,110 @@
 import 'package:flutter/material.dart';
-import 'VisitProfileScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'EditProfileScreen.dart';
+import 'ValidationMixin.dart';
 
-class ChangePassword extends StatelessWidget {
+class ChangePassword extends StatelessWidget with ValidationMixin {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    TextEditingController usernameController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+    
 
-    return Scaffold(      
+    return Scaffold(
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
           child: Column(
             children: <Widget>[
               const Text(
-                'Change Password',
-                style: TextStyle(fontSize: 20.0, color: Colors.black),
+                'Username',
+                style: TextStyle(fontSize: 25.0, color: Colors.black),
               ),
               TextFormField(
-                validator: (password) {
-                  if (password != null && password.isNotEmpty) {
+                controller: usernameController,
+                validator: (email) {
+                  if (isEmailValid(email!))
                     return null;
-                  } else
-                    return 'Please enter a valid password';
+                  else
+                    return 'Email address invalid';
                 },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your username',
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              const Text(
+                'New Password',
+                style: TextStyle(fontSize: 25.0, color: Colors.black),
+              ),
+              TextFormField(
+                controller: passwordController,
+                validator: (password) {
+                  if (isPasswordValid(password!))
+                    return null;
+                  else
+                    return 'Invalid Password.';
+                },
+                maxLength: 10,
+                obscureText: true,
                 decoration: const InputDecoration(
                   hintText: 'Enter new password',
                 ),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Password changed'),
-                        content: const Text(
-                            'Your password has been successfully changed!'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => VisitProfileScreen(),
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    try {
+                      // Get the current user
+                      User? user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        // Update password
+                        await user.updatePassword(passwordController.text);
+                        // Show a popup alert
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Password Updated'),
+                              content: const Text(
+                                  'Your password has been successfully updated!'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditProfileScreen()
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('OK'),
                                 ),
-                              );
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        throw Exception('No user signed in.');
+                      }
+                    } catch (error) {
+                      print('Error updating password: $error');
+                      // Show error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Failed to update password.'),
+                          duration: Duration(seconds: 2),
+                        ),
                       );
-                    },
-                  );
+                    }
+                  }
                 },
-                child: const Text('Enter'),
-              ),                            
-              const SizedBox(height: 550.0),
-              Align(
-                alignment: Alignment.topRight,                                                   
-                child: ElevatedButton.icon(
-                  onPressed: () {                   
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VisitProfileScreen(),
-                      ),
-                    );                                
-                  },
-                    icon: Icon(Icons.arrow_back),
-                    label: Text('Back'),
-                  ),
-                ), 
+                child: const Text('Update Password'),
+              ),
             ],
           ),
         ),

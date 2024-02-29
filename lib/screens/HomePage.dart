@@ -1,17 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:cp_assignment/screens/firebase_auth.dart'; // Import your FirebaseAuthService
+import 'AppHomeScreen.dart';
 import 'CreateAccount.dart';
 import 'ForgotPassword.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'ValidationMixin.dart';
 
-class MyHomePage extends StatelessWidget with ValidationMixin {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
+  late TextEditingController _usernameController;
+  late TextEditingController _passwordController;
+  final FirebaseAuthService _auth = FirebaseAuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController = TextEditingController();
+    _passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
 
-    return Scaffold(      
+    return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -20,9 +47,9 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
               width: MediaQuery.of(context).size.height * 2.0,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('web/assets/cp1.jpg'), 
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.high,
+                  image: AssetImage('web/assets/cp1.jpg'),
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
                 ),
               ),
               child: Column(
@@ -37,7 +64,7 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Text(
-                        title,
+                        widget.title,
                         style: const TextStyle(color: Colors.black),
                       ),
                     ),
@@ -58,11 +85,13 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                       'Username',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     ),
-                    TextFormField(                      
-                      validator: (email){
-                        /*if (EmailValidator.validate(email!)) return null;
+                    TextFormField(
+                      controller: _usernameController,
+                      validator: (email) {
+                        if (isEmailValid(email!))
+                          return null;
                         else
-                         return 'Email address invalid';*/
+                          return 'Email address invalid';
                       },
                       decoration: InputDecoration(
                         hintText: 'Enter your username',
@@ -74,10 +103,12 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     ),
                     TextFormField(
-                      validator: (password){
-                       /* if (isPasswordValid(password!)) return null;
-                         else
-                          return 'Invalid Password.';*/
+                      controller: _passwordController,
+                      validator: (password) {
+                        if (isPasswordValid(password!))
+                          return null;
+                        else
+                          return 'Invalid Password.';
                       },
                       maxLength: 6,
                       obscureText: true,
@@ -91,10 +122,35 @@ class MyHomePage extends StatelessWidget with ValidationMixin {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (formGlobalKey.currentState!.validate()) {
                                 formGlobalKey.currentState!.save();
-                                Navigator.pushNamed(context, '/second');
+
+                                String enteredUsername = _usernameController.text;
+                                String enteredPassword = _passwordController.text;
+
+                                try {
+                                  // Sign in with Firebase
+                                  final user = await _auth.signIn(enteredUsername, enteredPassword);
+                                  if (user != null) {
+                                     Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AppHomeScreen(),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Invalid username or password'),
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  print('Error: $e');
+                                  // Handle sign-in errors
+                                }
                               }
                             },
                             child: const Text('Login'),

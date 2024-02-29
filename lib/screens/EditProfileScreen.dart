@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ChangeEmailScreen.dart';
+import 'ChangePasswordScreen.dart';
 import 'ChangeUsernameScreen.dart';
 import 'VisitProfileScreen.dart';
 
@@ -42,7 +42,7 @@ class EditProfileScreen extends StatelessWidget {
                             icon: Icon(Icons.arrow_back),
                             label: Text('Back'),
                           ),
-                        ),    
+                        ),                            
               ),
                 Container(
                     width: MediaQuery.of(context).size.width * 5.0,
@@ -81,7 +81,7 @@ class EditProfileScreen extends StatelessWidget {
                                     style: TextStyle(fontSize: 16),
                                   )),)
                             ),
-                            const SizedBox(height: 50.0),
+                            const SizedBox(height: 20.0),
                             Align(
                               alignment: Alignment.center,
                               child: SizedBox(
@@ -92,8 +92,7 @@ class EditProfileScreen extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            ChangeEmailScreen(),
+                                        builder: (context) => ChangePassword(),
                                       ),
                                     );
                                   },
@@ -103,10 +102,11 @@ class EditProfileScreen extends StatelessWidget {
                               ),
                             ),
                                   child: Text(
-                                    'Change Email',
+                                    'Change Password',
                                     style: TextStyle(fontSize: 16),
                                   )),)
-                            ),                                                   
+                            ),
+                            const SizedBox(height: 50.0),                                                                                                        
                           ]
                         ),
                       )

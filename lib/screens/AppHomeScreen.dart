@@ -155,7 +155,7 @@ Widget buildMovieCarouselWidget({
     children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
+        child: Row(          
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(

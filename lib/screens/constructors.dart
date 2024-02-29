@@ -9,6 +9,8 @@ class TmdbService {
 
 
   Future<List<Movie>> getPopularMovies2024() async {
+
+    try{
     final response = await http.get(Uri.parse('$url/discover/movie?api_key=$apiKey&primary_release_year=2024&sort_by=popularity.desc'));
 
     if (response.statusCode == 200) {
@@ -27,9 +29,14 @@ class TmdbService {
     } else {
       throw Exception('Failed to load popular movies for this year');
     }
+    }catch (e){
+      throw Exception('Failed to fetch data. Check your internet connection and try again.');
+    }
   }
 
   Future<List<Movie>> getHighestGrossingOfAllTime() async {
+
+    try{
     final response = await http.get(Uri.parse('$url/discover/movie?api_key=$apiKey&primary_release_year=2015&sort_by=popularity.desc'));
   
 
@@ -49,9 +56,14 @@ class TmdbService {
     } else {
       throw Exception('Failed to load highest grossing movies of all time');
     }
+   } catch (e) {
+    throw Exception("Failed to fetch data. Check your internet connection and try again. ");
+  }
   }
 
    Future<List<Movie>> getNowPlayingMovies() async {
+
+    try{
     final response = await http.get(Uri.parse('$url/movie/now_playing?api_key=$apiKey'));
 
     if (response.statusCode == 200) {
@@ -71,37 +83,44 @@ class TmdbService {
     } else {
       throw Exception('Failed to load the current cinema listing');
     }
+   } catch (e) {
+    throw Exception("Failed to fetch data. Check your internet connection and try again. ");
+  }
   }
   
   Future<List<TVSeries>> getTVShowsAiringTonight(String countryCode) async {
-  final DateTime now = DateTime.now();
-  final formattedDate = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+    try{
+      final DateTime now = DateTime.now();
+      final formattedDate = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
 
-  final response = await http.get(Uri.parse('$url/tv/airing_today?api_key=$apiKey&air_date=$formattedDate&region=$countryCode'));
+      final response = await http.get(Uri.parse('$url/tv/airing_today?api_key=$apiKey&air_date=$formattedDate&region=$countryCode'));
 
-  if (response.statusCode == 200) {
-    final List<dynamic> data = json.decode(response.body)['results'];
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body)['results'];
 
-    List<TVSeries> series = data.map((json) {      
-      String title = json['original_name'] ?? 'Unknown Title';      
-      String releaseDate = json['first_air_date'] ?? 'Unknown Release Date';
-      String imagePath = json['poster_path'] != null ? '$imageUrl${json['poster_path']}' : 'Not available';
-      String rating = json['vote_average']?.toString() ?? '0.0';
-      String overview = json['overview'] ?? 'Not Available';
+        List<TVSeries> series = data.map((json) {      
+          String title = json['original_name'] ?? 'Unknown Title';      
+          String releaseDate = json['first_air_date'] ?? 'Unknown Release Date';
+          String imagePath = json['poster_path'] != null ? '$imageUrl${json['poster_path']}' : 'Not available';
+          String rating = json['vote_average']?.toString() ?? '0.0';
+          String overview = json['overview'] ?? 'Not Available';
 
-      return TVSeries(        
-        title: title,        
-        releaseDate: releaseDate,
-        imagePath: imagePath,
-        rating: rating,
-        overview: overview,
-      );
-    }).toList();
+          return TVSeries(        
+            title: title,        
+            releaseDate: releaseDate,
+            imagePath: imagePath,
+            rating: rating,
+            overview: overview,
+          );
+        }).toList();
 
-    return series;
-  } else {
-    throw Exception('Failed to load TV shows airing tonight');
-  }
+        return series;
+      } else {
+        throw Exception('Failed to load TV shows airing tonight');
+      }
+    } catch (e) {
+        throw Exception("Failed to fetch data. Check your internet connection and try again. ");
+      }
 }
 
 Future<List<Movie>> getActorMovies(String actorName) async {
@@ -136,7 +155,7 @@ Future<List<Movie>> getActorMovies(String actorName) async {
       throw Exception("Failed to search for actor. Status Code: ${actorSearchRes.statusCode}");
     }
   } catch (e) {
-    throw Exception("Something went wrong! $e");
+    throw Exception("Failed to fetch data. Check your internet connection and try again. ");
   }
 }
 
@@ -172,7 +191,7 @@ Future<List<TVSeries>> getActorTvSeries(String actorName) async {
       throw Exception("Failed to search for actor. Status Code: ${actorSearchRes.statusCode}");
     }
   } catch (e) {
-    throw Exception("Something went wrong! $e");
+    throw Exception("Failed to fetch data. Check your internet connection and try again. ");
   }
 }
 
@@ -193,7 +212,7 @@ Future<List<Content>> searchMoviesAndSeries(String searchTerm) async {
       throw Exception("Failed to search for movies and TV series. Status code: ${searchRes.statusCode}");
     }
   } catch (e) {
-    throw Exception("Something went wrong! $e");
+    throw Exception("Failed to fetch data. Check your internet connection and try again. ");
   }
 }
 

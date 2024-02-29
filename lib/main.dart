@@ -1,10 +1,9 @@
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'screens/AppHomeScreen.dart';
 import 'screens/BestMovieThisYear.dart';
-import 'screens/ChangeEmailScreen.dart';
 import 'screens/ChangePasswordScreen.dart';
 import 'screens/ChangeUsernameScreen.dart';
 import 'screens/CinemaDisplay.dart';
@@ -18,18 +17,26 @@ import 'screens/SeriesDisplay.dart';
 import 'screens/VisitProfileScreen.dart';
 import 'screens/watchedListScreen.dart';
 
-void main(){
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure that Flutter is initialized
+  if(kIsWeb){
+    await Firebase.initializeApp(options: FirebaseOptions(apiKey: "AIzaSyB9eN4Da6L2I1j6711Mu7v6AQqIORC7nA8", appId: "1:848553104492:web:6ce5be0dadae21c7983449", messagingSenderId: "848553104492", projectId: "crossplatform-c4865"));
+  }  
+  await Firebase.initializeApp();
+  
   runApp(
     ChangeNotifierProvider(
       create: (context) => MovieProvider(),
-      child: MyApp(),
-    ),
+       child: MyApp(),
+    ),    
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+  
+  
+  
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,8 +58,7 @@ class MyApp extends StatelessWidget {
         '/ninth': (context) => MyWatchedlistScreen(),
         '/tenth': (context) => EditProfileScreen(),
         '/eleventh': (context) => ChangePassword(),
-        '.twelveth': (context) => ChangeUsernameScreen(),
-        'thirteth': (context) => ChangeEmailScreen(),
+        '/twelveth': (context) => ChangeUsernameScreen(),        
         'fouteenth': (context) => ForgotPassword(),
         'fifteenth': (context) => SearchResultsScreen(actorName: '', title: '',)
       },

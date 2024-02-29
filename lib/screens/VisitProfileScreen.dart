@@ -83,32 +83,7 @@ class VisitProfileScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 20.0),
-                            Align(
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                width: buttonWidth,
-                                height: buttonHeight,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ChangePassword(),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                     borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                                  child: Text(
-                                    'Change Password',
-                                    style: TextStyle(fontSize: 16),
-                                  )),)
-                            ),
+                            ),                            
                             const SizedBox(height: 20.0),
                             Align(
                               alignment: Alignment.center,
