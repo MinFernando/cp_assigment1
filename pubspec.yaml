@@ -30,15 +30,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: 6.1.1
+  provider: ^6.1.1
   http: ^0.13.3  
   firebase_core: ^2.25.4
   cloud_firestore: ^4.15.4
   firebase_auth: ^4.17.4
   firebase_storage: ^11.6.5
-  google_fonts: 4.0.4
+  google_fonts: ^4.0.4
   carousel_slider: ^4.0.0
-  shared_preferences: ^2.2.2
+  
+
   
 
   # The following adds the Cupertino Icons font to your application.
@@ -49,6 +50,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   email_validator: ^2.0.1
+  test: ^1.16.0
+  mockito: ^5.0.15
     
 
   # The "flutter_lints" package below contains a set of recommended lints to

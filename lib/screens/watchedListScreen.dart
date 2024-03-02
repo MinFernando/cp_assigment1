@@ -52,13 +52,13 @@ class MyWatchedlistScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Row(
+                          child: Row(                                                                        
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Movie Image
                               Container(
-                                width: 100.0,
-                                height: 150.0,
+                                width: MediaQuery.of(context).size.width * 5.0,    
+                                height: MediaQuery.of(context).size.width * 5.0,    
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(8.0),

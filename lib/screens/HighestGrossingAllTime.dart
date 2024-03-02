@@ -157,6 +157,8 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
             child: Container(
               height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
               color: Colors.white,
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -204,6 +206,7 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                     child: Text('Back'),
                   ),
                 ],
+              ),
               ),
             ),
           ),

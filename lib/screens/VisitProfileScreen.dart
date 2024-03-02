@@ -2,7 +2,6 @@ import 'package:cp_assignment/screens/MyWatchlistScreen.dart';
 import 'package:cp_assignment/screens/watchedListScreen.dart';
 import 'package:flutter/material.dart';
 import 'AppHomeScreen.dart';
-import 'ChangePasswordScreen.dart';
 import 'EditProfileScreen.dart';
 import 'HomePage.dart';
 

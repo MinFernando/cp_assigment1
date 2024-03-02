@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'ChangePasswordScreen.dart';
-import 'ChangeUsernameScreen.dart';
 import 'VisitProfileScreen.dart';
 
 class EditProfileScreen extends StatelessWidget {
@@ -54,33 +53,7 @@ class EditProfileScreen extends StatelessWidget {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            const SizedBox(height: 100.0),
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: SizedBox(
-                                width: buttonWidth,
-                                height: buttonHeight,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            ChangeUsernameScreen(),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                     borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                                  child: Text(
-                                    'Change username',
-                                    style: TextStyle(fontSize: 16),
-                                  )),)
-                            ),
+                          children: <Widget>[                            
                             const SizedBox(height: 20.0),
                             Align(
                               alignment: Alignment.center,

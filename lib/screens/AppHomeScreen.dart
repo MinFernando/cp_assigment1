@@ -161,7 +161,7 @@ Widget buildMovieCarouselWidget({
             Text(
               title,
               style: TextStyle(
-                fontSize: 25,
+                fontSize: MediaQuery.of(context).size.width * 0.05,
                 fontWeight: FontWeight.bold,
                 color: Color.fromARGB(255, 133, 118, 29),
               ),
@@ -192,7 +192,7 @@ Widget buildMovieCarouselWidget({
                   );
                 }
               },
-              child: Text(
+              child: Text(                
                 'See All',
                 style: TextStyle(
                   color: Colors.white,
@@ -226,11 +226,11 @@ Widget buildMovieCarouselWidget({
                     borderRadius: BorderRadius.circular(8.0),
                     border: Border.all(color: Colors.amber, width: 2.0), // Added a gold border
                   ),
-                  child: ClipRRect(
+                    child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: Image.network(
                       imageUrl,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 );
@@ -261,7 +261,7 @@ Widget buildMovieCarouselWidget({
             Text(
               title,
               style: TextStyle(
-                fontSize: 25,
+                fontSize: MediaQuery.of(context).size.width * 0.05,
                 fontWeight: FontWeight.bold,
                 color: Color.fromARGB(255, 133, 118, 29),
               ),
@@ -315,7 +315,7 @@ Widget buildMovieCarouselWidget({
                     borderRadius: BorderRadius.circular(8.0),
                     child: Image.network(
                       imageUrl,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 );                                    

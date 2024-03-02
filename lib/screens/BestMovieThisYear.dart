@@ -81,7 +81,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Colors.white, // Updated background color
+                  color: Colors.white, 
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
@@ -97,8 +97,8 @@ class _MovieThisYearState extends State<MovieThisYear> {
                   children: [
                     // Movie Image
                     Container(
-                      width: 100.0,
-                      height: 150.0,
+                      width: MediaQuery.of(context).size.width * 0.3,    
+                      height: MediaQuery.of(context).size.width * 0.5,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         image: DecorationImage(
@@ -150,6 +150,8 @@ class _MovieThisYearState extends State<MovieThisYear> {
           child: Container(
             height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
             color: Colors.white,
+            child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -166,9 +168,11 @@ class _MovieThisYearState extends State<MovieThisYear> {
                     });
                   },
                   child: Text('Sort by Date'),
+                  
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    
                     backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
                     textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
                   ),
@@ -197,6 +201,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
                   child: Text('Back'),
                 ),
               ],
+            ),
             ),
           ),
         ),

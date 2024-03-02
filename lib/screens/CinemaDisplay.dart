@@ -154,8 +154,10 @@ class _MovieListCinemaState extends State<MovieListCinema> {
           left: 0,
           right: 0,
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
+            height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height            
             color: Colors.white,
+            child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -203,6 +205,7 @@ class _MovieListCinemaState extends State<MovieListCinema> {
                   child: Text('Back'),
                 ),
               ],
+            ),
             ),
           ),
         ),

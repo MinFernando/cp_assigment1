@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'screens/AppHomeScreen.dart';
 import 'screens/BestMovieThisYear.dart';
 import 'screens/ChangePasswordScreen.dart';
-import 'screens/ChangeUsernameScreen.dart';
 import 'screens/CinemaDisplay.dart';
 import 'screens/EditProfileScreen.dart';
 import 'screens/ForgotPassword.dart';
@@ -34,9 +33,6 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   
-  
-  
-  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -57,10 +53,9 @@ class MyApp extends StatelessWidget {
         '/eighth': (context) => BestMovieAllTime(),
         '/ninth': (context) => MyWatchedlistScreen(),
         '/tenth': (context) => EditProfileScreen(),
-        '/eleventh': (context) => ChangePassword(),
-        '/twelveth': (context) => ChangeUsernameScreen(),        
-        'fouteenth': (context) => ForgotPassword(),
-        'fifteenth': (context) => SearchResultsScreen(actorName: '', title: '',)
+        '/eleventh': (context) => ChangePassword(),        
+        '/twelveth': (context) => ForgotPassword(),
+        '/thirteenth': (context) => SearchResultsScreen(actorName: '', title: '',)
       },
     );
   }

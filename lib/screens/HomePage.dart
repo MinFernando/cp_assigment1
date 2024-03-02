@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cp_assignment/screens/firebase_auth.dart'; // Import your FirebaseAuthService
+import 'package:cp_assignment/screens/firebase_auth.dart'; 
 import 'AppHomeScreen.dart';
 import 'CreateAccount.dart';
 import 'ForgotPassword.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'ValidationMixin.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -149,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                                   }
                                 } catch (e) {
                                   print('Error: $e');
-                                  // Handle sign-in errors
+                                  print("Please Try again");
                                 }
                               }
                             },

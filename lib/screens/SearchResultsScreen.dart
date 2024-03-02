@@ -136,6 +136,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             child: Container(
               height: 50, 
               color: const Color.fromARGB(255, 255, 255, 255),
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -169,6 +171,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     child: Text('back'),
                   ),
                 ],
+              ),
               ),
             ),
           ),
