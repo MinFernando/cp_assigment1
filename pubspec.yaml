@@ -52,6 +52,7 @@ dev_dependencies:
   email_validator: ^2.0.1
   test: ^1.16.0
   mockito: ^5.0.15
+  network_image_mock: ^2.1.1
     
 
   # The "flutter_lints" package below contains a set of recommended lints to
