@@ -24,8 +24,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   bool sortByTitle = false;
 
   @override
-  Widget build(BuildContext context) {
-    // Apply sorting logic to the displayed movies list
+  Widget build(BuildContext context) {    
     List<Content> displayedMovies = List.from(_searchResults.isNotEmpty ? _searchResults : _moviesList);
 
     // Sorting logic
@@ -129,52 +128,49 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             ),
           ),  
           // Sorting buttons
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 50, 
-              color: const Color.fromARGB(255, 255, 255, 255),
-              child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        sortByDate = true;
-                        sortByTitle = false;
-                      });
-                    },
-                    child: Text('Sort by Date'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        sortByDate = false;
-                        sortByTitle = true;
-                      });
-                    },
-                    child: Text('Sort by Title'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AppHomeScreen(),
-                      ),
-                    );
-                    },
-                    child: Text('back'),
-                  ),
-                ],
+            Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.08, 
+          color: Color.fromARGB(255, 235, 235, 235),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+            children: [
+              IconButton(
+                icon: Icon(Icons.date_range, color: Colors.black), // Icon for sorting by date
+                onPressed: () {
+                  setState(() {
+                    sortByDate = !sortByDate;
+                    sortByTitle = false;
+                  });
+                },
               ),
+              IconButton(
+                icon: Icon(Icons.sort_by_alpha, color: Colors.black), // Icon for sorting by title
+                onPressed: () {
+                  setState(() {
+                    sortByTitle = !sortByTitle;
+                    sortByDate = false;
+                  });
+                },
               ),
-            ),
+              IconButton(
+                icon: Icon(Icons.home, color: Colors.black), 
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AppHomeScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
+        ),
+      ),
         ],
       ),
     );
@@ -208,7 +204,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     try {
       final results = await tmdbService.searchMoviesAndSeries(widget.actorName);      
       setState(() {
-        _searchResults = results;
+        _searchResults = results.cast<Content>();
       });
     } catch (e) {
       // Handle the error

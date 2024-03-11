@@ -1,6 +1,6 @@
+import 'package:cp_assignment/screens/AppHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'EditProfileScreen.dart';
 import 'ValidationMixin.dart';
 
 class ChangePassword extends StatelessWidget with ValidationMixin {
@@ -78,7 +78,7 @@ class ChangePassword extends StatelessWidget with ValidationMixin {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => EditProfileScreen()
+                                        builder: (context) => AppHomeScreen()
                                       ),
                                     );
                                   },

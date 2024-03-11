@@ -1,4 +1,4 @@
-import 'package:cp_assignment/screens/VisitProfileScreen.dart';
+import 'package:cp_assignment/screens/ContentDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'AppHomeScreen.dart';
@@ -45,6 +45,7 @@ class MyWatchlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final movieProvider = Provider.of<MovieProvider>(context);
+    final Content content;
     List<Content> watchlist = movieProvider.watchlist;   
 
     if (watchlist == null) {
@@ -56,50 +57,66 @@ class MyWatchlistScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(20, 20, 20, 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'My Watchlist',
-                    style: TextStyle(fontSize: 24.0, color: Colors.black),
-                  ),
-                  SizedBox(height: 20.0),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: watchlist.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 100.0,
-                              height: 150.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: DecorationImage(
-                                  image: NetworkImage(watchlist[index].imagePath),
-                                  fit: BoxFit.cover,
-                                  filterQuality: FilterQuality.high,
+            child: watchlist.isEmpty // Check if watchlist is empty
+                ? Center( 
+                    child: Text(
+                      'No movies added',
+                      style: TextStyle(fontSize: 24.0, color: Colors.black),
+                    ),
+                  )
+              : SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 80),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'My Watchlist',
+                      style: TextStyle(fontSize: 24.0, color: Colors.black),
+                    ),
+                    SizedBox(height: 20.0),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: watchlist.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContentDetailScreen(content: watchlist[index]),
+                              ),
+                            );
+                          },                          
+                          child: Container(
+                          margin: EdgeInsets.only(bottom: 20),
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 100.0,
+                                height: 150.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  image: DecorationImage(
+                                    image: NetworkImage(watchlist[index].imagePath),
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.high,
+                                  ),
                                 ),
                               ),
-                            ),
                             SizedBox(width: 12.0),
                             Expanded(
                               child: Column(
@@ -126,6 +143,7 @@ class MyWatchlistScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+                          ),
                       );
                     },
                   ),
@@ -148,7 +166,7 @@ class MyWatchlistScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => VisitProfileScreen(),
+                          builder: (context) => AppHomeScreen(),
                         ),
                       );
                     },

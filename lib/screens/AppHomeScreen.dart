@@ -1,4 +1,7 @@
-import 'package:cp_assignment/screens/VisitProfileScreen.dart';
+import 'package:cp_assignment/screens/ChangePasswordScreen.dart';
+import 'package:cp_assignment/screens/HomePage.dart';
+import 'package:cp_assignment/screens/MyWatchlistScreen.dart';
+import 'package:cp_assignment/screens/watchedListScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'BestMovieThisYear.dart';
@@ -18,87 +21,177 @@ import 'constructors.dart';
 
   TmdbService tmdbService = TmdbService();
 
-  @override
+  // Helper method to build the bottom sheet  
+void _showProfileBottomSheet(BuildContext context) {    
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext bc) {
+      return SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.9, 
+          width: MediaQuery.of(context).size.width,          
+          color: Color.fromARGB(255, 248, 248, 248), 
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10), 
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 20),
+              CircleAvatar(
+                radius: 60,
+                backgroundImage: NetworkImage('web/assets/cp6.jpg'), 
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black), 
+                  borderRadius: BorderRadius.circular(10), 
+                ),
+                child: ListTile(
+                  title: Text('Change Password'),
+                  onTap: () {
+                    Navigator.pop(context); 
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChangePassword()),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black), 
+                  borderRadius: BorderRadius.circular(10), 
+                ),
+                child: ListTile(
+                  title: Text('My Watchlist'),
+                  onTap: () {
+                    Navigator.pop(context); 
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyWatchlistScreen()),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 10), 
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black), 
+                  borderRadius: BorderRadius.circular(10), 
+                ),
+                child: ListTile(
+                  title: Text('My Watched List'),
+                  onTap: () {
+                    Navigator.pop(context); 
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyWatchedlistScreen()),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 10), 
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black), 
+                  borderRadius: BorderRadius.circular(10), 
+                ),
+                child: ListTile(
+                  title: Text('Log Out'),
+                  onTap: () {
+                    Navigator.pop(context); 
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHomePage(
+                                            title: 'Welcome to MovieMate!'),
+                    ));
+                  },
+                ),
+              ),
+            ],
+          ),         
+        ),
+      );
+    },
+  );
+}
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[            
-            Container(              
-              height: MediaQuery.of(context).size.height * 0.15,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 2, 2, 15),
-              ),
-              child: Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,               
-                children: <Widget>[
-                   Container(
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 2, 2, 15),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                          MaterialPageRoute(
-                            builder: (context) => VisitProfileScreen(),
+    body: SingleChildScrollView(
+      child: Column(
+        children: <Widget>[            
+          Container(            
+            height: MediaQuery.of(context).size.height * 0.20,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 0, 0, 0),
+            ),              
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center, 
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8), 
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(                          
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                        );
-                      },
-                        icon: const Icon(Icons.account_circle, color: Colors.grey),
-                    ),
-                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Row(
-                      children: [                        
-                        Expanded(
-                          child: TextFormField(
-                            controller: _searchController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a search term';
-                              }
-                              return null;
-                            },
-                            decoration: const InputDecoration(
-                              hintText: 'Actors, movies series...',
-                              border: InputBorder.none,
-                              hintStyle: TextStyle(color: Colors.grey),
-                            ),
-                          ),
-                        ),                        
-                        IconButton(
-                          onPressed: () {
-                            if (formGlobalKey.currentState!.validate()) {
-                              String searchTerm =
-                                  _searchController.text.trim();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SearchResultsScreen(
-                                    actorName: searchTerm,
-                                    title: searchTerm,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _searchController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Actors, movies, series...',
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(vertical: 8), 
+                                    hintStyle: TextStyle(color: Colors.grey),
                                   ),
                                 ),
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.search, color: Colors.grey),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  if (formGlobalKey.currentState!.validate()) {
+                                    String searchTerm = _searchController.text.trim();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SearchResultsScreen(
+                                          actorName: searchTerm,
+                                          title: searchTerm,
+                                        ),
+                                      ),
+                                    ) .then((_) => _searchController.text = ''); 
+                                  }
+                                },
+                                icon: Icon(Icons.search, color: Colors.grey, size: 24), 
+                              ),
+                              IconButton(
+                                onPressed: () => _showProfileBottomSheet(context),
+                                icon: Icon(Icons.account_circle, color: Colors.grey, size: 24),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Welcome to MovieMate!',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 216, 202, 135),
+                    fontSize: 16, 
+                  ),
                   ),
                 ],
               ),
-            ),
+            ),        
             Container(
               width: MediaQuery.of(context).size.width,
               color: backgroundColor,
@@ -141,7 +234,7 @@ import 'constructors.dart';
           ],
         ),
       ),
-    );
+    );    
   }
 }
 
@@ -158,13 +251,15 @@ Widget buildMovieCarouselWidget({
         child: Row(          
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            Flexible(
+            child: Text(
               title,
               style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width * 0.05,
+                fontSize: MediaQuery.of(context).size.width * 0.03,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 133, 118, 29),
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
+            ),
             ),
             TextButton(
               onPressed: () {
@@ -192,13 +287,14 @@ Widget buildMovieCarouselWidget({
                   );
                 }
               },
-              child: Text(                
+              child: const Text(                
                 'See All',
                 style: TextStyle(
                   color: Colors.white,
                 ),
               ),
             ),
+            
           ],
         ),
       ),
@@ -258,12 +354,12 @@ Widget buildMovieCarouselWidget({
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width * 0.05,
+            Text(              
+              title,              
+              style: TextStyle(                                
+                fontSize: MediaQuery.of(context).size.width * 0.03,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 133, 118, 29),
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
             ),
             TextButton(

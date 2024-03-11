@@ -77,57 +77,38 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
       body: Stack(
         children: [
           ListView.builder(
-            itemCount: displayedMovies.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ContentDetailScreen(content: displayedMovies[index]),
-                    ),
-                  );
-                },
-                child: Container(                                    
-                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  padding: EdgeInsets.all(12.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
+          itemCount: displayedMovies.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContentDetailScreen(content: displayedMovies[index]),
                   ),
-                  child: ListTile(
-                    title: Text(
-                      displayedMovies[index].title,
-                      style: TextStyle(fontSize: 20.0, color: Colors.grey),
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 2),
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          displayedMovies[index].releaseDate,
-                          style: TextStyle(fontSize: 16.0, color: Colors.grey),
-                        ),
-                        SizedBox(height: 8.0),
-                        Text(
-                          displayedMovies[index].overview,
-                          style: TextStyle(fontSize: 16.0, color: Colors.grey),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                    leading: Container(
+                  ],
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
                       width: 100.0,
-                      height: double.infinity,
+                      height: 150.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         image: DecorationImage(
@@ -135,83 +116,83 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                           fit: BoxFit.cover,
                           filterQuality: FilterQuality.high,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 2),
+                      ),
+                    ),
+                    SizedBox(width: 12.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayedMovies[index].title,
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            displayedMovies[index].releaseDate,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            displayedMovies[index].overview,
+                            style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              );
-            },
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
-              color: Colors.white,
-              child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      textStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                    ),
-                    onPressed: () {
-                      // Toggle sorting by date
-                      setState(() {
-                        sortByDate = !sortByDate;
-                        sortByTitle = false;
-                      });
-                    },
-                    child: Text('Sort by Date'),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      textStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                    ),
-                    onPressed: () {
-                      // Toggle sorting by title
-                      setState(() {
-                        sortByTitle = !sortByTitle;
-                        sortByDate = false;
-                      });
-                    },
-                    child: Text('Sort by Title'),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                      textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AppHomeScreen(),
-                        ),
-                      );
-                    },
-                    child: Text('Back'),
-                  ),
-                ],
               ),
-              ),
+            );
+          },
+        ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.08, 
+            color: Color.fromARGB(255, 235, 235, 235),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+              children: [
+                IconButton(
+                  icon: Icon(Icons.date_range, color: Colors.black), // Icon for sorting by date
+                  onPressed: () {
+                    setState(() {
+                      sortByDate = !sortByDate;
+                      sortByTitle = false;
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.sort_by_alpha, color: Colors.black), // Icon for sorting by title
+                  onPressed: () {
+                    setState(() {
+                      sortByTitle = !sortByTitle;
+                      sortByDate = false;
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.home, color: Colors.black), 
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppHomeScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
+      )
     );
   }
 }

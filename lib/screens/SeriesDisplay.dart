@@ -82,7 +82,7 @@ class _ListSeriesState extends State<ListSeries> {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Colors.white, // Updated background color
+                  color: Colors.white, 
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
@@ -143,68 +143,49 @@ class _ListSeriesState extends State<ListSeries> {
             );
           },
         ),
-        // Back Button
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
-            color: Colors.white,
-            child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                    textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)), 
-                  ),
-                  onPressed: () {
-                    // Toggle sorting by date
-                    setState(() {
-                      sortByDate = !sortByDate;
-                      sortByTitle = false;
-                    });
-                  },
-                  child: Text('Sort by Date'),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
-                    textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)), 
-                  ),
-                  onPressed: () {
-                    // Toggle sorting by title
-                    setState(() {
-                      sortByTitle = !sortByTitle;
-                      sortByDate = false;
-                    });
-                  },
-                  child: Text('Sort by Title'),
-                ),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 255, 255, 255), 
-                    textStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)), 
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AppHomeScreen(),
-                      ),
-                    );
-                  },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text('Back'),
-                ),
-              ],
-            ),
-            ),
+          Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.08, 
+          color: Color.fromARGB(255, 235, 235, 235),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+            children: [
+              IconButton(
+                icon: Icon(Icons.date_range, color: Colors.black), // Icon for sorting by date
+                onPressed: () {
+                  setState(() {
+                    sortByDate = !sortByDate;
+                    sortByTitle = false;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.sort_by_alpha, color: Colors.black), // Icon for sorting by title
+                onPressed: () {
+                  setState(() {
+                    sortByTitle = !sortByTitle;
+                    sortByDate = false;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.home, color: Colors.black), 
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AppHomeScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
+      ),
       ],
     );
   }

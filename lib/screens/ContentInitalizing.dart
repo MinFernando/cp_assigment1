@@ -5,6 +5,7 @@ class Content {
   final String imagePath;
   final String rating;
   final String overview;
+  final String actor;
 
   Content({
     required this.title,
@@ -12,6 +13,7 @@ class Content {
     required this.imagePath,
     required this.rating,
     required this.overview,
+    required this.actor
   });
 
   factory Content.fromJson(Map<String, dynamic> json) {
@@ -32,12 +34,14 @@ class Movie extends Content {
     required String imagePath,
     required String rating,
     required String overview,
+    required String actor,
   }) : super(
           title: title,
           releaseDate: releaseDate,
           imagePath: imagePath,
           rating: rating,
           overview: overview,
+          actor:actor,
         );
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -47,6 +51,7 @@ class Movie extends Content {
       imagePath: json['poster_path'] ?? '',
       rating: json['vote_average']?.toString() ?? '0.0',
       overview: json['overview'] ?? 'Not Available',
+      actor: json["actor"] ?? 'Not known',
     );
   }
 }
@@ -58,6 +63,7 @@ class TVSeries extends Content {
     required String imagePath,
     required String rating,
     required String overview,
+    required String actor,
   }) : super
       (
         title: title,
@@ -65,6 +71,7 @@ class TVSeries extends Content {
         imagePath: imagePath,
         rating: rating,
         overview: overview,
+        actor: actor,
       );
 
   factory TVSeries.fromJson(Map<String, dynamic> json) {
@@ -74,7 +81,7 @@ class TVSeries extends Content {
       imagePath: json['poster_path'] ?? 'No Image Available',
       rating: json['vote_average']?.toString() ?? '0.0',
       overview: json['overview'] ?? 'Not Available',
+      actor: json["actor"] ?? 'Not known',
     );
   }
 }
-  

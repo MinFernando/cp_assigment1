@@ -6,18 +6,16 @@ import 'screens/AppHomeScreen.dart';
 import 'screens/BestMovieThisYear.dart';
 import 'screens/ChangePasswordScreen.dart';
 import 'screens/CinemaDisplay.dart';
-import 'screens/EditProfileScreen.dart';
 import 'screens/ForgotPassword.dart';
 import 'screens/HighestGrossingAllTime.dart';
 import 'screens/HomePage.dart';
 import 'screens/MyWatchlistScreen.dart';
 import 'screens/SearchResultsScreen.dart';
 import 'screens/SeriesDisplay.dart';
-import 'screens/VisitProfileScreen.dart';
 import 'screens/watchedListScreen.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure that Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized(); 
   if(kIsWeb){
     await Firebase.initializeApp(options: FirebaseOptions(apiKey: "AIzaSyB9eN4Da6L2I1j6711Mu7v6AQqIORC7nA8", appId: "1:848553104492:web:6ce5be0dadae21c7983449", messagingSenderId: "848553104492", projectId: "crossplatform-c4865"));
   }  
@@ -47,12 +45,10 @@ class MyApp extends StatelessWidget {
         '/second': (context) => AppHomeScreen(),
         '/third': (context) => CinemaListScreen(),
         '/fourth': (context) => TvListScreen(),
-        '/fifth': (context) => MyWatchlistScreen(),
-        '/sixth': (context) => VisitProfileScreen(),
+        '/fifth': (context) => MyWatchlistScreen(),        
         '/seventh': (context) => BestMoviesThisYear(),
         '/eighth': (context) => BestMovieAllTime(),
-        '/ninth': (context) => MyWatchedlistScreen(),
-        '/tenth': (context) => EditProfileScreen(),
+        '/ninth': (context) => MyWatchedlistScreen(),        
         '/eleventh': (context) => ChangePassword(),        
         '/twelveth': (context) => ForgotPassword(),
         '/thirteenth': (context) => SearchResultsScreen(actorName: '', title: '',)
