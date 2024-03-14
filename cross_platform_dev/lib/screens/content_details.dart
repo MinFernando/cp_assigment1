@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:cp_assignment/screens/content_initializing.dart';
+import 'package:cp_assignment/screens/watchedlist.dart';
 import 'package:cp_assignment/screens/watchlist.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +13,9 @@ class ContentDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieProvider = Provider.of<MovieProvider>(context, listen: false);
+    final movieProvider = Provider.of<MovieProvider>(context, listen: false);    
      
-    return Scaffold(
+    return Scaffold(      
       body: Stack(
         children: [
           // Background Image with Blur
@@ -45,7 +46,7 @@ class ContentDetailScreen extends StatelessWidget {
                 Container(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,27 +54,27 @@ class ContentDetailScreen extends StatelessWidget {
                       // Title
                       Text(
                         content.title,
-                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       // Release Date
                       Text(
                         'Release Date: ${content.releaseDate}',
-                        style: TextStyle(fontSize: 18.0),
+                        style: const TextStyle(fontSize: 18.0),
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       // Rating
                       Text(
                         'Rating: ${content.rating}',
-                        style: TextStyle(fontSize: 18.0),
+                        style: const TextStyle(fontSize: 18.0),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       // Overview
                       Text(
                         'Overview: ${content.overview}',
-                        style: TextStyle(fontSize: 18.0),
+                        style: const TextStyle(fontSize: 18.0),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                         // Add to Watchlist Button
                     Center(
                       child: ElevatedButton(
@@ -93,14 +94,14 @@ class ContentDetailScreen extends StatelessWidget {
                             );
                           }
                         },
-                        child: Text('Add to Watchlist'),
+                        child: const Text('Add to Watchlist'),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(50, 36), 
+                          minimumSize: const Size(50, 36), 
                         ),
                       ),
                     ),
 
-                      SizedBox(height: 10.0), // Spacing between buttons
+                      const SizedBox(height: 10.0), // Spacing between buttons
 
                       // Add to MyWatchedlist Button     
                       Center(                 
@@ -121,19 +122,20 @@ class ContentDetailScreen extends StatelessWidget {
                             );
                           }
                         },
-                        child: Text('Add to Watchedlist'),
+                        child: const Text('Add to Watchedlist'),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(50, 36),
+                          minimumSize: const Size(50, 36),
                         ),
                       ),                      
                       ),
+                      const SizedBox(height: 10.0),
                       Center(
                         child: ElevatedButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text('Back'),
+                          child: const Text('Back'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(255, 254, 255, 255), 
-                            disabledBackgroundColor: Color.fromARGB(255, 34, 38, 81), 
+                            disabledBackgroundColor: const Color.fromARGB(255, 34, 38, 81), 
                           ),
                         ),
                       ),

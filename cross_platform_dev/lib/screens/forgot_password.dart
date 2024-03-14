@@ -24,10 +24,11 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
               TextFormField(
                 controller: usernameController,
                 validator: (email) {
-                  if (isEmailValid(email!))
+                  if (isEmailValid(email!)) {
                     return null;
-                  else
+                  } else {
                     return 'Email address invalid';
+                  }
                 },
                 decoration: const InputDecoration(
                   hintText: 'Enter your username',
@@ -41,10 +42,11 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
               TextFormField(
                 controller: passwordController,
                 validator: (password) {
-                  if (isPasswordValid(password!))
+                  if (isPasswordValid(password!)) {
                     return null;
-                  else
+                  } else {
                     return 'Invalid Password.';
+                  }
                 },
                 maxLength: 10,
                 obscureText: true,
@@ -77,7 +79,7 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => MyHomePage(title: 'Welcome to MovieMate!'),
+                                        builder: (context) => const MyHomePage(title: 'Welcome to MovieMate!'),
                                       ),
                                     );
                                   },
@@ -94,7 +96,7 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
                       print('Error updating password: $error');
                       // Show error message
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text('Failed to update password.'),
                           duration: Duration(seconds: 2),
                         ),

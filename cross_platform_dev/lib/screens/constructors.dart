@@ -25,7 +25,9 @@ class TmdbService {
           releaseDate: json['release_date']?? 'Unknown Release Date',
           imagePath: '$imageUrl${json['poster_path']}',
           rating: json['vote_average'].toString(),
-          overview: json['overview'] ?? 'Not Available',          
+          overview: json['overview'] ?? 'Not Available', 
+    
+        
         );
       }).toList();
       return movies;
@@ -53,7 +55,9 @@ class TmdbService {
           releaseDate: json['release_date']?? 'Unknown Release Date',
           imagePath: '$imageUrl${json['poster_path']}',          
           rating: json['vote_average'].toString(),
-          overview: json['overview'] ?? 'Not Available',          
+          overview: json['overview'] ?? 'Not Available',     
+  
+    
 
         );
       }).toList();
@@ -80,7 +84,9 @@ class TmdbService {
          releaseDate: json['release_date']?? 'Unknown Release Date',
           imagePath: '$imageUrl${json['poster_path']}',          
           rating: json['vote_average'].toString(),
-          overview: json['overview'] ?? 'Not Available',        
+          overview: json['overview'] ?? 'Not Available',  
+      
+    
         );
       }).toList();
 
@@ -108,7 +114,10 @@ class TmdbService {
           String releaseDate = json['first_air_date'] ?? 'Unknown Release Date';
           String imagePath = json['poster_path'] != null ? '$imageUrl${json['poster_path']}' : 'Not available';
           String rating = json['vote_average']?.toString() ?? '0.0';
-          String overview = json['overview'] ?? 'Not Available';        
+          String overview = json['overview'] ?? 'Not Available';   
+          String id = json['id'] ?? 'Not available';
+          
+             
 
           return TVSeries(        
             title: title,        
@@ -116,6 +125,8 @@ class TmdbService {
             imagePath: imagePath,
             rating: rating,
             overview: overview,
+    
+            
           );
         }).toList();
 
@@ -131,7 +142,7 @@ class TmdbService {
 Future<List<Movie>> getActorMovies(String actorName) async {
   try {
     // Step 1: Search for the actor
-    var actorSearchRes = await http.get(Uri.parse(TmdbService.url + '/search/person?query=$actorName&page=1&api_key=${TmdbService.apiKey}'));
+    var actorSearchRes = await http.get(Uri.parse('${TmdbService.url}/search/person?query=$actorName&page=1&api_key=${TmdbService.apiKey}'));
  
     if (actorSearchRes.statusCode == 200) {
       var actorData = jsonDecode(actorSearchRes.body)['results'] as List;
@@ -141,7 +152,7 @@ Future<List<Movie>> getActorMovies(String actorName) async {
         if (actorId != null) {
           // Step 2: Get movies by actor ID
           var moviesRes = await http.get(Uri.parse(
-              TmdbService.url + '/person/$actorId/movie_credits?api_key=${TmdbService.apiKey}'));
+              '${TmdbService.url}/person/$actorId/movie_credits?api_key=${TmdbService.apiKey}'));
 
           if (moviesRes.statusCode == 200) {
             return (jsonDecode(moviesRes.body)['cast'] as List)
@@ -167,7 +178,7 @@ Future<List<Movie>> getActorMovies(String actorName) async {
 Future<List<TVSeries>> getActorTvSeries(String actorName) async {
   try {
     // Step 1: Search for the actor
-    var actorSearchRes = await http.get(Uri.parse(TmdbService.url + '/search/person?query=$actorName&page=1&api_key=${TmdbService.apiKey}'));
+    var actorSearchRes = await http.get(Uri.parse('${TmdbService.url}/search/person?query=$actorName&page=1&api_key=${TmdbService.apiKey}'));
 
     if (actorSearchRes.statusCode == 200) {
       var actorData = jsonDecode(actorSearchRes.body)['results'] as List;
@@ -177,7 +188,7 @@ Future<List<TVSeries>> getActorTvSeries(String actorName) async {
         if (actorId != null) {
           // Step 2: Get TV series by actor ID
           var tvSeriesRes = await http.get(Uri.parse(
-              TmdbService.url + '/person/$actorId/tv_credits?api_key=${TmdbService.apiKey}'));
+              '${TmdbService.url}/person/$actorId/tv_credits?api_key=${TmdbService.apiKey}'));
 
           if (tvSeriesRes.statusCode == 200) {
             var tvSeriesData = jsonDecode(tvSeriesRes.body)['cast'] as List;          
@@ -192,7 +203,8 @@ Future<List<TVSeries>> getActorTvSeries(String actorName) async {
                 releaseDate: json['first_air_date'] ?? 'Unknown Release Date',
                 imagePath : json['poster_path'] != null ? '$imageUrl${json['poster_path']}' : 'Not available',
                 rating: json['vote_average']?.toString() ?? '0.0',
-                overview: json['overview'] ?? 'Not Available',
+                overview: json['overview'] ?? 'Not Available', 
+         
               
               );
             }).toList();
@@ -222,17 +234,18 @@ Future<List<dynamic>> searchMoviesAndSeries(String searchTerm) async {
     if (searchRes.statusCode == 200) {
       var searchData = jsonDecode(searchRes.body)['results'] as List;
 
-      return searchData.map((json) {
+      
+      var filteredSearchData = searchData.where((json) => json['media_type'] != 'person').toList();
+
+      return filteredSearchData.map((json) {
         if (json['media_type'] == 'movie') {
           return Movie.fromJson(json);
         } else if (json['media_type'] == 'tv') {
           return TVSeries.fromJson(json);
-        } else if (json['media_type'] == 'person') {
-          return Content.fromJson(json);
         } else {
           return null;
         }
-      }).where((content) => content != null).toList();
+      }).where((content) => content != null).toList(); // Ensure null content is still filtered out
     } else {
       throw Exception("Failed to search for movies and TV series. Status code: ${searchRes.statusCode}");
     }
@@ -240,5 +253,6 @@ Future<List<dynamic>> searchMoviesAndSeries(String searchTerm) async {
     throw Exception("Failed to fetch data. Check your internet connection and try again. Error: $e");
   }
 }
+
 
 }

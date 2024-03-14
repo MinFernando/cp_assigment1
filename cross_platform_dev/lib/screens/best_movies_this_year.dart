@@ -11,6 +11,7 @@ class BestMoviesThisYear extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(      
+      backgroundColor: Color.fromARGB(255, 0, 0, 0),
       body: Stack(
         children: [          
           // Movie List
@@ -82,7 +83,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Color.fromARGB(255, 36, 36, 37),
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
@@ -115,7 +116,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
                         children: [
                           Text(
                             displayedMovies[index].title,
-                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 255, 255, 255)),
                           ),
                           SizedBox(height: 8.0),
                           Text(
@@ -144,12 +145,12 @@ class _MovieThisYearState extends State<MovieThisYear> {
           right: 0,
           child: Container(
             height: MediaQuery.of(context).size.height * 0.08, 
-            color: Color.fromARGB(255, 235, 235, 235),
+            color: Color.fromARGB(255, 0, 0, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
               children: [
                 IconButton(
-                  icon: Icon(Icons.date_range, color: Colors.black), // Icon for sorting by date
+                  icon: Icon(Icons.date_range, color: const Color.fromARGB(255, 172, 172, 172)), // Icon for sorting by date
                   onPressed: () {
                     setState(() {
                       sortByDate = !sortByDate;
@@ -158,7 +159,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.sort_by_alpha, color: Colors.black), // Icon for sorting by title
+                  icon: Icon(Icons.sort_by_alpha, color: const Color.fromARGB(255, 172, 172, 172)), // Icon for sorting by title
                   onPressed: () {
                     setState(() {
                       sortByTitle = !sortByTitle;
@@ -167,7 +168,7 @@ class _MovieThisYearState extends State<MovieThisYear> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.home, color: Colors.black), 
+                  icon: Icon(Icons.home, color: const Color.fromARGB(255, 172, 172, 172)), // icon to go back to app home page
                   onPressed: () {
                     Navigator.push(
                       context,

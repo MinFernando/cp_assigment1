@@ -28,6 +28,7 @@ class _ActosMoviesState extends State<ActosMovies> {
     }
 
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 0, 0, 0),
       appBar: AppBar(
         title: Text('Movies List'),
       ),

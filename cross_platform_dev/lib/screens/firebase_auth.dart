@@ -27,7 +27,5 @@ class FirebaseAuthService {
       print("error");
     }
     return null;
-  }
-  
-  
+  } 
 }

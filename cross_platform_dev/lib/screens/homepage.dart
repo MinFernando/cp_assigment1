@@ -1,5 +1,3 @@
-
-
 import 'package:cp_assignment/screens/app_home_screen.dart';
 import 'package:cp_assignment/screens/create_account.dart';
 import 'package:cp_assignment/screens/firebase_auth.dart';
@@ -41,8 +39,6 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
   @override
   Widget build(BuildContext context) {
     
-  
-
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {

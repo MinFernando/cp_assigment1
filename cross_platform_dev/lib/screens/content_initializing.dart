@@ -6,12 +6,14 @@ class Content {
   final String rating;
   final String overview;
 
+
   Content({
     required this.title,
     required this.releaseDate,
     required this.imagePath,
     required this.rating,
     required this.overview,
+    
   });
 
   factory Content.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,8 @@ class Content {
       return Movie.fromJson(json);
     }
   }
+
+  
 }
 
 class Movie extends Content {
@@ -31,13 +35,14 @@ class Movie extends Content {
     required String releaseDate,
     required String imagePath,
     required String rating,
-    required String overview,    
+    required String overview,        
   }) : super(
           title: title,
           releaseDate: releaseDate,
           imagePath: imagePath,
           rating: rating,
-          overview: overview,      
+          overview: overview,    
+          
         );
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -47,10 +52,12 @@ class Movie extends Content {
       imagePath: json['poster_path'] ?? '',
       rating: json['vote_average']?.toString() ?? '0.0',
       overview: json['overview'] ?? 'Not Available',      
+      
     );
   }
-}
 
+  toMovie() {}  
+}
 class TVSeries extends Content {
   TVSeries({
     required String title,
@@ -58,6 +65,7 @@ class TVSeries extends Content {
     required String imagePath,
     required String rating,
     required String overview,    
+    
   }) : super
       (
         title: title,
@@ -65,6 +73,7 @@ class TVSeries extends Content {
         imagePath: imagePath,
         rating: rating,
         overview: overview,        
+        
       );
 
   factory TVSeries.fromJson(Map<String, dynamic> json) {
@@ -74,6 +83,39 @@ class TVSeries extends Content {
       imagePath: json['poster_path'] ?? 'No Image Available',
       rating: json['vote_average']?.toString() ?? '0.0',
       overview: json['overview'] ?? 'Not Available',      
+      
     );
   }
+
+
+}
+
+class Contents {
+  final String title;
+  final String releaseDate;
+  final String imagePath;
+  final String rating;
+  final String overview;
+  
+
+  Contents({
+    required this.title,
+    required this.releaseDate,
+    required this.imagePath,
+    required this.rating,
+    required this.overview,
+  
+  });
+
+  factory Contents.fromFirestore(Map<String, dynamic> firestoreData) {
+    return Contents(
+      title: firestoreData['title'] ?? 'Unknown Title',
+      releaseDate: firestoreData['releaseDate'] ?? 'Unknown Release Date',
+      imagePath: firestoreData['imagePath'] ?? 'No Image Available',
+      rating: firestoreData['rating']?.toString() ?? '0.0',
+      overview: firestoreData['overview'] ?? 'Not Available',
+    
+    );
+  }
+
 }

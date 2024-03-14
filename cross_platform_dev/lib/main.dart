@@ -20,7 +20,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure that Flutter is initialized
   if(kIsWeb){
     await Firebase.initializeApp(options: 
-    FirebaseOptions(
+    const FirebaseOptions(
       apiKey: "AIzaSyB9eN4Da6L2I1j6711Mu7v6AQqIORC7nA8", 
       appId: "1:848553104492:web:6ce5be0dadae21c7983449", 
       messagingSenderId: "848553104492", 
@@ -30,9 +30,9 @@ Future<void> main() async {
   
   runApp(
     ChangeNotifierProvider(
-      create: (context) => MovieProvider(),
+      create: (context) => MovieProvider(),      
        child: MyApp(),
-    ),    
+    ),        
   );
 }
 

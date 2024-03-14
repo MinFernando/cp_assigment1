@@ -8,17 +8,12 @@ import 'constructors.dart';
 class CinemaListScreen extends StatelessWidget {
   final TmdbService tmdbService = TmdbService();
 
-  Color backgroundColor = Color.fromARGB(255, 255, 255, 255);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(      
+      backgroundColor: Color.fromARGB(255, 0, 0, 0),
       body: Stack(
-        children: [
-          // Background Image
-          Container(
-            color: backgroundColor,
-          ),
+        children: [          
           // Movie List
           Center(
             child: FutureBuilder(
@@ -89,7 +84,7 @@ class _MovieListCinemaState extends State<MovieListCinema> {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Colors.white, 
+                  color: Color.fromARGB(255, 36, 36, 37), 
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
@@ -125,7 +120,7 @@ class _MovieListCinemaState extends State<MovieListCinema> {
                           // Title
                           Text(
                             displayedMovies[index].title,
-                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 255, 255, 255)),
                           ),
                           SizedBox(height: 8.0),
                           // Release Date
@@ -156,12 +151,12 @@ class _MovieListCinemaState extends State<MovieListCinema> {
         right: 0,
         child: Container(
           height: MediaQuery.of(context).size.height * 0.08, 
-          color: Color.fromARGB(255, 235, 235, 235),
+          color: Color.fromARGB(255, 0, 0, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
             children: [
               IconButton(
-                icon: Icon(Icons.date_range, color: Colors.black), // Icon for sorting by date
+                icon: Icon(Icons.date_range, color: const Color.fromARGB(255, 172, 172, 172)), // Icon for sorting by date
                 onPressed: () {
                   setState(() {
                     sortByDate = !sortByDate;
@@ -170,7 +165,7 @@ class _MovieListCinemaState extends State<MovieListCinema> {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.sort_by_alpha, color: Colors.black), // Icon for sorting by title
+                icon: Icon(Icons.sort_by_alpha, color: const Color.fromARGB(255, 172, 172, 172)), // Icon for sorting by title
                 onPressed: () {
                   setState(() {
                     sortByTitle = !sortByTitle;
@@ -179,7 +174,7 @@ class _MovieListCinemaState extends State<MovieListCinema> {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.home, color: Colors.black), 
+                icon: Icon(Icons.home, color: Color.fromARGB(255, 172, 172, 172)), 
                 onPressed: () {
                   Navigator.push(
                     context,
