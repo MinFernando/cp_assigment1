@@ -1,4 +1,5 @@
 
+// base class for content items such as movies and TV series.
 class Content {
   final String title;
   final String releaseDate;
@@ -8,6 +9,7 @@ class Content {
 
 
   Content({
+    // properties of base class
     required this.title,
     required this.releaseDate,
     required this.imagePath,
@@ -24,11 +26,10 @@ class Content {
       // Assume it's a movie
       return Movie.fromJson(json);
     }
-  }
-
-  
+  }  
 }
 
+// The Movie class extends Content to represent movie-specific data.
 class Movie extends Content {
   Movie({
     required String title,
@@ -54,10 +55,10 @@ class Movie extends Content {
       overview: json['overview'] ?? 'Not Available',      
       
     );
-  }
-
-  toMovie() {}  
+  }   
 }
+
+// The TVSeries class extends Content to represent movie-specific data.
 class TVSeries extends Content {
   TVSeries({
     required String title,
@@ -90,32 +91,6 @@ class TVSeries extends Content {
 
 }
 
-class Contents {
-  final String title;
-  final String releaseDate;
-  final String imagePath;
-  final String rating;
-  final String overview;
+
+
   
-
-  Contents({
-    required this.title,
-    required this.releaseDate,
-    required this.imagePath,
-    required this.rating,
-    required this.overview,
-  
-  });
-
-  factory Contents.fromFirestore(Map<String, dynamic> firestoreData) {
-    return Contents(
-      title: firestoreData['title'] ?? 'Unknown Title',
-      releaseDate: firestoreData['releaseDate'] ?? 'Unknown Release Date',
-      imagePath: firestoreData['imagePath'] ?? 'No Image Available',
-      rating: firestoreData['rating']?.toString() ?? '0.0',
-      overview: firestoreData['overview'] ?? 'Not Available',
-    
-    );
-  }
-
-}

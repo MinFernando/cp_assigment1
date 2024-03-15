@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'constructors.dart';
 
 class BestMovieAllTime extends StatelessWidget {
+  // Instance of TmdbService to handle API calls to TMDB for fetching movie data.
   final TmdbService tmdbService = TmdbService();
 
   @override
@@ -17,12 +18,13 @@ class BestMovieAllTime extends StatelessWidget {
           // Movie List
           Center(
             child: FutureBuilder(
-              future: tmdbService.getHighestGrossingOfAllTime(),
+              future: tmdbService.getHighestGrossingOfAllTime(), // fetches movies
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return CircularProgressIndicator(); // show loading indicator
                 } else if (snapshot.hasError) {
                   return Center(
+                    // Show an error message if there's an error fetching the data.
                     child: Text(
                       'Error: ${snapshot.error}',
                       style: TextStyle(color: Colors.white),
@@ -30,7 +32,7 @@ class BestMovieAllTime extends StatelessWidget {
                   );
                 } else {
                   List<Movie> movies = snapshot.data as List<Movie>;
-                  return BestMoviesAllTime(movies: movies);
+                  return BestMoviesAllTime(movies: movies); // displays list
                 }
               },
             ),
@@ -42,6 +44,7 @@ class BestMovieAllTime extends StatelessWidget {
 }
 
 class BestMoviesAllTime extends StatefulWidget {
+  // List of Movie objects to be displayed.
   final List<Movie> movies;
 
   BestMoviesAllTime({required this.movies});
@@ -51,11 +54,13 @@ class BestMoviesAllTime extends StatefulWidget {
 }
 
 class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
+  // Flags for sorting the list of movies.
   bool sortByDate = false;
   bool sortByTitle = false;
 
   @override
   Widget build(BuildContext context) {
+     // Create a copy of movies to sort for display.
     List<Movie> displayedMovies = List.from(widget.movies);
 
     // Check if displayedMovies is empty
@@ -70,20 +75,22 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
 
     // Sorting logic
     if (sortByDate) {
-      displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+      displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate)); // sort by date
     } else if (sortByTitle) {
-      displayedMovies.sort((a, b) => a.title.compareTo(b.title));
+      displayedMovies.sort((a, b) => a.title.compareTo(b.title)); // sort by title alphabatically
     }
 
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 0, 0, 0),
       body: Stack(
         children: [
+           // ListView.builder to dynamically create a list of movie widgets.
           ListView.builder(
-          itemCount: displayedMovies.length,
+          itemCount: displayedMovies.length, // Number of movies in the list.
           itemBuilder: (context, index) {
-            return GestureDetector(
+            return GestureDetector( // GestureDetector to handle taps on each movie item.
               onTap: () {
+                // Navigate to the content detail screen when a movie is tapped.
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -99,6 +106,7 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
+                      // Shadow effect for each movie item.
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 2,
                       blurRadius: 5,
@@ -106,6 +114,7 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                     ),
                   ],
                 ),
+                // Row widget to layout movie image and details horizontally.
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -115,32 +124,36 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         image: DecorationImage(
-                          image: NetworkImage(displayedMovies[index].imagePath),
+                          image: NetworkImage(displayedMovies[index].imagePath), // Movie image from the network.
                           fit: BoxFit.cover,
                           filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),
                     SizedBox(width: 12.0),
+                     // Expanded widget to fill the available space with movie details.
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          //title
                           Text(
                             displayedMovies[index].title,
                             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 255, 255, 255)),
                           ),
                           SizedBox(height: 8.0),
+                          // release date
                           Text(
                             displayedMovies[index].releaseDate,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                           ),
                           SizedBox(height: 8.0),
+                          //overview
                           Text(
                             displayedMovies[index].overview,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                             maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            overflow: TextOverflow.ellipsis, // truncates overview if overflowed
                           ),
                         ],
                       ),
@@ -151,6 +164,7 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
             );
           },
         ),
+        // Positioned widget for bottom navigation icons for sorting and home navigation.
         Positioned(
           bottom: 0,
           left: 0,
@@ -158,9 +172,11 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
           child: Container(
             height: MediaQuery.of(context).size.height * 0.08, 
             color: Color.fromARGB(255, 0, 0, 0),
+            // Row for layout of the icons.
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
               children: [
+                // Icon button for sorting by date.
                 IconButton(
                   icon: Icon(Icons.date_range, color: const Color.fromARGB(255, 172, 172, 172)), // Icon for sorting by date
                   onPressed: () {
@@ -170,6 +186,7 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                     });
                   },
                 ),
+                // Icon button for sorting by title.
                 IconButton(
                   icon: Icon(Icons.sort_by_alpha, color: const Color.fromARGB(255, 172, 172, 172)), // Icon for sorting by title
                   onPressed: () {
@@ -179,6 +196,7 @@ class _BestMovieAllTimeState extends State<BestMoviesAllTime> {
                     });
                   },
                 ),
+                // Icon button for navigating back home
                 IconButton(
                   icon: Icon(Icons.home, color: const Color.fromARGB(255, 172, 172, 172)), 
                   onPressed: () {

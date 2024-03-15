@@ -4,9 +4,10 @@ import 'package:cp_assignment/screens/content_initializing.dart';
 import 'package:flutter/material.dart';
 
 
-class ActosMovies extends StatefulWidget {
+// Display a list of movies, allowing sorting by year or alphabetically
+class ActosMovies extends StatefulWidget { 
   final List<Movie> movies;
-
+  
   ActosMovies({required this.movies});
 
   @override
@@ -14,7 +15,7 @@ class ActosMovies extends StatefulWidget {
 }
 
 class _ActosMoviesState extends State<ActosMovies> {
-  bool sortByYear = false;
+  bool sortByYear = false; // Flag to toggle sorting method
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +23,9 @@ class _ActosMoviesState extends State<ActosMovies> {
 
     // Sorting logic
     if (!sortByYear) {
-      sortedMovies.sort((a, b) => a.title.compareTo(b.title));
+      sortedMovies.sort((a, b) => a.title.compareTo(b.title)); // alphabtical sorting
     } else {
-      sortedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+      sortedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate)); // sorting by date
     }
 
     return Scaffold(
@@ -34,9 +35,11 @@ class _ActosMoviesState extends State<ActosMovies> {
       ),
       body: Column(
         children: [
+          // Row for sorting buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+               // Button to sort by year
               ElevatedButton(
                 onPressed: () {
                   setState(() {
@@ -46,6 +49,7 @@ class _ActosMoviesState extends State<ActosMovies> {
                 child: Text('Sort by Year'),
               ),
               SizedBox(width: 10),
+               // Button to sort by date
               ElevatedButton(
                 onPressed: () {
                   setState(() {
@@ -60,15 +64,16 @@ class _ActosMoviesState extends State<ActosMovies> {
             child: ListView.builder(
               itemCount: sortedMovies.length,
               itemBuilder: (context, index) {
-                return GestureDetector(
+                return GestureDetector(   // detects taps on movie items
                   onTap: () {
-                    Navigator.push(
+                    Navigator.push(  //navigates to content list
                       context,
                       MaterialPageRoute(
                         builder: (context) => ContentDetailScreen(content: sortedMovies[index]),
                       ),
                     );
                   },
+                  // Styling the movie list item
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     padding: EdgeInsets.all(12.0),
@@ -76,6 +81,7 @@ class _ActosMoviesState extends State<ActosMovies> {
                       color: Color.fromARGB(255, 255, 255, 255),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
+                    // Movie poster
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -87,6 +93,7 @@ class _ActosMoviesState extends State<ActosMovies> {
                           height: 150.0,
                         ),
                         SizedBox(width: 12.0),
+                         // Movie title, release date, and overview
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +112,7 @@ class _ActosMoviesState extends State<ActosMovies> {
                                 sortedMovies[index].overview,
                                 style: TextStyle(fontSize: 16.0, color: Colors.grey),
                                 maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                                overflow: TextOverflow.ellipsis, // Truncates long overviews
                               ),
                             ],
                           ),

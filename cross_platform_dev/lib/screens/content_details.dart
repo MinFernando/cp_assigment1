@@ -1,10 +1,8 @@
-import 'dart:ui';
-import 'package:cp_assignment/screens/content_initializing.dart';
-import 'package:cp_assignment/screens/watchedlist.dart';
-import 'package:cp_assignment/screens/watchlist.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'dart:ui'; // For image filter
+import 'package:cp_assignment/screens/content_initializing.dart'; 
+import 'package:cp_assignment/screens/watchlist.dart'; 
+import 'package:flutter/material.dart'; 
+import 'package:provider/provider.dart'; // For state management
 
 class ContentDetailScreen extends StatelessWidget {
   final Content content;
@@ -13,9 +11,9 @@ class ContentDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieProvider = Provider.of<MovieProvider>(context, listen: false);    
-     
-    return Scaffold(      
+    final movieProvider = Provider.of<MovieProvider>(context, listen: false); // Accessing the movie provider
+
+    return Scaffold(
       body: Stack(
         children: [
           // Background Image with Blur
@@ -30,7 +28,7 @@ class ContentDetailScreen extends StatelessWidget {
             child: Container(
               color: Colors.black.withOpacity(0.5),
             ),
-          ),            
+          ),
           SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -75,79 +73,81 @@ class ContentDetailScreen extends StatelessWidget {
                         style: const TextStyle(fontSize: 18.0),
                       ),
                       const SizedBox(height: 20.0),
-                        // Add to Watchlist Button
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (!movieProvider.isInWatchlist(content)) {
-                            movieProvider.addToWatchlist(content);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${content.title} added to watchlist.'),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${content.title} is already in watchlist.'),
-                              ),
-                            );
-                          }
-                        },
-                        child: const Text('Add to Watchlist'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(50, 36), 
+                      // Add to Watchlist Button
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Checks if the content is already in the watchlist using the movieProvider.
+                            if (!movieProvider.isInWatchlist(content)) { 
+                               // If not then add to the watchlist.
+                              movieProvider.addToWatchlist(content);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${content.title} added to watchlist.'),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${content.title} is already in watchlist.'),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text('Add to Watchlist'),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(50, 36),
+                          ),
                         ),
                       ),
-                    ),
-
                       const SizedBox(height: 10.0), // Spacing between buttons
-
-                      // Add to MyWatchedlist Button     
-                      Center(                 
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (!movieProvider.isInWatchedlist(content)) {
-                            movieProvider.addToWatchedlist(content);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${content.title} added to watchedlist.'),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${content.title} is already in watchedlist.'),
-                              ),
-                            );
-                          }
-                        },
-                        child: const Text('Add to Watchedlist'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(50, 36),
+                      // Add to MyWatchedlist Button
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Checks if the content is already in the watchlist using the movieProvider
+                            if (!movieProvider.isInWatchedlist(content)) {
+                              // not then add to watched list
+                              movieProvider.addToWatchedlist(content);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${content.title} added to watchedlist.'),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${content.title} is already in watchedlist.'),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text('Add to Watchedlist'),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(50, 36),
+                          ),
                         ),
-                      ),                      
                       ),
                       const SizedBox(height: 10.0),
+                      // Back Button
                       Center(
                         child: ElevatedButton(
                           onPressed: () => Navigator.pop(context),
                           child: const Text('Back'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 254, 255, 255), 
-                            disabledBackgroundColor: const Color.fromARGB(255, 34, 38, 81), 
+                            backgroundColor: const Color.fromARGB(255, 254, 255, 255),
+                            disabledBackgroundColor: const Color.fromARGB(255, 34, 38, 81),
                           ),
                         ),
                       ),
-                    ]              
-                    ),
-                )        
                     ],
                   ),
                 ),
               ],
             ),
-          );
-       
+          ),
+        ],
+      ),
+    );
   }
 }

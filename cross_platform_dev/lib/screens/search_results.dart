@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'constructors.dart';
 
 class SearchResultsScreen extends StatefulWidget {
+  // The name of the actor to search for.
   final String actorName;
+  // Title for the screen, possibly indicating the search query.
   final String title;
 
   const SearchResultsScreen({Key? key, required this.actorName, required this.title}) : super(key: key);
@@ -16,23 +18,26 @@ class SearchResultsScreen extends StatefulWidget {
 }
 
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
+  // Instance of TmdbService to make API calls.
   final TmdbService tmdbService = TmdbService();
   List<Content> _searchResults = []; 
   List<TVSeries> _tvSeriesList = []; 
   List<Movie> _moviesList= [];  
 
+  // Flags for sorting options.
   bool sortByDate = false;
   bool sortByTitle = false;
 
   @override
   Widget build(BuildContext context) {    
+     // List to hold movies for display, prioritizing search results over movie list if not empty.
     List<Content> displayedMovies = List.from(_searchResults.isNotEmpty ? _searchResults : _moviesList);
 
     // Sorting logic
     if (sortByDate) {
-      displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+      displayedMovies.sort((a, b) => a.releaseDate.compareTo(b.releaseDate)); // sort by date
     } else if (sortByTitle) {
-      displayedMovies.sort((a, b) => a.title.compareTo(b.title));
+      displayedMovies.sort((a, b) => a.title.compareTo(b.title)); // sort by released date
     }
     
     return Scaffold(
@@ -56,13 +61,15 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 // Display Search Results
                 if (_searchResults.isNotEmpty)
                   Expanded(
+                    // ListView to dynamically build a list of search result items.
                     child: ListView.builder(
-                      itemCount: displayedMovies.length,
+                      itemCount: displayedMovies.length, // length of the list
                       itemBuilder: (context, index) {
                         final content = displayedMovies[index];
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
+                               // Navigate to ContentDetailScreen upon tapping a result.
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ContentDetailScreen(content: content),
@@ -78,7 +85,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                             ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                              // Display movie or series image if available.
+                              children: [                                
                                 if (content is Movie && content.imagePath != null && content.imagePath.isNotEmpty)
                                   Image.network(
                                     'https://image.tmdb.org/t/p/w500' + content.imagePath,
@@ -125,12 +133,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
                   )
                 else
+                  // Display a message when no results are found.
                   Text('No results'),
               ],
             ),
-          ),  
-          // Sorting buttons
-            Positioned(
+          ),            
+      // Sorting buttons
+      Positioned(
         bottom: 0,
         left: 0,
         right: 0,
@@ -186,6 +195,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     _searchForData();
   }
 
+  // Fetches actor-related movies and TV series using TmdbService.
   Future<void> _searchForActorData() async {
     try {
       final movies = await tmdbService.getActorMovies(widget.actorName);
@@ -202,6 +212,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       print("Error: $e");
     }
   }
+  // Performs a general search for data related to the actor.
   Future<void> _searchForData() async {
     try {
       final results = await tmdbService.searchMoviesAndSeries(widget.actorName);      

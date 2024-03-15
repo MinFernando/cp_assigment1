@@ -1,4 +1,3 @@
-
 import 'package:cp_assignment/screens/validation_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +6,10 @@ import 'HomePage.dart';
 class ForgotPassword extends StatelessWidget with ValidationMixin {
   @override
   Widget build(BuildContext context) {
+
+    // A global key that allows validation of the form.
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    // Text editing controllers to manage the input text for email and password.
     TextEditingController usernameController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
 
@@ -24,8 +26,8 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
               TextFormField(
                 controller: usernameController,
                 validator: (email) {
-                  if (isEmailValid(email!)) {
-                    return null;
+                  if (isEmailValid(email!)) { //checks if email is valid
+                    return null;   // if not returns null
                   } else {
                     return 'Email address invalid';
                   }
@@ -42,14 +44,14 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
               TextFormField(
                 controller: passwordController,
                 validator: (password) {
-                  if (isPasswordValid(password!)) {
-                    return null;
+                  if (isPasswordValid(password!)) { // checks if password is valid
+                    return null; // if not returns null
                   } else {
                     return 'Invalid Password.';
                   }
                 },
-                maxLength: 10,
-                obscureText: true,
+                maxLength: 10, // limit length of password to 6 characters
+                obscureText: true, // hide password
                 decoration: const InputDecoration(
                   hintText: 'Enter new password',
                 ),
@@ -57,8 +59,8 @@ class ForgotPassword extends StatelessWidget with ValidationMixin {
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
-                  if (formKey.currentState!.validate()) {
-                    formKey.currentState!.save();
+                  if (formKey.currentState!.validate()) { // validate form
+                    formKey.currentState!.save(); //saves state
                     try {
                       // Get the current user
                       User? user = FirebaseAuth.instance.currentUser;

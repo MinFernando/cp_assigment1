@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'constructors.dart';
 
 class TvListScreen extends StatelessWidget {
+  // Service for interacting with the TMDb API.
   final TmdbService tmdbService = TmdbService();
+  // Default country code used for fetching TV shows.
   String userCountryCode = 'US';
 
   @override
@@ -17,21 +19,21 @@ class TvListScreen extends StatelessWidget {
         children: [                    
           // Movie List
           Center(
-            child: FutureBuilder(
-              future: tmdbService.getTVShowsAiringTonight('US'),
+            child: FutureBuilder( // FutureBuilder to handle asynchronous data fetching
+              future: tmdbService.getTVShowsAiringTonight('US'), // fetches series
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return CircularProgressIndicator(); // shows loading indicator
                 } else if (snapshot.hasError) {
-                  return Center(
+                  return Center( // shows error message if error occurs
                     child: Text(
                       'Error: ${snapshot.error}',
                       style: TextStyle(color: Colors.white),
                     ),
                   );
                 } else {
-                  List<TVSeries> series = snapshot.data as List<TVSeries>;
-                  return ListSeries(series: series);
+                  List<TVSeries> series = snapshot.data as List<TVSeries>; // Extracting list of movies from snapshot
+                  return ListSeries(series: series); // Displaying movies
                 }
               },
             ),
@@ -61,18 +63,20 @@ class _ListSeriesState extends State<ListSeries> {
 
     // Sorting logic
     if (sortByDate) {
-      displayedSeries.sort((a, b) => a.releaseDate.compareTo(b.releaseDate));
+      displayedSeries.sort((a, b) => a.releaseDate.compareTo(b.releaseDate)); // sort by date
     } else if (sortByTitle) {
-      displayedSeries.sort((a, b) => a.title.compareTo(b.title));
+      displayedSeries.sort((a, b) => a.title.compareTo(b.title)); // sort by title
     }
 
     return Stack(
       children: [
-        ListView.builder(
-          itemCount: displayedSeries.length,
+        // ListView to display the series
+        ListView.builder( 
+          itemCount: displayedSeries.length, // list length
           itemBuilder: (context, index) {
-            return GestureDetector(
+            return GestureDetector(  // GestureDetector for tapping on a movie to view details
               onTap: () {
+                // Navigate to the content detail screen when a movie is tapped
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -88,6 +92,7 @@ class _ListSeriesState extends State<ListSeries> {
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
+                      // shows shadow
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 2,
                       blurRadius: 5,
@@ -105,7 +110,7 @@ class _ListSeriesState extends State<ListSeries> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         image: DecorationImage(
-                          image: NetworkImage(displayedSeries[index].imagePath),
+                          image: NetworkImage(displayedSeries[index].imagePath), // network image
                           fit: BoxFit.cover,
                           filterQuality: FilterQuality.high,
                         ),
@@ -134,7 +139,7 @@ class _ListSeriesState extends State<ListSeries> {
                             displayedSeries[index].overview,
                             style: TextStyle(fontSize: 16.0, color: Colors.grey),
                             maxLines: 2, // Limiting to 2 lines for overview
-                            overflow: TextOverflow.ellipsis,
+                            overflow: TextOverflow.ellipsis, // trucncates if overview overflowed
                           ),
                         ],
                       ),
@@ -145,6 +150,7 @@ class _ListSeriesState extends State<ListSeries> {
             );
           },
         ),
+        // bottom container for sorting and back icons
           Positioned(
         bottom: 0,
         left: 0,
@@ -155,8 +161,9 @@ class _ListSeriesState extends State<ListSeries> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
             children: [
+              // sort by date icon
               IconButton(
-                icon: Icon(Icons.date_range, color: const Color.fromARGB(255, 172, 172, 172)), // Icon for sorting by date
+                icon: Icon(Icons.date_range, color: const Color.fromARGB(255, 172, 172, 172)), 
                 onPressed: () {
                   setState(() {
                     sortByDate = !sortByDate;
@@ -164,8 +171,9 @@ class _ListSeriesState extends State<ListSeries> {
                   });
                 },
               ),
+              // sort by title icon
               IconButton(
-                icon: Icon(Icons.sort_by_alpha, color: const Color.fromARGB(255, 172, 172, 172)), // Icon for sorting by title
+                icon: Icon(Icons.sort_by_alpha, color: const Color.fromARGB(255, 172, 172, 172)), 
                 onPressed: () {
                   setState(() {
                     sortByTitle = !sortByTitle;
@@ -173,6 +181,7 @@ class _ListSeriesState extends State<ListSeries> {
                   });
                 },
               ),
+              // back icon
               IconButton(
                 icon: Icon(Icons.home, color: const Color.fromARGB(255, 172, 172, 172)), 
                 onPressed: () {

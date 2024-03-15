@@ -12,25 +12,32 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(); // Creating state for the widget.
 }
 
+// State class for MyHomePage, including input validation mixin.
 class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
+
+   // TextEditingControllers for managing input fields.
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
+  // Instance of FirebaseAuthService for authentication.
   final FirebaseAuthService _auth = FirebaseAuthService();
+  // Global key for form state management and validation.
   GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
 
 
   @override
   void initState() {
     super.initState();
+    // Initializing text controllers.
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
+    // Disposing controllers to prevent memory leaks.
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -47,10 +54,11 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
       },
       
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
+      resizeToAvoidBottomInset: true, 
+      body: SingleChildScrollView( // Allows the form to be scrollable when keyboard appears.
         child: Column(
           children: <Widget>[
+            // Top image container.
             Container(
               height: MediaQuery.of(context).size.height * 0.5,
               width: MediaQuery.of(context).size.height * 2.0,
@@ -65,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  // Container for displaying the page title.
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -82,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
               ),
             ),
             Form(
-              key: formGlobalKey,
+              key: formGlobalKey, // Associating global key with the form for validation.
               child: Container(
                 padding: const EdgeInsets.all(16.0),
                 color: Colors.white,
@@ -90,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     const SizedBox(height: 16.0),
+                    // Username input field.
                     const Text(
                       'Username',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
@@ -97,8 +107,8 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                     TextFormField(
                       controller: _usernameController,
                       validator: (email) {
-                        if (isEmailValid(email!))
-                          return null;
+                        if (isEmailValid(email!)) // checks if email is valid
+                          return null; // if not returns null
                         else
                           return 'Email address invalid';
                       },
@@ -114,13 +124,13 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                     TextFormField(
                       controller: _passwordController,
                       validator: (password) {
-                        if (isPasswordValid(password!))
-                          return null;
+                        if (isPasswordValid(password!)) // checks if password is valid
+                          return null; // if not returns null
                         else
                           return 'Invalid Password.';
                       },
-                      maxLength: 6,
-                      obscureText: true,
+                      maxLength: 6, //limits password to 6 characters
+                      obscureText: true, // hides password
                       decoration: const InputDecoration(
                         hintText: 'Enter your password',
                       ),
@@ -130,11 +140,13 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          // login button
                           ElevatedButton(
                             onPressed: () async {
-                              if (formGlobalKey.currentState!.validate()) {
-                                formGlobalKey.currentState!.save();
+                              if (formGlobalKey.currentState!.validate()) { // validates form
+                                formGlobalKey.currentState!.save(); // save state
 
+                                // retrieve username and password from input
                                 String enteredUsername = _usernameController.text;
                                 String enteredPassword = _passwordController.text;
 
@@ -142,6 +154,7 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                                   // Sign in with Firebase
                                   final user = await _auth.signIn(enteredUsername, enteredPassword);
                                   if (user != null) {
+                                    // if credentails exists navigate to home screen
                                      Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -151,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        content: Text('Invalid username or password'),
+                                        content: Text('Invalid username or password'), // if not show error message
                                         duration: Duration(seconds: 2),
                                       ),
                                     );
@@ -164,6 +177,7 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                             },
                             child: const Text('Login'),
                           ),
+                          // forgot password button
                           TextButton(
                             onPressed: () {
                               Navigator.push(
@@ -175,6 +189,7 @@ class _MyHomePageState extends State<MyHomePage> with ValidationMixin {
                             },
                             child: const Text('Forgot Password?'),
                           ),
+                          // create account button
                           TextButton(
                             onPressed: () {
                               Navigator.push(
