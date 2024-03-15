@@ -227,7 +227,7 @@ class AppHomeScreen extends StatelessWidget {
                       buildMovieCarouselWidget(
                         context: context,
                         title: 'Popular this Year',
-                        futureFunction: tmdbService.getNowPlayingMovies,
+                        futureFunction: tmdbService.getPopularMoviesThisYear,
                       ),
                       const SizedBox(height: 10),
                       // Movies carousel (Highest Grossing)

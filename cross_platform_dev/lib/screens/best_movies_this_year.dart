@@ -17,7 +17,7 @@ class BestMoviesThisYear extends StatelessWidget {
           // Displaying the movie list
           Center(
             child: FutureBuilder( // FutureBuilder to handle asynchronous data fetching
-              future: tmdbService.getNowPlayingMovies(), // Fetching movies
+              future: tmdbService.getPopularMoviesThisYear(), // Fetching movies
               builder: (context, snapshot) { // Builder function for FutureBuilder
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator(); // shows loading indicator while waiting
